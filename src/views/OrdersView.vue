@@ -1,10 +1,7 @@
 <template>
   <div>
     <h1>Pedidos</h1>
-    <TableDefault
-      :fields="storeOrders.fields"
-      :items="storeOrders.items"
-    />
+    <TableDefault :fields="storeOrders.fields" :items="storeOrders.items" />
   </div>
 </template>
 

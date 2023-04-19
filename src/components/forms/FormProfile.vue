@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required, maxLength, helpers } from '@vuelidate/validators'
 

@@ -7,16 +7,16 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 
 export const vuetify = createVuetify({
-    components: {
-        ...labs,
-        ...components
-    },
-    directives,
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-            mdi,
-        }
-    },
+  components: {
+    ...labs,
+    ...components
+  },
+  directives,
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi
+    }
+  }
 })

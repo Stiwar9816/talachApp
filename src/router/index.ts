@@ -15,59 +15,92 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path:'/',
-      name:' login',
-      component: LoginView
+      path: '/',
+      name: ' login',
+      component: LoginView,
+      meta: {
+        layout: 'Default',
+      },
     },
     {
       path: '/home',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/profile',
       name: 'profile',
-      component: ProfileView
+      component: ProfileView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/inventory',
       name: 'inventory',
-      component: InventoryView
+      component: InventoryView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/orders',
       name: 'orders',
-      component: OrdersView
+      component: OrdersView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/payment',
       name: 'payment',
-      component: PaymentView
+      component: PaymentView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/ratings',
       name: 'ratings',
-      component: RatingsView
+      component: RatingsView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/users',
       name: 'users',
-      component: UsersView
+      component: UsersView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/products',
       name: 'products',
-      component: ProductView
+      component: ProductView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/services',
       name: 'services',
-      component: ServiceView
+      component: ServiceView,
+      meta: {
+        layout: 'Dashboard',
+      },
     },
     {
       path: '/costs',
       name: 'costs',
-      component: CostsView
+      component: CostsView,
+      meta: {
+        layout: 'Dashboard',
+      },
     }
   ]
 })

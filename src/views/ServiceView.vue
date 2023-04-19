@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Servicios</h1>
-    <TableCrudPrices :fields="storeService.fields" :items="storeService.items" page="Servicio"/>
+    <TableCrudPrices :fields="storeService.fields" :items="storeService.items" page="Servicio" />
   </div>
 </template>
 
