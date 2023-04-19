@@ -1,5 +1,7 @@
 # TALACHA APP
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a615386a-d57a-4f05-ba21-7205f7e5d7ec/deploy-status)](https://app.netlify.com/sites/talachapp/deploys)
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
