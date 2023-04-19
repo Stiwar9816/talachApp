@@ -11,12 +11,17 @@
           class="mx-auto pa-6"
         >
           <form>
-            <v-img src="/images/logo-talachapp.webp" alt="Logo TalachAPP" height="140" class="mb-3" />
+            <v-img
+              src="/images/logo-talachapp.webp"
+              alt="Logo TalachAPP"
+              height="140"
+              class="mb-3"
+            />
             <v-text-field
               v-model="state.email"
               :error-messages="v$.email.$errors.map((e) => e.$message)"
               label="Correo electronico"
-              aria-labelledby="Email"
+              aria-label="Email"
               variant="underlined"
               prepend-icon="mdi-email"
               required
@@ -29,7 +34,7 @@
               v-model="state.password"
               :error-messages="v$.password.$errors.map((e) => e.$message)"
               label="Contraseña"
-              aria-labelledby="Password"
+              aria-label="Password"
               variant="underlined"
               prepend-icon="mdi-lock"
               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -98,7 +103,13 @@ export default {
 
 <style>
 .login {
-  background-image: url('/images/bg-login.webp');
+  /* background-image: url('/images/bg-login.webp'); */
+  background: rgb(239, 108, 0);
+  background: linear-gradient(
+    190deg,
+    rgba(239, 108, 0, 0.9317926999901524) 36%,
+    rgba(255, 167, 38, 1) 85%
+  );
   height: 100vh;
   display: grid;
   place-items: center;
