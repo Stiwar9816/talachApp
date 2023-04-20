@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
+// Interface
+import type { Route } from '@/interface'
 
 export const useLayoutStore = defineStore('layout', () => {
-  const nameProfile: String = 'Jhon doe'
-  const imageProfile = 'mdi-account-circle'
-  const drawer = true
-  const rail = true
-  const prices = [
+  const nameProfile: string = 'Jhon doe'
+  const imageProfile: string = 'mdi-account-circle'
+  const drawer: boolean = true
+  const rail: boolean = false
+  const prices: Array<Route> = [
     {
       name: 'Productos',
       icon: 'mdi-package-variant-closed',
@@ -22,7 +24,7 @@ export const useLayoutStore = defineStore('layout', () => {
       route: '/costs'
     }
   ]
-  const routes = [
+  const routes: Array<Route> = [
     {
       name: 'Inicio',
       icon: 'mdi-home-account',

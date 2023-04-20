@@ -35,7 +35,7 @@
                   v-bind="props"
                 >
                   <template v-slot:prepend>
-                    <v-icon color="orange-darken-4"></v-icon>
+                    <v-icon color="orange-darken-4" />
                   </template>
                   Agregar
                 </v-btn>

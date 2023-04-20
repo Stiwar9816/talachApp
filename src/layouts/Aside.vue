@@ -6,7 +6,7 @@
     color="grey-lighten-5"
     v-model="storeLayout.drawer"
     :rail="storeLayout.rail"
-    @click="storeLayout.rail = false"
+    @click="storeLayout.rail = true"
   >
     <v-list nav>
       <v-list-item :prepend-icon="storeLayout.imageProfile">
@@ -39,7 +39,7 @@
         {{ item.name }}
         <v-tooltip activator="parent" location="end">{{ item.name }}</v-tooltip>
       </v-list-item>
-      <v-menu transition="slide-x-transition">
+      <v-menu transition="slide-x-transition" location="end">
         <template v-slot:activator="{ props }">
           <v-list-item
             v-bind="props"
@@ -50,7 +50,7 @@
             <v-tooltip activator="parent" location="end">Precios</v-tooltip>
           </v-list-item>
         </template>
-        <v-list class="bg-grey-lighten-5" rounded max-width="180">
+        <v-list class="bg-grey-lighten-5" rounded max-width="190">
           <v-list-item
             v-for="(item, index) in storeLayout.prices"
             :key="index"
@@ -63,6 +63,13 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      <v-list-item prepend-icon="mdi-power-cycle" value="Login" to="/">
+        <template v-slot:prepend>
+          <v-icon color="orange-darken-4" icon="mdi-power"></v-icon>
+        </template>
+        Cerrar Sesión
+        <v-tooltip activator="parent" location="end">Cerrar Sesión</v-tooltip>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>

@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
+// Interface
+import type { Field, Item } from '@/interface'
 
 export const useRatingsStore = defineStore('ratings', () => {
-  const fields: Object = [
+  const fields: Array<Field> = [
     {
       title: 'ID',
       align: 'start',
@@ -13,7 +15,7 @@ export const useRatingsStore = defineStore('ratings', () => {
     { title: 'Calificación', key: 'rating' },
     { title: 'Fecha de calificación', key: 'date' }
   ]
-  const items: Object = [
+  const items: Array<Item> = [
     {
       id: 1,
       user: 'Frozen Yogurt',

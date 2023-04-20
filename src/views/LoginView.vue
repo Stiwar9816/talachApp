@@ -6,7 +6,7 @@
           color="orange-accent-1"
           rounded="lg"
           height="420"
-          width="400"
+          width="350"
           elevation="18"
           class="mx-auto pa-6"
         >
