@@ -53,7 +53,7 @@
 <script>
 import { reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
-import { email, required, maxLength, helpers } from '@vuelidate/validators'
+import { rules } from '../../utils/validations';
 
 export default {
   setup() {
@@ -67,18 +67,7 @@ export default {
       ...initialState
     })
 
-    const rules = {
-      name: { required: helpers.withMessage('El campo nombre es requerido', required) },
-      email: {
-        required: helpers.withMessage('El campo correo electronico es requerido', required),
-        email: helpers.withMessage('El texto ingresado no es correo electronico valido', email)
-      },
-      phone: {
-        required: helpers.withMessage('El campo teléfono es requerido', required),
-        maxLengthValue: helpers.withMessage('Este campo admite máximo 10 caracteres', maxLength(10))
-      }
-    }
-
+    // Validations
     const v$ = useVuelidate(rules, state)
 
     function clear() {

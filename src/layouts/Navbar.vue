@@ -5,6 +5,8 @@
         <v-app-bar-nav-icon @click="storeLayout.drawer = !storeLayout.drawer" />
         <v-img class="ml-n4" width="170" src="/images/logo-talachapp.webp" alt="Logo" />
       </template>
+      <v-spacer />
+      <span class="pa-5 font-weight-bold"> Bienvenido {{ storeLayout.nameProfile }} </span>
     </v-app-bar>
   </div>
 </template>

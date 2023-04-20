@@ -20,7 +20,27 @@ export interface Item {
     tireN?: number,
     quality?: string,
     rating?: number,
-    role?:string,
-    email?:string,
+    role?: string,
+    email?: string,
     access?: string
 }
+
+export interface UserItem {
+    name: string
+    email: string
+    role: string
+    state: string
+}
+
+export interface PriceItem {
+    name: string
+    price: number
+}
+
+export interface InventoryItem {
+    name: string
+    tireS: number
+    tireM: number
+    tireN: number
+  }
+  

@@ -57,7 +57,7 @@
                         <v-text-field
                           v-model="editedItem.name"
                           label="Nombre"
-                          :rules="nameRules"
+                          :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
                           type="text"
@@ -69,6 +69,7 @@
                         <v-text-field
                           v-model="editedItem.tireS"
                           label="11 R 22.5"
+                          :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
                           type="number"
@@ -81,6 +82,7 @@
                         <v-text-field
                           v-model="editedItem.tireM"
                           label="11 R 24.5"
+                          :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
                           type="number"
@@ -92,6 +94,7 @@
                         <v-text-field
                           v-model="editedItem.tireN"
                           label="Llanta Nueva"
+                          :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
                           type="number"
@@ -147,99 +150,87 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    fields: Object,
-    items: Object
-  },
-  data: () => ({
-    dialog: false,
-    dialogDelete: false,
-    search: '',
-    perPage: 5,
-    data: [],
-    editedIndex: -1,
-    editedItem: {
-      name: '',
-      tireS: 0,
-      tireM: 0,
-      tireN: 0
-    },
-    defaultItem: {
-      name: '',
-      tireS: 0,
-      tireM: 0,
-      tireN: 0
-    },
-    nameRules: [(v) => !!v || 'Nombre de usuario es requerido']
-  }),
+<script lang="ts" setup>
+import { ref, computed, onMounted } from 'vue'
+// Interface
+import type { InventoryItem } from '@/interface'
+interface Inventory {
+  fields: Record<string, unknown>
+  items: InventoryItem[]
+}
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'Agregar Inventario' : 'Editar Inventario'
-    }
-  },
+// Props
+const props = defineProps<Inventory>()
+// Const
+const dialog = ref(false)
+const dialogDelete = ref(false)
+const search = ref('')
+const perPage = ref(5)
+const data = ref<InventoryItem[]>([])
+const editedIndex = ref(-1)
+const editedItem = ref<InventoryItem>({
+  name: '',
+  tireS: 0,
+  tireM: 0,
+  tireN: 0
+})
+const defaultItem = ref<InventoryItem>({
+  name: '',
+  tireS: 0,
+  tireM: 0,
+  tireN: 0
+})
+// Validations
+const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
-  watch: {
-    dialog(val) {
-      val || this.close()
-    },
-    dialogDelete(val) {
-      val || this.closeDelete()
-    }
-  },
+onMounted(() => {
+  initialize()
+})
 
-  created() {
-    this.initialize()
-  },
+// Methods / Actions
+const formTitle = computed(() => {
+  return editedIndex.value === -1 ? 'Agregar Inventario' : 'Editar Inventario'
+})
 
-  methods: {
-    initialize() {
-      this.data = []
-    },
+const initialize = () => {
+  data.value = props.items
+}
 
-    editItem(item) {
-      this.editedIndex = this.data.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
+const editItem = (item: InventoryItem) => {
+  editedIndex.value = data.value.indexOf(item)
+  editedItem.value = Object.assign({}, item)
+  dialog.value = true
+}
 
-    deleteItem(item) {
-      this.editedIndex = this.data.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
+const deleteItem = (item: InventoryItem) => {
+  editedIndex.value = data.value.indexOf(item)
+  editedItem.value = Object.assign({}, item)
+  dialogDelete.value = true
+}
 
-    deleteItemConfirm() {
-      this.data.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
+const deleteItemConfirm = () => {
+  data.value.splice(editedIndex.value, 1)
+  closeDelete()
+}
 
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
+const close = () => {
+  dialog.value = false
+  editedItem.value = Object.assign({}, defaultItem.value)
+  editedIndex.value = -1
+}
 
-    closeDelete() {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
+const closeDelete = () => {
+  dialogDelete.value = false
+  editedItem.value = Object.assign({}, defaultItem.value)
+  editedIndex.value = -1
+}
 
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.data[this.editedIndex], this.editedItem)
-      } else {
-        this.data.push(this.editedItem)
-      }
-      this.close()
-    }
+const save = () => {
+  if (editedIndex.value > -1) {
+    Object.assign(data.value[editedIndex.value], editedItem.value)
+  } else {
+    data.value.push(editedItem.value)
   }
+  close()
 }
 </script>

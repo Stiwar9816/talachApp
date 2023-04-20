@@ -1,34 +1,15 @@
-<script lang="ts" >
-// path: src/layouts/TheAppLayout.vue
-
-import { computed, defineComponent } from 'vue';
-import { useRoute } from 'vue-router';
-
-export default defineComponent({
-    name: 'AppLayout',
-    setup() {
-        const route = useRoute();
-        /**
-         *  This is a computed property that will return the name
-         *  of the current route
-         */
-        const layout = computed(() => {
-            const layout = route?.meta?.layout;
-
-            if (layout) {
-                return `${layout}Layout`;
-            }
-            return 'div';
-        });
-        return {
-            layout,
-        };
-    },
-});
-</script>
-
 <template>
-    <component :is="layout">
-        <router-view />
-    </component>
+  <component :is="layout">
+    <router-view />
+  </component>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+const layout = computed(() => {
+  const layout = useRoute().meta.layout
+  return layout ? `${layout}Layout` : 'div'
+})
+</script>

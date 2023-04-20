@@ -37,7 +37,7 @@
                   <template v-slot:prepend>
                     <v-icon color="orange-darken-4"></v-icon>
                   </template>
-                  Agregar Usuario
+                  Agregar
                 </v-btn>
               </template>
 
@@ -57,7 +57,7 @@
                         <v-text-field
                           v-model="editedItem.name"
                           label="Nombre"
-                          :rules="nameRules"
+                          :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
                           type="text"
@@ -74,28 +74,33 @@
                           density="comfortable"
                           type="email"
                           clearable
+                          required
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-select
                           v-model="editedItem.role"
                           label="Rol"
+                          :rules="requiredValue"
                           :items="['Administrador', 'Usuario']"
                           variant="underlined"
                           density="comfortable"
                           type="text"
                           clearable
+                          required
                         ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-select
                           v-model="editedItem.state"
                           label="Estado"
+                          :rules="requiredValue"
                           :items="['Activo', 'Inactivo']"
                           variant="underlined"
                           density="comfortable"
                           type="text"
                           clearable
+                          required
                         ></v-select>
                       </v-col>
                     </v-row>
@@ -146,106 +151,93 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    fields: Object,
-    items: Object
-  },
-  data: () => ({
-    dialog: false,
-    dialogDelete: false,
-    search: '',
-    perPage: 5,
-    data: [],
-    editedIndex: -1,
-    editedItem: {
-      name: '',
-      email: '',
-      role: '',
-      state: ''
-    },
-    defaultItem: {
-      name: '',
-      email: '',
-      role: '',
-      state: ''
-    },
-    emailRules: [
-      (v) => !!v || 'Correo electronico es requerido ',
-      (v) =>
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-          v
-        ) || 'Correo electronico no es valido, Verifiquelo nuevamente'
-    ],
-    nameRules: [(v) => !!v || 'Nombre de usuario es requerido']
-  }),
+<script lang="ts" setup>
+import { ref, computed, onMounted } from 'vue'
+// Interface
+import type { UserItem } from '@/interface'
+interface User {
+  fields: Record<string, unknown>
+  items: UserItem[]
+}
+// Props
+const props = defineProps<User>()
+// Const
+const dialog = ref(false)
+const dialogDelete = ref(false)
+const search = ref('')
+const perPage = ref(5)
+const data = ref<UserItem[]>([])
+const editedIndex = ref(-1)
+const editedItem = ref<UserItem>({
+  name: '',
+  email: '',
+  role: '',
+  state: ''
+})
+const defaultItem = ref<UserItem>({
+  name: '',
+  email: '',
+  role: '',
+  state: ''
+})
+// Validations
+const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
+const emailRules = ref([
+  (v: String) => !!v || 'El valor del campo es requerido',
+  (v: string) =>
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      v
+    ) || 'Correo electronico no es valido, Verifiquelo nuevamente'
+])
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'Agregar Usuario' : 'Editar Usuario'
-    }
-  },
+onMounted(() => {
+  initialize()
+})
 
-  watch: {
-    dialog(val) {
-      val || this.close()
-    },
-    dialogDelete(val) {
-      val || this.closeDelete()
-    }
-  },
+// Methods / Actions
+const formTitle = computed(() => {
+  return editedIndex.value === -1 ? 'Agregar Usuario' : 'Editar Usuario'
+})
 
-  created() {
-    this.initialize()
-  },
+const initialize = () => {
+  data.value = props.items
+}
 
-  methods: {
-    initialize() {
-      this.data = []
-    },
+const editItem = (item: UserItem) => {
+  editedIndex.value = data.value.indexOf(item)
+  editedItem.value = Object.assign({}, item)
+  dialog.value = true
+}
 
-    editItem(item) {
-      this.editedIndex = this.data.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
+const deleteItem = (item: UserItem) => {
+  editedIndex.value = data.value.indexOf(item)
+  editedItem.value = Object.assign({}, item)
+  dialogDelete.value = true
+}
 
-    deleteItem(item) {
-      this.editedIndex = this.data.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
+const deleteItemConfirm = () => {
+  data.value.splice(editedIndex.value, 1)
+  closeDelete()
+}
 
-    deleteItemConfirm() {
-      this.data.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
+const close = () => {
+  dialog.value = false
+  editedItem.value = Object.assign({}, defaultItem.value)
+  editedIndex.value = -1
+}
 
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
+const closeDelete = () => {
+  dialogDelete.value = false
+  editedItem.value = Object.assign({}, defaultItem.value)
+  editedIndex.value = -1
+}
 
-    closeDelete() {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.data[this.editedIndex], this.editedItem)
-      } else {
-        this.data.push(this.editedItem)
-      }
-      this.close()
-    }
+const save = () => {
+  if (editedIndex.value > -1) {
+    Object.assign(data.value[editedIndex.value], editedItem.value)
+  } else {
+    data.value.push(editedItem.value)
   }
+  close()
 }
 </script>

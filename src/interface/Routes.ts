@@ -1,4 +1,4 @@
-export interface Route {
+export interface Routes {
     name: string,
     icon: string,
     route: string
