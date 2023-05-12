@@ -10,7 +10,7 @@
           elevation="18"
           class="mx-auto pa-6"
         >
-          <form>
+          <form @submit.prevent="handleLogin">
             <v-img
               src="/images/logo-talachapp.webp"
               alt="Logo TalachAPP"
@@ -34,7 +34,9 @@
               v-model="state.password"
               :error-messages="v$.password.$errors.map((e) => e.$message)"
               label="Contraseña"
-              aria-label="Password"
+              id="current-password"
+              aria-label="current-password"
+              autocomplete="false"
               variant="underlined"
               prepend-icon="mdi-lock"
               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -47,13 +49,13 @@
             ></v-text-field>
 
             <v-btn
+            type="submit"
               block
               variant="flat"
               color="orange-accent-4"
               rounded="lg"
               size="large"
               class="mt-4"
-              to="home"
               @click="v$.$validate"
             >
               Iniciar Sesión
@@ -65,11 +67,16 @@
   </div>
 </template>
 <script>
-import { reactive } from 'vue'
+import { onBeforeUnmount, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required, helpers } from '@vuelidate/validators'
+import { useAuthStore } from '@/stores/useAuth'
+import { useErrorsStore } from '@/stores/useErrors'
+import router from '@/router'
 
 export default {
+  name: 'login',
+  components: 'LoginView',
   data() {
     return {
       show1: false
@@ -95,8 +102,20 @@ export default {
     }
 
     const v$ = useVuelidate(rules, state)
-
-    return { state, v$ }
+    const errors = useErrorsStore()
+    const authStore = useAuthStore()
+    const handleLogin = async () => {
+      // console.log(state)
+      try {
+        await authStore.login(state)
+        router.push({ name: 'home' })
+      } catch (error) {
+        console.error(error.graphQLErrors[0].message)
+        errors.$reset()
+      }
+    }
+    onBeforeUnmount(() => errors.$reset())
+    return { state, v$, handleLogin }
   }
 }
 </script>
