@@ -4,7 +4,7 @@ import type { Routes } from '@/interface'
 import { ref } from 'vue'
 
 export const useLayoutStore = defineStore('layout', () => {
-  const nameProfile = ref<String>('Jhon doe')
+  const nameProfile = localStorage.getItem('user')
   const imageProfile: string = 'mdi-account-circle'
   const drawer: boolean = true
   const rail: boolean = false

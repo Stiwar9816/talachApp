@@ -63,7 +63,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-list-item prepend-icon="mdi-power-cycle" value="Login" to="/">
+      <v-list-item prepend-icon="mdi-power-cycle" value="Login" @click="logout">
         <template v-slot:prepend>
           <v-icon color="orange-darken-4" icon="mdi-power"></v-icon>
         </template>
@@ -77,6 +77,15 @@
 <script lang="ts" setup>
 // Store
 import { useLayoutStore } from '@/stores/layout'
+import { useAuthStore } from '@/stores/useAuth'
+import { computed } from 'vue'
 // Initialization
 const storeLayout = useLayoutStore()
+
+const authStore = useAuthStore()
+const isAuthenticated = computed(() => !!authStore.token)
+
+const logout = () => {
+  return authStore.logout()
+}
 </script>
