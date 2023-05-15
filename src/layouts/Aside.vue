@@ -6,7 +6,7 @@
     color="grey-lighten-5"
     v-model="storeLayout.drawer"
     :rail="storeLayout.rail"
-    @click="storeLayout.rail = true"
+    @click="storeLayout.rail = false"
   >
     <v-list nav>
       <v-list-item :prepend-icon="storeLayout.imageProfile">

@@ -15,14 +15,19 @@ export interface Item {
     total?: number,
     state?: string,
     price?: number,
-    tireS?: number,
-    tireM?: number,
-    tireN?: number,
+    stock?: number,
+    description?: string,
+    responsible?: string,
     quality?: string,
     rating?: number,
     role?: string,
     email?: string,
-    access?: string
+    phone?: number,
+    bussiness_name?: string,
+    departament?: string,
+    city?: string,
+    postal_code?: number,
+    address?: string
 }
 
 export interface UserItem {
@@ -39,8 +44,18 @@ export interface PriceItem {
 
 export interface InventoryItem {
     name: string
-    tireS: number
-    tireM: number
-    tireN: number
-  }
-  
+    stock: number
+    description: string
+    responsible: string
+}
+
+export interface CompanyItem {
+    name: string
+    phone: number
+    bussiness_name: string
+    address: string
+    departament: string
+    city: string
+    postal_code: number
+    state: string
+}

@@ -1,17 +1,9 @@
 import { LOGIN_MUTATION } from '@/gql/login'
+import type { AuthState } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import router from '@/router'
 import { defineStore } from 'pinia'
 
-interface User {
-  id?: number
-  fullName: string
-}
-
-interface AuthState {
-  token: string | null
-  user: User | null
-}
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -25,7 +17,7 @@ export const useAuthStore = defineStore({
     }
   },
   actions: {
-    async login(credentials: any) {
+    async login(credentials: AuthState) {
       const { data } = await apolloClient.mutate({
         mutation: LOGIN_MUTATION,
         variables: {

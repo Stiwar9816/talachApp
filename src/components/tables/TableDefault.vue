@@ -51,8 +51,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 // Const
-const search = ref<String>('')
-const perPage = ref<Number>(5)
+const search = ref<string>('')
+const perPage = ref<number>(5)
 // Props
 const props = defineProps({
   fields: Object,

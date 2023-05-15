@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Calificaciones</h1>
-    <TableRating :headers="storeRatings.fields" :items="storeRatings.items" />
+    <TableRating :fields="storeRatings.fields" :items="storeRatings.items" />
   </div>
 </template>
 

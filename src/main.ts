@@ -10,7 +10,7 @@ import apolloClient from './plugins/apollo';
 import { vuetify } from './plugins/vuetify'
 
 const app = createApp(App)
-.provide(DefaultApolloClient, apolloClient )
+app.provide(DefaultApolloClient, apolloClient )
 registerLayouts(app);
 app.use(createPinia())
 app.use(router)

@@ -24,7 +24,7 @@
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <v-spacer></v-spacer>
             <!-- Add Modal -->
-            <v-dialog v-model="dialog" max-width="500px">
+            <v-dialog v-model="dialog" max-width="800px">
               <template v-slot:activator="{ props }">
                 <v-btn
                   prepend-icon="mdi-plus"
@@ -53,7 +53,7 @@
                 <v-card-text class="bg-grey-lighten-3">
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="4" md="4">
                         <v-text-field
                           v-model="editedItem.name"
                           label="Nombre"
@@ -65,30 +65,79 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="4" md="4">
                         <v-text-field
-                          v-model="editedItem.email"
-                          label="Correo electronico"
-                          :rules="emailRules"
+                          v-model="editedItem.phone"
+                          label="Teléfono"
+                          :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
-                          type="email"
+                          type="number"
+                          min="0"
                           clearable
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-select
-                          v-model="editedItem.role"
-                          label="Rol"
+                      <v-col cols="12" sm="4" md="4">
+                        <v-text-field
+                          v-model="editedItem.bussiness_name"
+                          label="Nombre Comercial"
                           :rules="requiredValue"
-                          :items="['Administrador', 'Centro Talachero', 'Usuario']"
                           variant="underlined"
                           density="comfortable"
                           type="text"
                           clearable
                           required
-                        ></v-select>
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="4" md="4">
+                        <v-text-field
+                          v-model="editedItem.address"
+                          label="Dirección"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="4" md="4">
+                        <v-text-field
+                          v-model="editedItem.departament"
+                          label="Estado"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="4" md="4">
+                        <v-text-field
+                          v-model="editedItem.city"
+                          label="Ciudad"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
+                          v-model="editedItem.postal_code"
+                          label="Codigo Postal"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="number"
+                          min="0"
+                          clearable
+                          required
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-select
@@ -116,10 +165,10 @@
             </v-dialog>
             <!-- Add Modal -->
             <!-- Delete Modal -->
-            <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-dialog v-model="dialogDelete" max-width="600px">
               <v-card class="rounded-lg">
                 <v-card-text class="text-h6 text-center"
-                  >¿Estás seguro de que quieres eliminar este artículo?
+                  >¿Estás seguro de que quieres eliminar esta empresa?
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer />
@@ -143,9 +192,9 @@
           </v-icon>
         </template>
         <template v-slot:no-data>
-          <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
+          <p class="pa-5">¡No hay registros que coincidan con su busqueda!</p>
         </template>
-        <template v-slot:no-results> No hay datos!</template>
+        <template v-slot:no-results>¡No hay datos!</template>
       </v-data-table>
     </v-row>
   </div>
@@ -154,30 +203,38 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
 // Interface
-import type { UserItem } from '@/interface'
-interface User {
+import type { CompanyItem } from '@/interface'
+interface Company {
   fields: Record<string, string>
-  items: UserItem[]
+  items: CompanyItem[]
 }
 // Props
-const props = defineProps<User>()
+const props = defineProps<Company>()
 // Const
-const dialog = ref<Boolean>(false)
-const dialogDelete = ref<Boolean>(false)
-const search = ref<String>('')
-const perPage = ref<Number>(5)
-const data = ref<UserItem[]>([])
-const editedIndex = ref(-1)
-const editedItem = ref<UserItem>({
+const dialog = ref<boolean>(false)
+const dialogDelete = ref<boolean>(false)
+const search = ref<string>('')
+const perPage = ref<number>(5)
+const data = ref<CompanyItem[]>([])
+const editedIndex = ref<number>(-1)
+const editedItem = ref<CompanyItem>({
   name: '',
-  email: '',
-  role: '',
+  phone: 0,
+  bussiness_name: '',
+  address: '',
+  departament: '',
+  city: '',
+  postal_code: 0,
   state: ''
 })
-const defaultItem = ref<UserItem>({
+const defaultItem = ref<CompanyItem>({
   name: '',
-  email: '',
-  role: '',
+  phone: 0,
+  bussiness_name: '',
+  address: '',
+  departament: '',
+  city: '',
+  postal_code: 0,
   state: ''
 })
 // Validations
@@ -196,20 +253,20 @@ onMounted(() => {
 
 // Methods / Actions
 const formTitle = computed(() => {
-  return editedIndex.value === -1 ? 'Agregar Usuario' : 'Editar Usuario'
+  return editedIndex.value === -1 ? 'Agregar Empresa' : 'Editar Empresa'
 })
 
 const initialize = () => {
   data.value = props.items
 }
 
-const editItem = (item: UserItem) => {
+const editItem = (item: CompanyItem) => {
   editedIndex.value = data.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialog.value = true
 }
 
-const deleteItem = (item: UserItem) => {
+const deleteItem = (item: CompanyItem) => {
   editedIndex.value = data.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialogDelete.value = true

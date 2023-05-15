@@ -17,7 +17,7 @@
     <!-- Data Table -->
     <v-col cols="12">
       <v-data-table
-        :headers="props.headers"
+        :fields="props.fields"
         :items="props.items"
         :search="search"
         :items-per-page="perPage"
@@ -53,11 +53,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 // Const
-const search = ref<String>('')
-const perPage = ref<Number>(5)
+const search = ref<string>('')
+const perPage = ref<number>(5)
 
 const props = defineProps({
-  headers: Object,
+  fields: Object,
   items: Object
 })
 </script>

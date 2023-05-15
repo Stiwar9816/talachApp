@@ -53,7 +53,7 @@
                 <v-card-text class="bg-grey-lighten-3">
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="5" md="5">
                         <v-text-field
                           v-model="editedItem.name"
                           label="Nombre"
@@ -65,10 +65,10 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="3" md="3">
                         <v-text-field
-                          v-model="editedItem.tireS"
-                          label="11 R 22.5"
+                          v-model="editedItem.stock"
+                          label="Stock"
                           :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
@@ -78,29 +78,29 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="4" md="4">
                         <v-text-field
-                          v-model="editedItem.tireM"
-                          label="11 R 24.5"
+                          v-model="editedItem.responsible"
+                          label="Responsable"
                           :rules="requiredValue"
                           variant="underlined"
                           density="comfortable"
-                          type="number"
-                          min="0"
-                          clearable
+                          type="text"
+                          readonly
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="editedItem.tireN"
-                          label="Llanta Nueva"
+                      <v-col cols="12">
+                        <v-textarea
+                          v-model="editedItem.description"
+                          label="Descripción"
                           :rules="requiredValue"
+                          rows="2"
+                          auto-grow
+                          row-height="15"
                           variant="underlined"
                           density="comfortable"
-                          type="number"
-                          min="0"
                           clearable
-                        ></v-text-field>
+                        ></v-textarea>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -155,30 +155,29 @@ import { ref, computed, onMounted } from 'vue'
 // Interface
 import type { InventoryItem } from '@/interface'
 interface Inventory {
-  fields: Record<string, unknown>
+  fields: Record<string, string>
   items: InventoryItem[]
 }
-
 // Props
 const props = defineProps<Inventory>()
 // Const
-const dialog = ref(false)
-const dialogDelete = ref(false)
-const search = ref('')
-const perPage = ref(5)
+const dialog = ref<boolean>(false)
+const dialogDelete = ref<boolean>(false)
+const search = ref<string>('')
+const perPage = ref<number>(5)
 const data = ref<InventoryItem[]>([])
-const editedIndex = ref(-1)
+const editedIndex = ref<number>(-1)
 const editedItem = ref<InventoryItem>({
   name: '',
-  tireS: 0,
-  tireM: 0,
-  tireN: 0
+  stock: 0,
+  description: '',
+  responsible: ''
 })
 const defaultItem = ref<InventoryItem>({
   name: '',
-  tireS: 0,
-  tireM: 0,
-  tireN: 0
+  stock: 0,
+  description: '',
+  responsible: ''
 })
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])

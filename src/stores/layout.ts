@@ -4,9 +4,9 @@ import type { Routes } from '@/interface'
 import { ref } from 'vue'
 
 export const useLayoutStore = defineStore('layout', () => {
-  const nameProfile = localStorage.getItem('user')
+  const nameProfile = ref<String | null>(localStorage.getItem('user'))
   const imageProfile: string = 'mdi-account-circle'
-  const drawer: boolean = true
+  const drawer: boolean = false
   const rail: boolean = false
   const prices: Array<Routes> = [
     {
@@ -30,6 +30,11 @@ export const useLayoutStore = defineStore('layout', () => {
       name: 'Inicio',
       icon: 'mdi-home-account',
       route: '/home'
+    },
+    {
+      name: 'Empresas',
+      icon: 'mdi-domain',
+      route: '/companies'
     },
     {
       name: 'Inventario',

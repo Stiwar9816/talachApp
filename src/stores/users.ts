@@ -14,9 +14,9 @@ export const useUserStore = defineStore('users', () => {
       sortable: false,
       key: 'name'
     },
-    { title: 'Rol', sortable: false, key: 'role' },
+    { title: 'Teléfono', sortable: false, key: 'phone' },
     { title: 'Correo electronico', sortable: false, key: 'email' },
-    { title: 'Último acceso', sortable: false, key: 'access' },
+    { title: 'Rol', sortable: false, key: 'role' },
     { title: 'Estado', key: 'state' },
     { title: 'Acciones', key: 'actions', sortable: false }
   ]
@@ -25,49 +25,49 @@ export const useUserStore = defineStore('users', () => {
     {
       id: 1,
       name: 'Frozen Yogurt',
+      phone: 3102786547,
       role: 'Administrador',
       email: 'talachero@gmail.com',
-      access: '13-04-2023',
       state: 'Activo'
     },
     {
       id: 1,
       name: 'Frozen Yogurt',
+      phone: 3102786547,
       role: 'Administrador',
       email: 'talachero@gmail.com',
-      access: '13-04-2023',
       state: 'Inactivo'
     },
     {
       id: 1,
       name: 'Frozen Yogurt',
+      phone: 3102786547,
       role: 'Administrador',
       email: 'talachero@gmail.com',
-      access: '13-04-2023',
       state: 'Activo'
     },
     {
       id: 1,
       name: 'Frozen Yogurt',
+      phone: 3102786547,
       role: 'Administrador',
       email: 'talachero@gmail.com',
-      access: '13-04-2023',
       state: 'Activo'
     },
     {
       id: 1,
       name: 'Frozen Yogurt',
+      phone: 3102786547,
       role: 'Administrador',
       email: 'talachero@gmail.com',
-      access: '13-04-2023',
       state: 'Activo'
     },
     {
       id: 1,
       name: 'Frozen Yogurt',
+      phone: 3102786547,
       role: 'Administrador',
       email: 'talachero@gmail.com',
-      access: '13-04-2023',
       state: 'Activo'
     }
   ]

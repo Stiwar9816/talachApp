@@ -10,6 +10,7 @@ import ProductView from '@/views/ProductView.vue'
 import ServiceView from '@/views/ServiceView.vue'
 import CostsView from '@/views/CostsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import CompanyView from '@/views/CompanyView.vue'
 import { requiredAuth, useGuard } from '@/middleware/auth'
 
 
@@ -31,9 +32,10 @@ const router = createRouter({
       component: HomeView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
-      
+
     },
     {
       path: '/profile',
@@ -41,7 +43,18 @@ const router = createRouter({
       component: ProfileView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
+      beforeEnter: requiredAuth
+    },
+    {
+      path: '/companies',
+      name: 'companies',
+      component: CompanyView,
+      meta: {
+        layout: 'Dashboard',
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -50,7 +63,8 @@ const router = createRouter({
       component: InventoryView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -59,7 +73,8 @@ const router = createRouter({
       component: OrdersView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -68,7 +83,8 @@ const router = createRouter({
       component: PaymentView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -77,7 +93,8 @@ const router = createRouter({
       component: RatingsView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -86,7 +103,8 @@ const router = createRouter({
       component: UsersView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -95,7 +113,8 @@ const router = createRouter({
       component: ProductView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -104,7 +123,8 @@ const router = createRouter({
       component: ServiceView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     },
     {
@@ -113,7 +133,8 @@ const router = createRouter({
       component: CostsView,
       meta: {
         layout: 'Dashboard',
-      requireAuth:true},
+        requireAuth: true
+      },
       beforeEnter: requiredAuth
     }
   ]

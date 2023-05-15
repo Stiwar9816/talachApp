@@ -131,16 +131,17 @@ import { ref, computed, onMounted } from 'vue'
 // Interface
 import type { PriceItem } from '@/interface'
 interface Price {
-  fields: Record<string, unknown>
+  fields: Record<string, string>
   items: PriceItem[]
 }
+
 // Props
 const props = defineProps<Price>()
 // Const
-const dialog = ref(false)
-const dialogDelete = ref(false)
-const search = ref('')
-const perPage = ref(5)
+const dialog = ref<Boolean>(false)
+const dialogDelete = ref<Boolean>(false)
+const search = ref<String>('')
+const perPage = ref<Number>(5)
 const data = ref<PriceItem[]>([])
 const editedIndex = ref(-1)
 const editedItem = ref<PriceItem>({

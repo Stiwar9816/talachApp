@@ -9,73 +9,73 @@ export const useInventoryStore = defineStore('inventory', () => {
       sortable: false,
       key: 'name'
     },
-    { title: '11 R 22.5', align: 'center', key: 'tireS' },
-    { title: '11 R 24.5', align: 'center', key: 'tireM' },
-    { title: 'Llanta Nueva', align: 'center', key: 'tireN' },
+    { title: 'Stock', key: 'stock' },
+    { title: 'Descripción', key: 'description' },
+    { title: 'Responsable', key: 'responsible' },
     { title: 'Acciones', key: 'actions', sortable: false }
   ]
 
   const items: Array<Item> = [
     {
-      name: 'Frozen Yogurt',
-      tireS: 159,
-      tireM: 6.0,
-      tireN: 24
+      name: 'Llanta 11.22.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Ice cream sandwich',
-      tireS: 237,
-      tireM: 9.0,
-      tireN: 37
+      name: 'Llanta 11.24.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Eclair',
-      tireS: 262,
-      tireM: 16.0,
-      tireN: 23
+      name: 'Llanta 11.21.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Cupcake',
-      tireS: 305,
-      tireM: 3.7,
-      tireN: 67
+      name: 'Llanta 11.20.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Gingerbread',
-      tireS: 356,
-      tireM: 16.0,
-      tireN: 49
+      name: 'Llanta 11.22.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Jelly bean',
-      tireS: 375,
-      tireM: 0.0,
-      tireN: 94
+      name: 'Llanta 11.22.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Lollipop',
-      tireS: 392,
-      tireM: 0.2,
-      tireN: 98
+      name: 'Llanta 11.22.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Honeycomb',
-      tireS: 408,
-      tireM: 3.2,
-      tireN: 87
+      name: 'Llanta 11.22.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'Donut',
-      tireS: 452,
-      tireM: 25.0,
-      tireN: 51
+      name: 'Llanta 11.22.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
     },
     {
-      name: 'KitKat',
-      tireS: 518,
-      tireM: 26.0,
-      tireN: 65
-    }
+      name: 'Llanta 11.22.5 R',
+      stock: 159,
+      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
+      responsible: 'Jhon doe'
+    },
   ]
 
   return { fields, items }
