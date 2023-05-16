@@ -28,10 +28,16 @@
         />
         <!-- Card Inventory -->
       </v-col>
+      <!-- Map -->
+      <v-col cols="12">
+        <Maps />
+      </v-col>
+      <!-- Map -->
     </v-row>
   </div>
 </template>
 
 <script setup lang="ts">
 import CardHome from '@/components/cards/CardHome.vue'
+import Maps from '@/components/maps/Maps.vue'
 </script>
