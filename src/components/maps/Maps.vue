@@ -2,7 +2,7 @@
   <div>
     <GoogleMap
       :api-key="storeMaps.key"
-      style="width: 100%; height: 500px"
+      style="width: 100%; height: 400px"
       :center="storeMaps.center"
       :zoom="storeMaps.zoom"
     >
