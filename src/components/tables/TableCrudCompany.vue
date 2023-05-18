@@ -55,7 +55,7 @@
                     <v-row>
                       <v-col cols="12" sm="4" md="4">
                         <v-text-field
-                          v-model="editedItem.name"
+                          v-model="editedItem.name_company"
                           label="Nombre"
                           :rules="requiredValue"
                           variant="underlined"
@@ -104,7 +104,7 @@
                       </v-col>
                       <v-col cols="12" sm="4" md="4">
                         <v-text-field
-                          v-model="editedItem.departament"
+                          v-model="editedItem.department"
                           label="Estado"
                           :rules="requiredValue"
                           variant="underlined"
@@ -141,15 +141,14 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-select
-                          v-model="editedItem.state"
+                          v-model="editedItem.isActive"
                           label="Estado"
                           :rules="requiredValue"
-                          :items="['Activo', 'Inactivo']"
+                          :items="[true, false]"
                           variant="underlined"
                           density="comfortable"
                           type="text"
                           clearable
-                          required
                         ></v-select>
                       </v-col>
                     </v-row>
@@ -201,9 +200,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 // Interface
 import type { CompanyItem } from '@/interface'
+import { useCompanyStore } from '@/stores/company'
+import { parseValue } from 'graphql'
 interface Company {
   fields: Record<string, string>
   items: CompanyItem[]
@@ -217,26 +218,25 @@ const search = ref<string>('')
 const perPage = ref<number>(5)
 const data = ref<CompanyItem[]>([])
 const editedIndex = ref<number>(-1)
-const editedItem = ref<CompanyItem>({
-  name: '',
+const editedItem = ref({
+  name_company: '',
   phone: 0,
   bussiness_name: '',
   address: '',
-  departament: '',
+  department: '',
   city: '',
-  postal_code: 0,
-  state: ''
+  postal_code: 0
 })
 const defaultItem = ref<CompanyItem>({
-  name: '',
+  name_company: '',
   phone: 0,
   bussiness_name: '',
   address: '',
-  departament: '',
+  department: '',
   city: '',
-  postal_code: 0,
-  state: ''
+  postal_code: 0
 })
+
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 const emailRules = ref([
@@ -247,6 +247,17 @@ const emailRules = ref([
     ) || 'Correo electronico no es valido, Verifiquelo nuevamente'
 ])
 
+const company = useCompanyStore()
+
+const initialize = async () => {
+  try {
+    const result = await company.allCompanies()
+    data.value = result
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 onMounted(() => {
   initialize()
 })
@@ -255,10 +266,6 @@ onMounted(() => {
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? 'Agregar Empresa' : 'Editar Empresa'
 })
-
-const initialize = () => {
-  data.value = props.items
-}
 
 const editItem = (item: CompanyItem) => {
   editedIndex.value = data.value.indexOf(item)
@@ -289,12 +296,19 @@ const closeDelete = () => {
   editedIndex.value = -1
 }
 
-const save = () => {
-  if (editedIndex.value > -1) {
-    Object.assign(data.value[editedIndex.value], editedItem.value)
-  } else {
-    data.value.push(editedItem.value)
+const save = async () => {
+  try {
+    const { phone, postal_code, ...create } = editedItem.value
+    console.log(phone, postal_code)
+    console.log(create, phone, postal_code)
+    await company.createCompany({
+      ...create,
+      phone,
+      postal_code
+    })
+    close()
+  } catch (error) {
+    console.error(error)
   }
-  close()
 }
 </script>

@@ -1,87 +1,58 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, Item } from '@/interface'
+import type { CompanyItem, Field } from '@/interface'
+import apolloClient from '@/plugins/apollo'
+import { ALL_COMPANIES, CREATE_COMPANY } from '@/gql/company'
 
-export const useCompanyStore = defineStore('company', () => {
-  const fields: Array<Field> = [
-    {
-      title: 'ID',
-      sortable: false,
-      key: 'id'
-    },
-    {
-      title: 'Nombre',
-      sortable: false,
-      key: 'name'
-    },
-    { title: 'Teléfono', sortable: false, key: 'phone' },
-    { title: 'Nombre Comercial', sortable: false, key: 'bussiness_name' },
-    { title: 'Dirección', sortable: false, key: 'address' },
-    { title: 'Estado', sortable: false, key: 'departament' },
-    { title: 'Ciudad', sortable: false, key: 'city' },
-    { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
-    { title: 'Activo', key: 'state' },
-    { title: 'Acciones', key: 'actions', sortable: false }
-  ]
+interface Company {
+  fields: Field[]
+  items: []
+}
 
-  const items: Array<Item> = [
-    {
-      id: 1,
-      name: 'Frozen Yogurt',
-      phone: 312005473,
-      bussiness_name: 'Talachero test',
-      address: 'Puebla',
-      departament: 'CDMX',
-      city: 'CDMX',
-      postal_code: 270002,
-      state: 'Activo'
+export const useCompanyStore = defineStore({
+  id: 'company',
+  state: (): Company => ({
+    fields: [
+      {
+        title: 'ID',
+        sortable: false,
+        key: 'id'
+      },
+      {
+        title: 'Nombre',
+        sortable: false,
+        key: 'name_company'
+      },
+      { title: 'Teléfono', sortable: false, key: 'phone' },
+      { title: 'Nombre Comercial', sortable: false, key: 'bussiness_name' },
+      { title: 'Dirección', sortable: false, key: 'address' },
+      { title: 'Estado', sortable: false, key: 'department' },
+      { title: 'Ciudad', sortable: false, key: 'city' },
+      { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
+      { title: 'Activo', key: 'isActive' },
+      { title: 'Acciones', key: 'actions', sortable: false }
+    ],
+    items: []
+  }),
+  actions: {
+    async allCompanies() {
+      const { data } = await apolloClient.query({
+        query: ALL_COMPANIES
+      })
+      this.items = data.companies
+      return this.items
     },
-    {
-      id: 2,
-      name: 'Frozen Yogurt 9',
-      phone: 312005473,
-      bussiness_name: 'Talachero test',
-      address: 'Puebla',
-      departament: 'CDMX',
-      city: 'CDMX',
-      postal_code: 270002,
-      state: 'Activo'
-    },
-    {
-      id: 3,
-      name: 'Frozen Yogurt 1',
-      phone: 312005473,
-      bussiness_name: 'Talachero test',
-      address: 'Puebla',
-      departament: 'CDMX',
-      city: 'CDMX',
-      postal_code: 270002,
-      state: 'Activo'
-    },
-    {
-      id: 4,
-      name: 'Frozen Yogurt 6',
-      phone: 312005473,
-      bussiness_name: 'Talachero test',
-      address: 'Puebla',
-      departament: 'CDMX',
-      city: 'CDMX',
-      postal_code: 270002,
-      state: 'Activo'
-    },
-    {
-      id: 5,
-      name: 'Frozen Yogurt 3',
-      phone: 312005473,
-      bussiness_name: 'Talachero test',
-      address: 'Puebla',
-      departament: 'CDMX',
-      city: 'CDMX',
-      postal_code: 270002,
-      state: 'Activo'
-    },
-
-  ]
-
-  return { fields, items }
+    async createCompany(formInput: CompanyItem){
+      const {data, errors} = await apolloClient.mutate({
+        mutation: CREATE_COMPANY,
+        variables: {
+          createCompanyInput: formInput
+        }
+      })
+      console.log(errors);
+      console.log(data)
+      // this.items.push()
+      return this.items
+    }
+  }
 })

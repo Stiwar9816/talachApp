@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 
 export const ALL_COMPANIES = gql`
-query {
+query Companies {
   companies {
     id
     name_company
@@ -32,7 +32,7 @@ query ($companyId: Int!) {
 }
 `
 export const CREATE_COMPANY = gql`
-mutation ($createCompanyInput: CreateCompanyInput!) {
+mutation CreateCompany($createCompanyInput: CreateCompanyInput!) {
   createCompany(createCompanyInput: $createCompanyInput) {
     id
     name_company
@@ -42,7 +42,6 @@ mutation ($createCompanyInput: CreateCompanyInput!) {
     department
     city
     postal_code
-    isActive
   }
 }
 `

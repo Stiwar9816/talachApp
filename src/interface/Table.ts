@@ -50,12 +50,13 @@ export interface InventoryItem {
 }
 
 export interface CompanyItem {
-    name: string
+    // id?: string | number
+    name_company: string
     phone: number
     bussiness_name: string
     address: string
-    departament: string
+    department: string
     city: string
     postal_code: number
-    state: string
+    // isActive:  boolean | string
 }
