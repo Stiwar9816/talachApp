@@ -40,18 +40,18 @@ export const useCompanyStore = defineStore({
         query: ALL_COMPANIES
       })
       this.items = data.companies
+      console.log(this.items)
       return this.items
     },
-    async createCompany(formInput: CompanyItem){
-      const {data, errors} = await apolloClient.mutate({
+    async createCompany(formInput: CompanyItem) {
+      const { data, errors } = await apolloClient.mutate({
         mutation: CREATE_COMPANY,
         variables: {
           createCompanyInput: formInput
         }
       })
       console.log(errors);
-      console.log(data)
-      // this.items.push()
+      console.log('data company store:', data)
       return this.items
     }
   }

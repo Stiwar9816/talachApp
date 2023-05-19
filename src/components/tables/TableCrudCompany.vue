@@ -144,7 +144,7 @@
                           v-model="editedItem.isActive"
                           label="Estado"
                           :rules="requiredValue"
-                          :items="[true, false]"
+                          :items="['Activo', 'Inactivo']"
                           variant="underlined"
                           density="comfortable"
                           type="text"
@@ -204,7 +204,6 @@ import { ref, computed, onMounted, reactive } from 'vue'
 // Interface
 import type { CompanyItem } from '@/interface'
 import { useCompanyStore } from '@/stores/company'
-import { parseValue } from 'graphql'
 interface Company {
   fields: Record<string, string>
   items: CompanyItem[]
@@ -218,14 +217,15 @@ const search = ref<string>('')
 const perPage = ref<number>(5)
 const data = ref<CompanyItem[]>([])
 const editedIndex = ref<number>(-1)
-const editedItem = ref({
+const editedItem = ref<CompanyItem>({
   name_company: '',
   phone: 0,
   bussiness_name: '',
   address: '',
   department: '',
   city: '',
-  postal_code: 0
+  postal_code: 0,
+  isActive: ''
 })
 const defaultItem = ref<CompanyItem>({
   name_company: '',
@@ -234,7 +234,8 @@ const defaultItem = ref<CompanyItem>({
   address: '',
   department: '',
   city: '',
-  postal_code: 0
+  postal_code: 0,
+  isActive: ''
 })
 
 // Validations
@@ -298,9 +299,10 @@ const closeDelete = () => {
 
 const save = async () => {
   try {
-    const { phone, postal_code, ...create } = editedItem.value
-    console.log(phone, postal_code)
-    console.log(create, phone, postal_code)
+    let { phone, postal_code, ...create } = editedItem.value
+    phone = Number(phone)
+    postal_code = Number(postal_code)
+    console.log('Number:', phone, postal_code)
     await company.createCompany({
       ...create,
       phone,
