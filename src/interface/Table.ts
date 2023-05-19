@@ -31,10 +31,11 @@ export interface Item {
 }
 
 export interface UserItem {
-    name: string
+    id?: string | number
+    fullName: string
     email: string
-    role: string
-    state: string
+    roles: string
+    isActive: string
 }
 
 export interface PriceItem {
@@ -43,6 +44,7 @@ export interface PriceItem {
 }
 
 export interface InventoryItem {
+    id?: string | number
     name: string
     stock: number
     description: string
@@ -50,7 +52,7 @@ export interface InventoryItem {
 }
 
 export interface CompanyItem {
-    // id?: string | number
+    id?: string | number
     name_company: string
     phone: number
     bussiness_name: string

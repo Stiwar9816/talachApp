@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 // Interface
 import type { CompanyItem, Field } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_COMPANIES, CREATE_COMPANY } from '@/gql/company'
+import { ALL_COMPANIES, CREATE_COMPANY, UPDATE_COMPANY } from '@/gql/company'
 
 interface Company {
   fields: Field[]
@@ -49,9 +49,18 @@ export const useCompanyStore = defineStore({
           createCompanyInput: formInput
         }
       })
-      console.log('data company store:', data)
       this.items = [...this.items, data.createCompany]
       return this.items
+    },
+    async updateCompany(id: number, payload: CompanyItem){
+      const {data, errors} = await apolloClient.mutate({
+        mutation: UPDATE_COMPANY,
+        variables:{
+          updateCompanyInput: { id, ...payload }
+        }
+      })
+      this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
+     return this.items;
     }
   }
 })

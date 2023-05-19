@@ -186,9 +186,9 @@
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
           </v-icon>
-          <v-icon size="large" class="my-1" color="red-darken-1" @click="deleteItem(item.raw)">
+          <!-- <v-icon size="large" class="my-1" color="red-darken-1" @click="deleteItem(item.raw)">
             mdi-delete
-          </v-icon>
+          </v-icon> -->
         </template>
         <template v-slot:no-data>
           <p class="pa-5">¡No hay registros que coincidan con su busqueda!</p>
@@ -302,13 +302,22 @@ const save = async () => {
     let { phone, postal_code, ...create } = editedItem.value
     phone = Number(phone)
     postal_code = Number(postal_code)
-    console.log('Number:', phone, postal_code)
-    await company.createCompany({
-      ...create,
-      phone,
-      postal_code
-    })
-    close()
+    if (editedIndex.value === -1) {
+      // Add new company
+      await company.createCompany({
+        ...create,
+        phone,
+        postal_code
+      })
+      close()
+    }else{
+      // Update company
+      const id = editedItem.value.id
+      if(id){
+        await company.updateCompany(+id,{...create,phone,postal_code})
+        close()
+      }
+    }
   } catch (error) {
     console.error(error)
   }

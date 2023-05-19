@@ -13,6 +13,18 @@ query {
 }
 `
 
+export const CREATE_USER = gql `
+mutation Signup($signupInput: SignupInput!) {
+  signup(signupInput: $signupInput) {
+    user {
+      id
+      fullName
+      email
+    }
+  }
+}
+`
+
 export const USER_BY_ID = gql`
 query ($userId: Int!) {
   user(id: $userId) {

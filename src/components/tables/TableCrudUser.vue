@@ -55,7 +55,7 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
-                          v-model="editedItem.name"
+                          v-model="editedItem.fullName"
                           label="Nombre"
                           :rules="requiredValue"
                           variant="underlined"
@@ -79,7 +79,7 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-select
-                          v-model="editedItem.role"
+                          v-model="editedItem.roles"
                           label="Rol"
                           :rules="requiredValue"
                           :items="['Administrador', 'Centro Talachero', 'Usuario']"
@@ -92,7 +92,7 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-select
-                          v-model="editedItem.state"
+                          v-model="editedItem.isActive"
                           label="Estado"
                           :rules="requiredValue"
                           :items="['Activo', 'Inactivo']"
@@ -100,7 +100,6 @@
                           density="comfortable"
                           type="text"
                           clearable
-                          required
                         ></v-select>
                       </v-col>
                     </v-row>
@@ -139,7 +138,7 @@
             mdi-pencil
           </v-icon>
           <v-icon size="large" class="my-1" color="red-darken-1" @click="deleteItem(item.raw)">
-            mdi-delete
+            mdi-cancel
           </v-icon>
         </template>
         <template v-slot:no-data>
@@ -155,6 +154,7 @@
 import { ref, computed, onMounted } from 'vue'
 // Interface
 import type { UserItem } from '@/interface'
+import { useUserStore } from '@/stores/users'
 interface User {
   fields: Record<string, string>
   items: UserItem[]
@@ -169,16 +169,16 @@ const perPage = ref<Number>(5)
 const data = ref<UserItem[]>([])
 const editedIndex = ref(-1)
 const editedItem = ref<UserItem>({
-  name: '',
+  fullName: '',
   email: '',
-  role: '',
-  state: ''
+  roles: '',
+  isActive: ''
 })
 const defaultItem = ref<UserItem>({
-  name: '',
+  fullName: '',
   email: '',
-  role: '',
-  state: ''
+  roles: '',
+  isActive: ''
 })
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
@@ -190,6 +190,17 @@ const emailRules = ref([
     ) || 'Correo electronico no es valido, Verifiquelo nuevamente'
 ])
 
+const user = useUserStore()
+
+const initialize = async() => {
+  try {
+    const result = await user.allUsers()
+    data.value = result
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 onMounted(() => {
   initialize()
 })
@@ -198,10 +209,6 @@ onMounted(() => {
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? 'Agregar Usuario' : 'Editar Usuario'
 })
-
-const initialize = () => {
-  data.value = props.items
-}
 
 const editItem = (item: UserItem) => {
   editedIndex.value = data.value.indexOf(item)
