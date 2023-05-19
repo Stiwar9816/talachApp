@@ -42,6 +42,7 @@ mutation CreateCompany($createCompanyInput: CreateCompanyInput!) {
     department
     city
     postal_code
+    isActive
   }
 }
 `
