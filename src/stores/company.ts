@@ -6,7 +6,7 @@ import { ALL_COMPANIES, CREATE_COMPANY } from '@/gql/company'
 
 interface Company {
   fields: Field[]
-  items: []
+  items: CompanyItem[]
 }
 
 export const useCompanyStore = defineStore({
@@ -32,7 +32,7 @@ export const useCompanyStore = defineStore({
       { title: 'Activo', key: 'isActive' },
       { title: 'Acciones', key: 'actions', sortable: false }
     ],
-    items: []
+    items: [] as CompanyItem[]
   }),
   actions: {
     async allCompanies() {
@@ -40,18 +40,17 @@ export const useCompanyStore = defineStore({
         query: ALL_COMPANIES
       })
       this.items = data.companies
-      console.log(this.items)
       return this.items
     },
     async createCompany(formInput: CompanyItem) {
-      const { data, errors } = await apolloClient.mutate({
+      const { data } = await apolloClient.mutate({
         mutation: CREATE_COMPANY,
         variables: {
           createCompanyInput: formInput
         }
       })
-      console.log(errors);
       console.log('data company store:', data)
+      this.items = [...this.items, data.createCompany]
       return this.items
     }
   }
