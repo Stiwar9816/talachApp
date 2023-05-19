@@ -246,7 +246,7 @@ const emailRules = ref([
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
       v
     ) || 'Correo electronico no es valido, Verifiquelo nuevamente'
-])
+]) 
 
 const company = useCompanyStore()
 
