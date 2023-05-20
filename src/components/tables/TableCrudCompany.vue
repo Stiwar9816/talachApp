@@ -286,8 +286,8 @@ const close = () => {
 const save = async () => {
   try {
     let { id, phone, postal_code, ...create } = editedItem.value
-    phone = Number(phone)
-    postal_code = Number(postal_code)
+    phone = +phone
+    postal_code = +postal_code
     if (!id) {
       // Add new company
       await company.createCompany({

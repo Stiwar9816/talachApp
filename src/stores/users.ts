@@ -34,27 +34,25 @@ export const useUserStore = defineStore({
       this.items = data.users
       return this.items
     },
-    async createUser(payload: UserItem){
-      const {data} = await apolloClient.mutate({
+    async createUser(payload: UserItem) {
+      const { data } = await apolloClient.mutate({
         mutation: CREATE_USER,
-        variables:{
+        variables: {
           signupInput: payload
         }
       })
-      console.log(data)
       this.items = [...this.items, data.signup.user]
       return this.items;
     },
-    async updateUser(id: number, payload: UserItem){
-      const {data} = await apolloClient.mutate({
+    async updateUser(id: number, payload: UserItem) {
+      const { data } = await apolloClient.mutate({
         mutation: UPDATE_USER,
-        variables:{
-          updateUserInput: {id, ...payload}
+        variables: {
+          updateUserInput: { id, ...payload }
         }
       })
-      console.log(data)
-    this.items = this.items.map(item => item.id === id ? data.updateUser : item)
-     return this.items;
+      this.items = this.items.map(item => item.id === id ? data.updateUser : item)
+      return this.items;
     }
   }
 })

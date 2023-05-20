@@ -96,7 +96,7 @@
                             v-model="editedItem.roles"
                             label="Rol"
                             :rules="requiredValue"
-                            :items="['ADMIN', 'TALACHERO', 'USUARIO']"
+                            :items="['Administrador', 'Talachero', 'Usuario']"
                             variant="underlined"
                             density="comfortable"
                             type="text"
@@ -230,14 +230,7 @@ const randomPassword = () => {
 
 const save = async () => {
   try {
-    let {
-      id,
-      fullName,
-      email,
-      password = randomPassword(),
-      phone ,
-      ...edit
-    } = editedItem.value
+    let { id, fullName, email, password = randomPassword(), phone, ...edit } = editedItem.value
     if (!id) {
       // Add new user
       phone = +phone
