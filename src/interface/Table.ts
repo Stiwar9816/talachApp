@@ -39,6 +39,7 @@ export interface UserItem {
 }
 
 export interface PriceItem {
+    id?: string | number
     name: string
     price: number
 }
@@ -60,5 +61,5 @@ export interface CompanyItem {
     department: string
     city: string
     postal_code: number
-    isActive: string
+    // isActive: string
 }

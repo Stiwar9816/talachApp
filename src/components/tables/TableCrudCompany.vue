@@ -225,7 +225,7 @@ const editedItem = ref<CompanyItem>({
   department: '',
   city: '',
   postal_code: 0,
-  isActive: ''
+  // isActive: ''
 })
 const defaultItem = ref<CompanyItem>({
   name_company: '',
@@ -235,7 +235,7 @@ const defaultItem = ref<CompanyItem>({
   department: '',
   city: '',
   postal_code: 0,
-  isActive: ''
+  // isActive: ''
 })
 
 // Validations
@@ -269,20 +269,10 @@ const formTitle = computed(() => {
 })
 
 const editItem = (item: CompanyItem) => {
+  console.log(item)
   editedIndex.value = data.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialog.value = true
-}
-
-const deleteItem = (item: CompanyItem) => {
-  editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
-  dialogDelete.value = true
-}
-
-const deleteItemConfirm = () => {
-  data.value.splice(editedIndex.value, 1)
-  closeDelete()
 }
 
 const close = () => {
@@ -291,18 +281,12 @@ const close = () => {
   editedIndex.value = -1
 }
 
-const closeDelete = () => {
-  dialogDelete.value = false
-  editedItem.value = Object.assign({}, defaultItem.value)
-  editedIndex.value = -1
-}
-
 const save = async () => {
   try {
-    let { phone, postal_code, ...create } = editedItem.value
+    let { id, phone, postal_code, ...create } = editedItem.value
     phone = Number(phone)
     postal_code = Number(postal_code)
-    if (editedIndex.value === -1) {
+    if (!id) {
       // Add new company
       await company.createCompany({
         ...create,
@@ -312,11 +296,8 @@ const save = async () => {
       close()
     }else{
       // Update company
-      const id = editedItem.value.id
-      if(id){
         await company.updateCompany(+id,{...create,phone,postal_code})
         close()
-      }
     }
   } catch (error) {
     console.error(error)
