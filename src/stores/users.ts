@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 // Interface
 import type { Field, UserItem,  } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_USERS } from '@/gql/user'
+import { ALL_USERS, CREATE_USER, UPDATE_USER } from '@/gql/user'
 
 export const useUserStore = defineStore({
   id: 'users',
@@ -34,5 +34,27 @@ export const useUserStore = defineStore({
       this.items = data.users
       return this.items
     },
+    async createUser(payload: UserItem){
+      const {data} = await apolloClient.mutate({
+        mutation: CREATE_USER,
+        variables:{
+          signupInput: payload
+        }
+      })
+      console.log(data)
+      this.items = [...this.items, data.signup.user]
+      return this.items;
+    },
+    async updateUser(id: number, payload: UserItem){
+      const {data} = await apolloClient.mutate({
+        mutation: UPDATE_USER,
+        variables:{
+          updateUserInput: {id, ...payload}
+        }
+      })
+      console.log(data)
+    // this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
+     return this.items;
+    }
   }
 })

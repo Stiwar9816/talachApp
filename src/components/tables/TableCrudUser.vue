@@ -114,31 +114,12 @@
               </v-card>
             </v-dialog>
             <!-- Add Modal -->
-            <!-- Delete Modal -->
-            <v-dialog v-model="dialogDelete" max-width="500px">
-              <v-card class="rounded-lg">
-                <v-card-text class="text-h6 text-center"
-                  >¿Estás seguro de que quieres eliminar este artículo?
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer />
-                  <v-btn color="grey-lighten-1" variant="flat" @click="closeDelete">Cancelar</v-btn>
-                  <v-btn color="orange-darken-3" variant="flat" @click="deleteItemConfirm"
-                    >OK</v-btn
-                  >
-                  <v-spacer />
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <!-- Delete Modal -->
+
           </v-toolbar>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
-          </v-icon>
-          <v-icon size="large" class="my-1" color="red-darken-1" @click="deleteItem(item.raw)">
-            mdi-cancel
           </v-icon>
         </template>
         <template v-slot:no-data>
@@ -197,7 +178,7 @@ const initialize = async() => {
     const result = await user.allUsers()
     data.value = result
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -216,35 +197,27 @@ const editItem = (item: UserItem) => {
   dialog.value = true
 }
 
-const deleteItem = (item: UserItem) => {
-  editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
-  dialogDelete.value = true
-}
-
-const deleteItemConfirm = () => {
-  data.value.splice(editedIndex.value, 1)
-  closeDelete()
-}
-
 const close = () => {
   dialog.value = false
   editedItem.value = Object.assign({}, defaultItem.value)
   editedIndex.value = -1
 }
 
-const closeDelete = () => {
-  dialogDelete.value = false
-  editedItem.value = Object.assign({}, defaultItem.value)
-  editedIndex.value = -1
-}
+const save = async() => {
+ try {
+  const {id, fullName, email, password ='Je123456.', phone = 3146955752, ...edit } = editedItem.value
+    if (!id) {
+    // Add new user
+    await user.createUser({fullName, email, password, phone})
+    close()
+    }else{
+      //Update user
+      await user.updateUser(+id,{...edit,fullName, email,password,phone })
+      close()
+    }
 
-const save = () => {
-  if (editedIndex.value > -1) {
-    Object.assign(data.value[editedIndex.value], editedItem.value)
-  } else {
-    data.value.push(editedItem.value)
-  }
-  close()
+ } catch (error) {
+  console.error(error);
+ }
 }
 </script>
