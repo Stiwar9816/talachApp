@@ -53,7 +53,7 @@ export const useUserStore = defineStore({
         }
       })
       console.log(data)
-    // this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
+    this.items = this.items.map(item => item.id === id ? data.updateUser : item)
      return this.items;
     }
   }
