@@ -35,8 +35,9 @@ export interface UserItem {
     fullName: string
     phone: number
     email: string
-    roles: string
-    isActive: string
+    roles?: string
+    isActive?: string
+    password?: string
 }
 
 export interface PriceItem {

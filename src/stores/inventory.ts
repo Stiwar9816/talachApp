@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 // Interface
 import type { Field, InventoryItem } from '@/interface'
+import apolloClient from '@/plugins/apollo'
 
 export const useInventoryStore = defineStore({
   id: 'inventory',
@@ -16,39 +17,12 @@ export const useInventoryStore = defineStore({
       { title: 'Responsable', key: 'responsible' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
-    items: [
-      {
-        name: 'Llanta 11.22.5 R',
-        stock: 159,
-        description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-        responsible: 'Jhon doe'
-      }, {
-        name: 'Llanta 11.22.5 R',
-        stock: 159,
-        description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-        responsible: 'Jhon doe'
-      }, {
-        name: 'Llanta 11.22.5 R',
-        stock: 159,
-        description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-        responsible: 'Jhon doe'
-      }, {
-        name: 'Llanta 11.22.5 R',
-        stock: 159,
-        description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-        responsible: 'Jhon doe'
-      }, {
-        name: 'Llanta 11.22.5 R',
-        stock: 159,
-        description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-        responsible: 'Jhon doe'
-      }, {
-        name: 'Llanta 11.22.5 R',
-        stock: 159,
-        description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-        responsible: 'Jhon doe'
-      },
-    ] as InventoryItem[]
-  })
+    items: [] as InventoryItem[]
+  }),
+  actions: {
+    // async createInventory(payload: InventoryItem){
+    //   const {data}= await apolloClient.mutate()
+    // }
+  }
 
 })

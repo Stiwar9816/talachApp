@@ -158,7 +158,6 @@ interface User {
 const props = defineProps<User>()
 // Const
 const dialog = ref<Boolean>(false)
-const dialogDelete = ref<Boolean>(false)
 const search = ref<String>('')
 const perPage = ref<Number>(5)
 const data = ref<UserItem[]>([])
@@ -194,7 +193,7 @@ const initialize = async () => {
     const result = await user.allUsers()
     data.value = result
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -219,18 +218,37 @@ const close = () => {
   editedIndex.value = -1
 }
 
-const closeDelete = () => {
-  dialogDelete.value = false
-  editedItem.value = Object.assign({}, defaultItem.value)
-  editedIndex.value = -1
+const randomPassword = () => {
+  const letters = '0123456789ABCDEFGHIJKLMNÑOPQRSTUVXYZabcdefghijklmnñopqrtuvwxyz*-/!#$%&_+¡'
+  let password = ''
+
+  for (let i = 0; i < 20; i++) {
+    password += letters[Math.floor(Math.random() * 73)]
+  }
+  return password
 }
 
-const save = () => {
-  if (editedIndex.value > -1) {
-    Object.assign(data.value[editedIndex.value], editedItem.value)
-  } else {
-    data.value.push(editedItem.value)
+const save = async () => {
+  try {
+    const {
+      id,
+      fullName,
+      email,
+      password = randomPassword(),
+      phone = 3146955752,
+      ...edit
+    } = editedItem.value
+    if (!id) {
+      // Add new user
+      await user.createUser({ fullName, email, password, phone })
+      close()
+    } else {
+      //Update user
+      await user.updateUser(+id, { ...edit, fullName, email, password, phone })
+      close()
+    }
+  } catch (error) {
+    console.error(error)
   }
-  close()
 }
 </script>
