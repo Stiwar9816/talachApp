@@ -67,6 +67,19 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
+                          v-model="editedItem.phone"
+                          label="Teléfono"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="number"
+                          min="0"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field
                           v-model="editedItem.email"
                           label="Correo electronico"
                           :rules="emailRules"
@@ -77,31 +90,33 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-select
-                          v-model="editedItem.roles"
-                          label="Rol"
-                          :rules="requiredValue"
-                          :items="['Administrador', 'Centro Talachero', 'Usuario']"
-                          variant="underlined"
-                          density="comfortable"
-                          type="text"
-                          clearable
-                          required
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-select
-                          v-model="editedItem.isActive"
-                          label="Estado"
-                          :rules="requiredValue"
-                          :items="['Activo', 'Inactivo']"
-                          variant="underlined"
-                          density="comfortable"
-                          type="text"
-                          clearable
-                        ></v-select>
-                      </v-col>
+                      <template v-if="editedItem.id">
+                        <v-col cols="12" sm="6" md="6">
+                          <v-select
+                            v-model="editedItem.roles"
+                            label="Rol"
+                            :rules="requiredValue"
+                            :items="['Administrador', 'Centro Talachero', 'Usuario']"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                            required
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-select
+                            v-model="editedItem.isActive"
+                            label="Estado"
+                            :rules="requiredValue"
+                            :items="['Activo', 'Inactivo']"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                          ></v-select>
+                        </v-col>
+                      </template>
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -114,31 +129,11 @@
               </v-card>
             </v-dialog>
             <!-- Add Modal -->
-            <!-- Delete Modal -->
-            <v-dialog v-model="dialogDelete" max-width="500px">
-              <v-card class="rounded-lg">
-                <v-card-text class="text-h6 text-center"
-                  >¿Estás seguro de que quieres eliminar este artículo?
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer />
-                  <v-btn color="grey-lighten-1" variant="flat" @click="closeDelete">Cancelar</v-btn>
-                  <v-btn color="orange-darken-3" variant="flat" @click="deleteItemConfirm"
-                    >OK</v-btn
-                  >
-                  <v-spacer />
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <!-- Delete Modal -->
           </v-toolbar>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
-          </v-icon>
-          <v-icon size="large" class="my-1" color="red-darken-1" @click="deleteItem(item.raw)">
-            mdi-cancel
           </v-icon>
         </template>
         <template v-slot:no-data>
@@ -170,12 +165,14 @@ const data = ref<UserItem[]>([])
 const editedIndex = ref(-1)
 const editedItem = ref<UserItem>({
   fullName: '',
+  phone: 0,
   email: '',
   roles: '',
   isActive: ''
 })
 const defaultItem = ref<UserItem>({
   fullName: '',
+  phone: 0,
   email: '',
   roles: '',
   isActive: ''
@@ -192,7 +189,7 @@ const emailRules = ref([
 
 const user = useUserStore()
 
-const initialize = async() => {
+const initialize = async () => {
   try {
     const result = await user.allUsers()
     data.value = result
@@ -207,24 +204,13 @@ onMounted(() => {
 
 // Methods / Actions
 const formTitle = computed(() => {
-  return editedIndex.value === -1 ? 'Agregar Usuario' : 'Editar Usuario'
+  return !editedItem.value.id ? 'Agregar Usuario' : 'Editar Usuario'
 })
 
 const editItem = (item: UserItem) => {
   editedIndex.value = data.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialog.value = true
-}
-
-const deleteItem = (item: UserItem) => {
-  editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
-  dialogDelete.value = true
-}
-
-const deleteItemConfirm = () => {
-  data.value.splice(editedIndex.value, 1)
-  closeDelete()
 }
 
 const close = () => {

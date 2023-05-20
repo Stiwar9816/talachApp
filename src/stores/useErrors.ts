@@ -1,10 +1,5 @@
 import { defineStore } from 'pinia'
-
-interface ErrorState {
-  message: string | null
-  category?: any
-  fields?: { input: Record<string, string> } | {}
-}
+import type { ErrorState } from '@/interface'
 
 export const useErrorsStore = defineStore({
   id: 'errors',

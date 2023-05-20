@@ -7,6 +7,10 @@ export const LOGIN_MUTATION = gql`
       user {
         id
         fullName
+        phone
+        email
+        roles
+        isActive
       }
     }
   }

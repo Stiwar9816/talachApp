@@ -1,13 +1,8 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { CompanyItem, Field } from '@/interface'
+import type { CompanyItem, Company } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_COMPANIES, CREATE_COMPANY, UPDATE_COMPANY } from '@/gql/company'
-
-interface Company {
-  fields: Field[]
-  items: CompanyItem[]
-}
 
 export const useCompanyStore = defineStore({
   id: 'company',
@@ -23,14 +18,16 @@ export const useCompanyStore = defineStore({
         sortable: false,
         key: 'name_company'
       },
+      { title: 'RFC', sortable: false, key: 'rfc' },
+      { title: 'CFDI', sortable: false, key: 'cfdi' },
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Nombre Comercial', sortable: false, key: 'bussiness_name' },
       { title: 'Dirección', sortable: false, key: 'address' },
       { title: 'Estado', sortable: false, key: 'department' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
-      { title: 'Activo', key: 'isActive' },
-      { title: 'Acciones', key: 'actions', sortable: false }
+      { title: 'Activo', sortable: false, key: 'isActive' },
+      { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ],
     items: [] as CompanyItem[]
   }),
@@ -52,15 +49,15 @@ export const useCompanyStore = defineStore({
       this.items = [...this.items, data.createCompany]
       return this.items
     },
-    async updateCompany(id: number, payload: CompanyItem){
-      const {data, errors} = await apolloClient.mutate({
+    async updateCompany(id: number, payload: CompanyItem) {
+      const { data, errors } = await apolloClient.mutate({
         mutation: UPDATE_COMPANY,
-        variables:{
+        variables: {
           updateCompanyInput: { id, ...payload }
         }
       })
       this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
-     return this.items;
+      return this.items;
     }
   }
 })

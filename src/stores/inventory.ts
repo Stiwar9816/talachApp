@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import type { Field, InventoryItem } from '@/interface'
 
 export const useInventoryStore = defineStore({
-  id:'inventory',
-  state: ()=>({
+  id: 'inventory',
+  state: () => ({
     fields: [
       {
         title: 'Nombre',
@@ -14,35 +14,35 @@ export const useInventoryStore = defineStore({
       { title: 'Stock', key: 'stock' },
       { title: 'Descripción', key: 'description' },
       { title: 'Responsable', key: 'responsible' },
-      { title: 'Acciones', key: 'actions', sortable: false }
-    ] as Field[], 
+      { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
+    ] as Field[],
     items: [
       {
         name: 'Llanta 11.22.5 R',
         stock: 159,
         description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
         responsible: 'Jhon doe'
-      },{
+      }, {
         name: 'Llanta 11.22.5 R',
         stock: 159,
         description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
         responsible: 'Jhon doe'
-      },{
+      }, {
         name: 'Llanta 11.22.5 R',
         stock: 159,
         description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
         responsible: 'Jhon doe'
-      },{
+      }, {
         name: 'Llanta 11.22.5 R',
         stock: 159,
         description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
         responsible: 'Jhon doe'
-      },{
+      }, {
         name: 'Llanta 11.22.5 R',
         stock: 159,
         description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
         responsible: 'Jhon doe'
-      },{
+      }, {
         name: 'Llanta 11.22.5 R',
         stock: 159,
         description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',

@@ -29,8 +29,8 @@ export const useAuthStore = defineStore({
       localStorage.setItem('user', user.fullName)
       this.token = token
       this.user = user.fullName
-
       await apolloClient.resetStore()
+      return user
     },
     logout() {
       localStorage.removeItem('token')

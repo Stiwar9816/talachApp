@@ -4,7 +4,7 @@ import type { Field, Item } from '@/interface'
 
 export const useRatingsStore = defineStore({
   id: 'ratings',
-  state: ()=>({
+  state: () => ({
     fields: [
       {
         title: 'ID',

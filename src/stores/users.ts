@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, UserItem,  } from '@/interface'
+import type { Field, UserItem, } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_USERS } from '@/gql/user'
 
@@ -22,7 +22,7 @@ export const useUserStore = defineStore({
       { title: 'Correo electronico', sortable: false, key: 'email' },
       { title: 'Rol', sortable: false, key: 'roles' },
       { title: 'Estado', key: 'isActive' },
-      { title: 'Acciones', key: 'actions', sortable: false }
+      { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
     items: [] as UserItem[]
   }),

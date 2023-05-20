@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import type { Field, Item } from '@/interface'
 
 export const useOrdersStore = defineStore({
-  id:'orders',
-  state: ()=>({
+  id: 'orders',
+  state: () => ({
     fields: [
       {
         key: 'id',
@@ -17,7 +17,7 @@ export const useOrdersStore = defineStore({
       { key: 'payment', sortable: false, title: 'Método de pago' },
       { key: 'total', sortable: false, title: 'Total' },
       { key: 'state', sortable: true, title: 'Estado' }
-    ],
+    ] as Field[],
     items: [
       {
         id: 1,
@@ -27,7 +27,7 @@ export const useOrdersStore = defineStore({
         payment: 'Conekta',
         total: 1000,
         state: 'Creado'
-      },{
+      }, {
         id: 1,
         user: 'Frozen Yogurt',
         date: '13-04-2023',
@@ -35,7 +35,7 @@ export const useOrdersStore = defineStore({
         payment: 'Conekta',
         total: 1000,
         state: 'Creado'
-      },{
+      }, {
         id: 1,
         user: 'Frozen Yogurt',
         date: '13-04-2023',
@@ -43,7 +43,7 @@ export const useOrdersStore = defineStore({
         payment: 'Conekta',
         total: 1000,
         state: 'Creado'
-      },{
+      }, {
         id: 1,
         user: 'Frozen Yogurt',
         date: '13-04-2023',
@@ -51,7 +51,7 @@ export const useOrdersStore = defineStore({
         payment: 'Conekta',
         total: 1000,
         state: 'Creado'
-      },{
+      }, {
         id: 1,
         user: 'Frozen Yogurt',
         date: '13-04-2023',
@@ -59,7 +59,7 @@ export const useOrdersStore = defineStore({
         payment: 'Conekta',
         total: 1000,
         state: 'Creado'
-      },{
+      }, {
         id: 1,
         user: 'Frozen Yogurt',
         date: '13-04-2023',
@@ -67,7 +67,7 @@ export const useOrdersStore = defineStore({
         payment: 'Conekta',
         total: 1000,
         state: 'Creado'
-      },{
+      }, {
         id: 1,
         user: 'Frozen Yogurt',
         date: '13-04-2023',
@@ -76,6 +76,6 @@ export const useOrdersStore = defineStore({
         total: 1000,
         state: 'Creado'
       },
-    ]
+    ] as Item[]
   })
 })

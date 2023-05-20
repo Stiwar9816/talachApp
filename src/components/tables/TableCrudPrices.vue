@@ -161,7 +161,7 @@ onMounted(() => {
 
 // Methods / Actions
 const formTitle = computed(() => {
-  return editedIndex.value === -1 ? 'Agregar' : 'Editar'
+  return !editedItem.value.id ? 'Agregar' : 'Editar'
 })
 
 const initialize = () => {

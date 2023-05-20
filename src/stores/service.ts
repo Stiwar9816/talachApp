@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import type { Field, Item } from '@/interface'
 
 export const useServiceStore = defineStore({
-  id: 'service', 
-  state: ()=>({
+  id: 'service',
+  state: () => ({
     fields: [
       { title: 'ID', sortable: false, key: 'id' },
       {
@@ -15,7 +15,7 @@ export const useServiceStore = defineStore({
       { title: 'Precio', align: 'center', key: 'price' },
       { title: 'Acciones', sortable: false, key: 'actions' }
     ] as Field[],
-  
+
     items: [
       {
         id: 159,

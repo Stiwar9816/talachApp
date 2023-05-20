@@ -33,6 +33,7 @@ export interface Item {
 export interface UserItem {
     id?: string | number
     fullName: string
+    phone: number
     email: string
     roles: string
     isActive: string
@@ -55,11 +56,18 @@ export interface InventoryItem {
 export interface CompanyItem {
     id?: string | number
     name_company: string
+    rfc: string
+    cfdi: string
     phone: number
     bussiness_name: string
     address: string
     department: string
     city: string
     postal_code: number
-    // isActive: string
+    isActive: string
+}
+
+export interface Company {
+    fields: Field[]
+    items: CompanyItem[]
 }

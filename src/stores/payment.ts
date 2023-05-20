@@ -3,85 +3,85 @@ import { defineStore } from 'pinia'
 import type { Field, Item } from '@/interface'
 
 export const usePaymentStore = defineStore({
-  id:'payment',
-  state: ()=>({
-    fields:[
-     {
-       key: 'id',
-       sortable: false,
-       title: 'ID'
-     },
-     { key: 'user', sortable: false, title: 'Usuario' },
-     { key: 'date', sortable: true, title: 'Fecha de servicio' },
-     { key: 'talachero', sortable: false, title: 'Talachero' },
-     { key: 'payment', sortable: false, title: 'Método de pago' },
-     { key: 'total', sortable: false, title: 'Total' },
-     { key: 'state', sortable: true, title: 'Estado' }
-   ] as Field[],
-    items:[
-     {
-       id: 1,
-       user: 'Frozen Yogurt',
-       date: '13-04-2023',
-       talachero: 'Frozen Yogurt',
-       payment: 'Bancomer',
-       total: 1000,
-       state: 'Pagado'
-     },
-     {
-       id: 1,
-       user: 'Frozen Yogurt',
-       date: '13-04-2023',
-       talachero: 'Frozen Yogurt',
-       payment: 'Bancomer',
-       total: 1000,
-       state: 'Pagado'
-     },
-     {
-       id: 1,
-       user: 'Frozen Yogurt',
-       date: '13-04-2023',
-       talachero: 'Frozen Yogurt',
-       payment: 'Bancomer',
-       total: 1000,
-       state: 'Pagado'
-     },
-     {
-       id: 1,
-       user: 'Frozen Yogurt',
-       date: '13-04-2023',
-       talachero: 'Frozen Yogurt',
-       payment: 'Bancomer',
-       total: 1000,
-       state: 'Pagado'
-     },
-     {
-       id: 1,
-       user: 'Frozen Yogurt',
-       date: '13-04-2023',
-       talachero: 'Frozen Yogurt',
-       payment: 'Bancomer',
-       total: 1000,
-       state: 'Pagado'
-     },
-     {
-       id: 1,
-       user: 'Frozen Yogurt',
-       date: '13-04-2023',
-       talachero: 'Frozen Yogurt',
-       payment: 'Bancomer',
-       total: 1000,
-       state: 'Pagado'
-     },
-     {
-       id: 1,
-       user: 'Frozen Yogurt',
-       date: '13-04-2023',
-       talachero: 'Frozen Yogurt',
-       payment: 'Bancomer',
-       total: 1000,
-       state: 'Pagado'
-     }
-   ] as Item[]
+  id: 'payment',
+  state: () => ({
+    fields: [
+      {
+        key: 'id',
+        sortable: false,
+        title: 'ID'
+      },
+      { key: 'user', sortable: false, title: 'Usuario' },
+      { key: 'date', sortable: true, title: 'Fecha de servicio' },
+      { key: 'talachero', sortable: false, title: 'Talachero' },
+      { key: 'payment', sortable: false, title: 'Método de pago' },
+      { key: 'total', sortable: false, title: 'Total' },
+      { key: 'state', sortable: true, title: 'Estado' }
+    ] as Field[],
+    items: [
+      {
+        id: 1,
+        user: 'Frozen Yogurt',
+        date: '13-04-2023',
+        talachero: 'Frozen Yogurt',
+        payment: 'Bancomer',
+        total: 1000,
+        state: 'Pagado'
+      },
+      {
+        id: 1,
+        user: 'Frozen Yogurt',
+        date: '13-04-2023',
+        talachero: 'Frozen Yogurt',
+        payment: 'Bancomer',
+        total: 1000,
+        state: 'Pagado'
+      },
+      {
+        id: 1,
+        user: 'Frozen Yogurt',
+        date: '13-04-2023',
+        talachero: 'Frozen Yogurt',
+        payment: 'Bancomer',
+        total: 1000,
+        state: 'Pagado'
+      },
+      {
+        id: 1,
+        user: 'Frozen Yogurt',
+        date: '13-04-2023',
+        talachero: 'Frozen Yogurt',
+        payment: 'Bancomer',
+        total: 1000,
+        state: 'Pagado'
+      },
+      {
+        id: 1,
+        user: 'Frozen Yogurt',
+        date: '13-04-2023',
+        talachero: 'Frozen Yogurt',
+        payment: 'Bancomer',
+        total: 1000,
+        state: 'Pagado'
+      },
+      {
+        id: 1,
+        user: 'Frozen Yogurt',
+        date: '13-04-2023',
+        talachero: 'Frozen Yogurt',
+        payment: 'Bancomer',
+        total: 1000,
+        state: 'Pagado'
+      },
+      {
+        id: 1,
+        user: 'Frozen Yogurt',
+        date: '13-04-2023',
+        talachero: 'Frozen Yogurt',
+        payment: 'Bancomer',
+        total: 1000,
+        state: 'Pagado'
+      }
+    ] as Item[]
   })
 })
