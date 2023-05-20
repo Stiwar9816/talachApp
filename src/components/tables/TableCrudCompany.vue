@@ -231,8 +231,7 @@ const editedItem = ref<CompanyItem>({
   address: '',
   department: '',
   city: '',
-  postal_code: 0,
-  isActive: ''
+  postal_code: 0
 })
 const defaultItem = ref<CompanyItem>({
   name_company: '',
@@ -243,8 +242,7 @@ const defaultItem = ref<CompanyItem>({
   address: '',
   department: '',
   city: '',
-  postal_code: 0,
-  isActive: ''
+  postal_code: 0
 })
 
 // Validations

@@ -65,7 +65,7 @@ export interface CompanyItem {
     department: string
     city: string
     postal_code: number
-    isActive: string
+    isActive?: string
 }
 
 export interface Company {

@@ -5,6 +5,8 @@ query Companies {
   companies {
     id
     name_company
+    rfc
+    cfdi
     phone
     bussiness_name
     address
@@ -36,6 +38,8 @@ mutation CreateCompany($createCompanyInput: CreateCompanyInput!) {
   createCompany(createCompanyInput: $createCompanyInput) {
     id
     name_company
+    rfc
+    cfdi
     phone
     bussiness_name
     address
@@ -51,6 +55,8 @@ mutation UpdateCompany($updateCompanyInput: UpdateCompanyInput!) {
   updateCompany(updateCompanyInput: $updateCompanyInput) {
     id
     name_company
+    rfc
+    cfdi
     phone
     bussiness_name
     address
