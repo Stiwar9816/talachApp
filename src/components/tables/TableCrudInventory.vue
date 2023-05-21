@@ -134,6 +134,7 @@
 import { ref, computed, onMounted } from 'vue'
 // Interface
 import type { InventoryItem } from '@/interface'
+import { useInventoryStore } from '@/stores/inventory'
 interface Inventory {
   fields: Record<string, string>
   items: InventoryItem[]
@@ -150,16 +151,22 @@ const editedItem = ref<InventoryItem>({
   name: '',
   stock: 0,
   description: '',
-  responsible: ''
+  responsable: ''
 })
 const defaultItem = ref<InventoryItem>({
   name: '',
   stock: 0,
   description: '',
-  responsible: ''
+  responsable: ''
 })
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
+
+const inventory = useInventoryStore()
+
+const initialize = () => {
+  data.value = props.items
+}
 
 onMounted(() => {
   initialize()
@@ -169,10 +176,6 @@ onMounted(() => {
 const formTitle = computed(() => {
   return !editedItem.value.id ? 'Agregar Inventario' : 'Editar Inventario'
 })
-
-const initialize = () => {
-  data.value = props.items
-}
 
 const editItem = (item: InventoryItem) => {
   editedIndex.value = data.value.indexOf(item)
@@ -186,12 +189,9 @@ const close = () => {
   editedIndex.value = -1
 }
 
-const save = () => {
-  if (editedIndex.value > -1) {
-    Object.assign(data.value[editedIndex.value], editedItem.value)
-  } else {
-    data.value.push(editedItem.value)
-  }
-  close()
+const save = async () => {
+  let { stock,...inevntory } = editedItem.value
+  stock = +stock
+  await inventory.createInventory({ ...inevntory, stock })
 }
 </script>

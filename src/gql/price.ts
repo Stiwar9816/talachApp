@@ -36,7 +36,7 @@ export const PRICE_BY_ID = gql`
 `
 
 export const UPDATE_PRICE = gql`
-  mutation ($updatePriceInput: UpdatePriceInput!) {
+  mutation UpdatePrice($updatePriceInput: UpdatePriceInput!) {
     updatePrice(updatePriceInput: $updatePriceInput) {
       id
       name
@@ -46,9 +46,9 @@ export const UPDATE_PRICE = gql`
 `
 
 export const REMOVE_PRICE = gql`
-  mutation ($removePriceId: Int!) {
+  mutation RemovePrice($removePriceId: Int!) {
     removePrice(id: $removePriceId) {
-      id
+      name
     }
   }
 `

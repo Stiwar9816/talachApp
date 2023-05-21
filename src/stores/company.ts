@@ -47,7 +47,6 @@ export const useCompanyStore = defineStore({
         }
       })
       this.items = [...this.items, data.createCompany]
-      console.log(this.items)
       return this.items
     },
     async updateCompany(id: number, payload: CompanyItem) {
@@ -57,7 +56,6 @@ export const useCompanyStore = defineStore({
           updateCompanyInput: { id, ...payload }
         }
       })
-      console.log(this.items)
       this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
       return this.items;
     }

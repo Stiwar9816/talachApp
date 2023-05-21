@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 // Interface
 import type { Field, InventoryItem } from '@/interface'
 import apolloClient from '@/plugins/apollo'
+import { ALL_INVENTORY } from '@/gql/inventory'
+import { CREATE_PRICE } from '@/gql/price'
 
 export const useInventoryStore = defineStore({
   id: 'inventory',
@@ -20,9 +22,22 @@ export const useInventoryStore = defineStore({
     items: [] as InventoryItem[]
   }),
   actions: {
-    // async createInventory(payload: InventoryItem){
-    //   const {data}= await apolloClient.mutate()
+    // async allInventory(){
+    //   const {data}= await apolloClient.query({
+    //     query: ALL_INVENTORY
+    //   })
+    //   this.items = 
     // }
+    async createInventory(payload: InventoryItem){
+      const {data}= await apolloClient.mutate({
+        mutation: CREATE_PRICE,
+        variables:{
+          createPriceInput: payload
+        }
+      })
+      this.items = [...this.items, data.createPrice]
+      return this.items;
+    }
   }
 
 })

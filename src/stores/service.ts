@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 // Interface
 import type { Field, Item } from '@/interface'
+import apolloClient from '@/plugins/apollo'
+import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, UPDATE_PRICE } from '@/gql/price'
 
 export const useServiceStore = defineStore({
   id: 'service',
@@ -16,57 +18,48 @@ export const useServiceStore = defineStore({
       { title: 'Acciones', sortable: false, key: 'actions' }
     ] as Field[],
 
-    items: [
-      {
-        id: 159,
-        name: 'Frozen Yogurt',
-        price: 6.0
-      },
-      {
-        id: 237,
-        name: 'Ice cream sandwich',
-        price: 9.0
-      },
-      {
-        id: 262,
-        name: 'Eclair',
-        price: 16.0
-      },
-      {
-        id: 305,
-        name: 'Cupcake',
-        price: 3.7
-      },
-      {
-        id: 356,
-        name: 'Gingerbread',
-        price: 16.0
-      },
-      {
-        id: 375,
-        name: 'Jelly bean',
-        price: 0.0
-      },
-      {
-        id: 392,
-        name: 'Lollipop',
-        price: 0.2
-      },
-      {
-        id: 408,
-        name: 'Honeycomb',
-        price: 3.2
-      },
-      {
-        id: 452,
-        name: 'Donut',
-        price: 25.0
-      },
-      {
-        id: 518,
-        name: 'KitKat',
-        price: 26.0
-      }
-    ] as Item[]
-  })
+    items: [] as Item[]
+  }), actions: {
+    async allService() {
+      const { data } = await apolloClient.query({
+        query: ALL_PRICES_BY_TYPE,
+        variables: {
+          priceType: 'Servicio'
+        }
+      })
+      const [...service] = data.priceByType
+      this.items = [...service]
+      return this.items
+    },
+    async createService(payload: Item){
+      const {data} = await apolloClient.mutate({
+        mutation: CREATE_PRICE,
+        variables: {
+          createPriceInput: payload
+        }
+      })
+      this.items = [...this.items, data.createPrice ]
+      return this.items
+    },
+    async updateService(id: number, payload: Item) {
+      const { data } = await apolloClient.mutate({
+        mutation: UPDATE_PRICE,
+        variables: {
+          updatePriceInput: { id, ...payload }
+        }
+      })
+      this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
+      return this.items;
+    },
+    async deleteService(id: number) {
+      const { data } = await apolloClient.mutate({
+        mutation: REMOVE_PRICE,
+        variables: {
+          removePriceId: id
+        }
+      })
+      this.items = this.items.filter(item => item.id !== id)
+      return this.items;
+    }
+  }
 })

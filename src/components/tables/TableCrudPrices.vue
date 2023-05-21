@@ -127,9 +127,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, toRefs, reactive } from 'vue'
 // Interface
 import type { PriceItem } from '@/interface'
+import { useCostsStore } from '@/stores/costs'
+import { useServiceStore } from '@/stores/service'
+import { useProductStore } from '@/stores/product'
+import { useRoute } from 'vue-router'
 interface Price {
   fields: Record<string, string>
   items: PriceItem[]
@@ -155,18 +159,37 @@ const defaultItem = ref<PriceItem>({
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
+//Initialize table
+
+const route = useRoute()
+const currentPage = reactive({
+  pageTitle: ref<string>('')
+})
+
+const cost = useCostsStore()
+const service = useServiceStore()
+const product = useProductStore()
+
+const initialize = async () => {
+  try {
+    await cost.allCost()
+    await product.allProduct()
+    await service.allService()
+    // data.value = result
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 onMounted(() => {
   initialize()
+  currentPage.pageTitle = route.name?.toString() || ''
 })
 
 // Methods / Actions
 const formTitle = computed(() => {
   return !editedItem.value.id ? 'Agregar' : 'Editar'
 })
-
-const initialize = () => {
-  data.value = props.items
-}
 
 const editItem = (item: PriceItem) => {
   editedIndex.value = data.value.indexOf(item)
@@ -180,9 +203,31 @@ const deleteItem = (item: PriceItem) => {
   dialogDelete.value = true
 }
 
-const deleteItemConfirm = () => {
-  data.value.splice(editedIndex.value, 1)
-  closeDelete()
+const deleteItemConfirm = async () => {
+  try {
+    const { pageTitle } = toRefs(currentPage)
+    const { id } = editedItem.value
+    if (id)
+      switch (pageTitle.value) {
+        case 'costs':
+          await cost.deleteCost(+id)
+          closeDelete()
+          break
+        case 'services':
+          await service.deleteService(+id)
+          closeDelete()
+          break
+        case 'products':
+          await product.deleteProduct(+id)
+          closeDelete()
+          break
+
+        default:
+          break
+      }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 const close = () => {
@@ -197,12 +242,53 @@ const closeDelete = () => {
   editedIndex.value = -1
 }
 
-const save = () => {
-  if (editedIndex.value > -1) {
-    Object.assign(data.value[editedIndex.value], editedItem.value)
-  } else {
-    data.value.push(editedItem.value)
+const save = async () => {
+  try {
+    let { pageTitle } = toRefs(currentPage)
+    let { id, price, type, ...payload } = editedItem.value
+    price = +price
+    switch (pageTitle.value) {
+      case 'costs':
+        type = 'Costo'
+        if (!id) {
+          // Add new cost
+          await cost.createCost({ price, type, ...payload })
+          close()
+        } else {
+          // Update cost
+          await cost.updateCost(+id, { ...payload, price, type })
+          close()
+        }
+        break
+      case 'services':
+        type = 'Servicio'
+        if (!id) {
+          // Add new cost
+          await service.createService({ price, type, ...payload })
+          close()
+        } else {
+          // Update cost
+          await service.updateService(+id, { ...payload, price, type })
+          close()
+        }
+        break
+      case 'products':
+        type = 'Producto'
+        if (!id) {
+          // Add new cost
+          await product.createProduct({ price, type, ...payload })
+          close()
+        } else {
+          // Update cost
+          await product.updateProduct(+id, { ...payload, price, type })
+          close()
+        }
+        break
+      default:
+        break
+    }
+  } catch (error) {
+    console.error(error)
   }
-  close()
 }
 </script>

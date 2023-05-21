@@ -28,6 +28,7 @@ export interface Item {
     city?: string,
     postal_code?: number,
     address?: string
+    type?:string
 }
 
 export interface UserItem {
@@ -44,6 +45,8 @@ export interface PriceItem {
     id?: string | number
     name: string
     price: number
+    type?: string
+    stock?: number
 }
 
 export interface InventoryItem {
@@ -51,7 +54,7 @@ export interface InventoryItem {
     name: string
     stock: number
     description: string
-    responsible: string
+    responsable: string
 }
 
 export interface CompanyItem {
