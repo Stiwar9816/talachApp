@@ -94,7 +94,7 @@
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card class="rounded-lg">
                 <v-card-text class="text-h6 text-center"
-                  >¿Estás seguro de que quieres eliminar este artículo?
+                  >¿Estás seguro de que quieres eliminar {{ editedItem.name.toLocaleLowerCase() }} ?
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer />

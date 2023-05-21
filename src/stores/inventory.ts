@@ -16,22 +16,27 @@ export const useInventoryStore = defineStore({
       },
       { title: 'Stock', key: 'stock' },
       { title: 'Descripción', key: 'description' },
-      { title: 'Responsable', key: 'responsible' },
+      { title: 'Responsable', key: 'user.fullName' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
     items: [] as InventoryItem[]
   }),
   actions: {
-    // async allInventory(){
-    //   const {data}= await apolloClient.query({
-    //     query: ALL_INVENTORY
-    //   })
-    //   this.items = 
-    // }
-    async createInventory(payload: InventoryItem){
-      const {data}= await apolloClient.mutate({
+    async allInventory() {
+      const { data } = await apolloClient.query({
+        query: ALL_INVENTORY,
+        variables: {
+          priceType: 'Producto'
+        }
+      })
+      const [...invetory] = data.priceByType
+      this.items = [...invetory]
+      return this.items;
+    },
+    async createInventory(payload: InventoryItem) {
+      const { data } = await apolloClient.mutate({
         mutation: CREATE_PRICE,
-        variables:{
+        variables: {
           createPriceInput: payload
         }
       })

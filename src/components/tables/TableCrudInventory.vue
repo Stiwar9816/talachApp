@@ -53,7 +53,7 @@
                 <v-card-text class="bg-grey-lighten-3">
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="5" md="5">
+                      <v-col cols="12" sm="6" md="6">
                         <v-text-field
                           v-model="editedItem.name"
                           label="Nombre"
@@ -65,7 +65,7 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="3" md="3">
+                      <v-col cols="12" sm="6" md="6">
                         <v-text-field
                           v-model="editedItem.stock"
                           label="Stock"
@@ -76,17 +76,6 @@
                           min="0"
                           clearable
                           required
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="4" md="4">
-                        <v-text-field
-                          v-model="editedItem.responsible"
-                          label="Responsable"
-                          :rules="requiredValue"
-                          variant="underlined"
-                          density="comfortable"
-                          type="text"
-                          readonly
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12">
@@ -150,22 +139,25 @@ const editedIndex = ref<number>(-1)
 const editedItem = ref<InventoryItem>({
   name: '',
   stock: 0,
-  description: '',
-  responsable: ''
+  description: ''
 })
 const defaultItem = ref<InventoryItem>({
   name: '',
   stock: 0,
-  description: '',
-  responsable: ''
+  description: ''
 })
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
 const inventory = useInventoryStore()
 
-const initialize = () => {
-  data.value = props.items
+const initialize = async () => {
+  try {
+    const result = await inventory.allInventory()
+    data.value = result
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 onMounted(() => {
@@ -190,8 +182,12 @@ const close = () => {
 }
 
 const save = async () => {
-  let { stock,...inevntory } = editedItem.value
+  let { user, stock, type, ...inevntory } = editedItem.value
+  user = localStorage.getItem('user')
+  type = 'Producto'
   stock = +stock
-  await inventory.createInventory({ ...inevntory, stock })
+  console.log(user)
+  console.log(editedItem.value)
+  await inventory.createInventory({ ...inevntory, stock, user, type })
 }
 </script>
