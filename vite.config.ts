@@ -21,6 +21,14 @@ export default defineConfig({
       optionsSuccessStatus: 204,
       credentials: true,
       allowedHeaders: 'Content-Type, Authorization, X-Requested-With',
+    },
+    proxy:{
+      '/talachapp-api/graphql':{
+        target: 'https://talachapp-api-mcf27.ondigitalocean.app',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/talachapp-api\/graphql/, '')
+      }
     }
   }
 })
