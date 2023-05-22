@@ -7,7 +7,7 @@ import { setContext } from '@apollo/client/link/context'
 const httpLink = createHttpLink({
   // You should use an absolute URL here
   // uri: import.meta.env.VITE_GRAPHQL_URL,
-  uri: 'https://talachapp-api-47f5p.ondigitalocean.app/talachapp-api2/graphql',
+  uri: 'https://talachapp-api-mcf27.ondigitalocean.app/talachapp-api/graphql',
   credentials: 'include'
 })
 
