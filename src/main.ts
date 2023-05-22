@@ -1,16 +1,15 @@
-import { createApp, h, provide } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { registerLayouts } from './layouts/register';
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import apolloClient from './plugins/apollo';
-// import { ApolloClient } from '@apollo/client/core';
 // Vuetify
 import { vuetify } from './plugins/vuetify'
 
 const app = createApp(App)
-app.provide(DefaultApolloClient, apolloClient )
+app.provide(DefaultApolloClient, apolloClient)
 registerLayouts(app);
 app.use(createPinia())
 app.use(router)

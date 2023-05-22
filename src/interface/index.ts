@@ -3,3 +3,4 @@ export type { Field, Item, UserItem, PriceItem, InventoryItem, CompanyItem, Comp
 export type { Rules } from './Rules'
 export type { User, AuthState } from './auth'
 export type { ErrorState } from './errors';
+export type { Marker, LatLgn, Polygons, PolygonProperties } from './maps';
