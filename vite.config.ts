@@ -12,23 +12,5 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  },
-  server: {
-    cors: {
-      origin: 'https://talachapp-api-mcf27.ondigitalocean.app/talachapp-api/graphql',
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      preflightContinue: false,
-      optionsSuccessStatus: 204,
-      credentials: true,
-      allowedHeaders: 'Content-Type, Authorization, X-Requested-With',
-    },
-    proxy:{
-      '/talachapp-api/graphql':{
-        target: 'https://talachapp-api-mcf27.ondigitalocean.app',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/talachapp-api\/graphql/, '')
-      }
-    }
   }
 })
