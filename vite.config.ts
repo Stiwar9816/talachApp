@@ -15,7 +15,7 @@ export default defineConfig({
   },
   server: {
     cors: {
-      origin: process.env.VITE_GRAPHQL_URL,
+      origin: 'https://talachapp-api-mcf27.ondigitalocean.app/talachapp-api/graphql',
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       preflightContinue: false,
       optionsSuccessStatus: 204,
