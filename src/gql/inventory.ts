@@ -8,9 +8,6 @@ query ($priceType: String!) {
     price
     stock
     description
-    user {
-      fullName
-    }
   }
 }
 `
@@ -23,9 +20,6 @@ query ($priceId: Int!) {
     price
     stock
     description
-    user {
-      fullName
-    }
   }
 }
 `

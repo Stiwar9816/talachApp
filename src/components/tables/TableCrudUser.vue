@@ -146,10 +146,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 // Interface
 import type { UserItem } from '@/interface'
-import { useUserStore } from '@/stores/users'
+import { useUserStore } from '@/stores'
 interface User {
   fields: Record<string, string>
   items: UserItem[]

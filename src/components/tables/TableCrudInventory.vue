@@ -25,22 +25,6 @@
             <v-spacer></v-spacer>
             <!-- Add Modal -->
             <v-dialog v-model="dialog" max-width="500px">
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  prepend-icon="mdi-plus"
-                  variant="flat"
-                  color="grey-lighten-2"
-                  rounded="lg"
-                  class="my-2"
-                  v-bind="props"
-                >
-                  <template v-slot:prepend>
-                    <v-icon color="orange-darken-4" />
-                  </template>
-                  Agregar
-                </v-btn>
-              </template>
-
               <v-card class="rounded-lg">
                 <v-toolbar color="orange-darken-3">
                   <v-card-title>
@@ -120,10 +104,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 // Interface
 import type { InventoryItem } from '@/interface'
-import { useInventoryStore } from '@/stores/inventory'
+import { useInventoryStore } from '@/stores'
 interface Inventory {
   fields: Record<string, string>
   items: InventoryItem[]
@@ -182,12 +166,16 @@ const close = () => {
 }
 
 const save = async () => {
-  let { user, stock, type, ...inevntory } = editedItem.value
-  user = localStorage.getItem('user')
-  type = 'Producto'
+  let { id, stock, ...inevntory } = editedItem.value
   stock = +stock
-  console.log(user)
-  console.log(editedItem.value)
-  await inventory.createInventory({ ...inevntory, stock, user, type })
+  try {
+    if (id) {
+      console.log(editedItem.value)
+      await inventory.updateInventory(+id, { ...inevntory, stock })
+      close()
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 </script>

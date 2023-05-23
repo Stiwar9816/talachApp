@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { GoogleMap, Polygon, Marker, MarkerCluster } from 'vue3-google-map'
 // Store
-import { useMapsStore } from '@/stores/maps'
+import { useMapsStore } from '@/stores';
 // Initialization Store
 const storeMaps = useMapsStore()
 </script>

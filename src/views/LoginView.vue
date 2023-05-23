@@ -49,7 +49,7 @@
             ></v-text-field>
 
             <v-btn
-            type="submit"
+              type="submit"
               block
               variant="flat"
               color="orange-accent-4"
@@ -70,8 +70,7 @@
 import { onBeforeUnmount, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required, helpers } from '@vuelidate/validators'
-import { useAuthStore } from '@/stores/useAuth'
-import { useErrorsStore } from '@/stores/useErrors'
+import { useAuthStore, useErrorsStore } from '@/stores'
 import router from '@/router'
 
 export default {
@@ -122,7 +121,6 @@ export default {
 
 <style>
 .login {
-  /* background-image: url('/images/bg-login.webp'); */
   background: rgb(239, 108, 0);
   background: linear-gradient(
     190deg,

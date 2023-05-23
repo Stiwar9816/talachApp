@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import TableDefault from '@/components/tables/TableDefault.vue'
 // Store
-import { useOrdersStore } from '@/stores/orders'
+import { useOrdersStore } from '@/stores'
 // Initialization Store
 const storeOrders = useOrdersStore()
 </script>

@@ -90,31 +90,11 @@
               </v-card>
             </v-dialog>
             <!-- Add Modal -->
-            <!-- Delete Modal -->
-            <v-dialog v-model="dialogDelete" max-width="500px">
-              <v-card class="rounded-lg">
-                <v-card-text class="text-h6 text-center"
-                  >¿Estás seguro de que quieres eliminar {{ editedItem.name.toLocaleLowerCase() }} ?
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer />
-                  <v-btn color="grey-lighten-1" variant="flat" @click="closeDelete">Cancelar</v-btn>
-                  <v-btn color="orange-darken-3" variant="flat" @click="deleteItemConfirm"
-                    >OK</v-btn
-                  >
-                  <v-spacer />
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <!-- Delete Modal -->
           </v-toolbar>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
-          </v-icon>
-          <v-icon size="large" class="my-1" color="red-darken-1" @click="deleteItem(item.raw)">
-            mdi-delete
           </v-icon>
         </template>
         <template v-slot:no-data>
@@ -127,13 +107,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, toRefs, reactive } from 'vue'
+import { ref, computed, onMounted, toRefs, reactive, onBeforeMount } from 'vue'
+import { useRoute } from 'vue-router'
+import { useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
 import type { PriceItem } from '@/interface'
-import { useCostsStore } from '@/stores/costs'
-import { useServiceStore } from '@/stores/service'
-import { useProductStore } from '@/stores/product'
-import { useRoute } from 'vue-router'
+import { onUpdated } from 'vue'
+import { onUnmounted } from 'vue'
 interface Price {
   fields: Record<string, string>
   items: PriceItem[]
@@ -143,7 +123,6 @@ interface Price {
 const props = defineProps<Price>()
 // Const
 const dialog = ref<Boolean>(false)
-const dialogDelete = ref<Boolean>(false)
 const search = ref<String>('')
 const perPage = ref<Number>(5)
 const data = ref<PriceItem[]>([])
@@ -175,7 +154,6 @@ const initialize = async () => {
     await cost.allCost()
     await product.allProduct()
     await service.allService()
-    // data.value = result
   } catch (error) {
     console.error(error)
   }
@@ -197,47 +175,8 @@ const editItem = (item: PriceItem) => {
   dialog.value = true
 }
 
-const deleteItem = (item: PriceItem) => {
-  editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
-  dialogDelete.value = true
-}
-
-const deleteItemConfirm = async () => {
-  try {
-    const { pageTitle } = toRefs(currentPage)
-    const { id } = editedItem.value
-    if (id)
-      switch (pageTitle.value) {
-        case 'costs':
-          await cost.deleteCost(+id)
-          closeDelete()
-          break
-        case 'services':
-          await service.deleteService(+id)
-          closeDelete()
-          break
-        case 'products':
-          await product.deleteProduct(+id)
-          closeDelete()
-          break
-
-        default:
-          break
-      }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 const close = () => {
   dialog.value = false
-  editedItem.value = Object.assign({}, defaultItem.value)
-  editedIndex.value = -1
-}
-
-const closeDelete = () => {
-  dialogDelete.value = false
   editedItem.value = Object.assign({}, defaultItem.value)
   editedIndex.value = -1
 }

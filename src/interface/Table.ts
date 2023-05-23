@@ -56,7 +56,6 @@ export interface InventoryItem {
     price?: number
     type?: string | null
     description: string
-    user?: string | null
 }
 
 export interface CompanyItem {
@@ -73,7 +72,23 @@ export interface CompanyItem {
     isActive?: string
 }
 
-export interface Company {
+export interface CompanyFields {
     fields: Field[]
     items: CompanyItem[]
+    cache: Record<string, CompanyItem[]>
+}
+export interface PricesFields {
+    fields: Field[]
+    items: PriceItem[]
+    cache: Record<string, PriceItem[]>
+}
+export interface InventoryFields {
+    fields: Field[]
+    items: InventoryItem[]
+    cache: Record<string, InventoryItem[]>
+}
+export interface UsersFields {
+    fields: Field[]
+    items: UserItem[]
+    cache: Record<string, UserItem[]>
 }

@@ -206,10 +206,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, reactive } from 'vue'
+import { ref, computed, onMounted, reactive, onUnmounted } from 'vue'
 // Interface
 import type { CompanyItem } from '@/interface'
-import { useCompanyStore } from '@/stores/company'
+import { useCompanyStore } from '@/stores'
 interface Company {
   fields: Record<string, string>
   items: CompanyItem[]

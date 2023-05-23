@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, InventoryItem } from '@/interface'
+import type { Field, InventoryFields, InventoryItem, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_INVENTORY } from '@/gql/inventory'
-import { CREATE_PRICE } from '@/gql/price'
+import { ALL_INVENTORY, UPDATE_INVENTORY } from '@/gql/inventory'
 
 export const useInventoryStore = defineStore({
   id: 'inventory',
-  state: () => ({
+  state: (): InventoryFields => ({
     fields: [
       {
         title: 'Nombre',
@@ -16,13 +15,18 @@ export const useInventoryStore = defineStore({
       },
       { title: 'Stock', key: 'stock' },
       { title: 'Descripción', key: 'description' },
-      { title: 'Responsable', key: 'user.fullName' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
-    items: [] as InventoryItem[]
+    items: [] as InventoryItem[],
+    cache: {} as Record<string, InventoryItem[]>
   }),
   actions: {
     async allInventory() {
+      if (this.cache.allProduct) {
+        // Devolver datos almacenados en caché si están disponibles
+        this.items = this.cache.allProduct;
+        return this.items;
+      }
       const { data } = await apolloClient.query({
         query: ALL_INVENTORY,
         variables: {
@@ -31,18 +35,20 @@ export const useInventoryStore = defineStore({
       })
       const [...invetory] = data.priceByType
       this.items = [...invetory]
+      // Guardar en caché los datos obtenidos
+      this.cache.allProduct = this.items;
       return this.items;
     },
-    async createInventory(payload: InventoryItem) {
+    async updateInventory(id: number, payload: InventoryItem) {
       const { data } = await apolloClient.mutate({
-        mutation: CREATE_PRICE,
+        mutation: UPDATE_INVENTORY,
         variables: {
-          createPriceInput: payload
+          updatePriceInput: { id, ...payload }
         }
       })
-      this.items = [...this.items, data.createPrice]
+      this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
+      this.cache.allProduct = this.items; // Actualizar caché
       return this.items;
     }
   }
-
 })
