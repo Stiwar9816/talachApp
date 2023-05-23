@@ -231,9 +231,9 @@ const randomPassword = () => {
 const save = async () => {
   try {
     let { id, fullName, email, password = randomPassword(), phone, ...edit } = editedItem.value
+      phone = +phone
     if (!id) {
       // Add new user
-      phone = +phone
       await user.createUser({ fullName, email, password, phone })
       close()
     } else {
