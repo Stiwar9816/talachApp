@@ -170,7 +170,6 @@ const save = async () => {
   stock = +stock
   try {
     if (id) {
-      console.log(editedItem.value)
       await inventory.updateInventory(+id, { ...inevntory, stock })
       close()
     }

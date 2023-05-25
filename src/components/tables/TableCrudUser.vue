@@ -146,7 +146,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 // Interface
 import type { UserItem } from '@/interface'
 import { useUserStore } from '@/stores'
@@ -218,22 +218,12 @@ const close = () => {
   editedIndex.value = -1
 }
 
-const randomPassword = () => {
-  const letters = '0123456789ABCDEFGHIJKLMNÑOPQRSTUVXYZabcdefghijklmnñopqrtuvwxyz*-/!#$%&_+¡'
-  let password = ''
-
-  for (let i = 0; i < 20; i++) {
-    password += letters[Math.floor(Math.random() * 73)]
-  }
-  return password
-}
-
 const save = async () => {
   try {
-    let { id, fullName, email, password = randomPassword(), phone, ...edit } = editedItem.value
+    let { id, fullName, email, password, phone, ...edit } = editedItem.value
+    phone = +phone
     if (!id) {
       // Add new user
-      phone = +phone
       await user.createUser({ fullName, email, password, phone })
       close()
     } else {

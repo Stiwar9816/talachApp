@@ -6,7 +6,7 @@ import { ref } from 'vue'
 export const useLayoutStore = defineStore('layout', () => {
   const nameProfile = ref<String | null>(localStorage.getItem('user'))
   const imageProfile: string = 'mdi-account-circle'
-  const drawer: boolean = false
+  const drawer: boolean = true
   const rail: boolean = false
   const prices: Array<Routes> = [
     {
