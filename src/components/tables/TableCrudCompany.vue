@@ -269,7 +269,6 @@ const formTitle = computed(() => {
 })
 
 const editItem = (item: CompanyItem) => {
-  console.log(item)
   editedIndex.value = data.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialog.value = true

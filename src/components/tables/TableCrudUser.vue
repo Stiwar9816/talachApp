@@ -220,8 +220,13 @@ const close = () => {
 
 const save = async () => {
   try {
+<<<<<<< HEAD
     let { id, fullName, email, password, phone, ...edit } = editedItem.value
     phone = +phone
+=======
+    let { id, fullName, email, password = randomPassword(), phone, ...edit } = editedItem.value
+      phone = +phone
+>>>>>>> bb15f2aa317fe0a6d18286efeab81cc2576f93d9
     if (!id) {
       // Add new user
       await user.createUser({ fullName, email, password, phone })
