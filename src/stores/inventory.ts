@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, InventoryFields, InventoryItem, PriceItem, PricesFields } from '@/interface'
+import type { Field, InventoryFields, InventoryItem} from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_INVENTORY, UPDATE_INVENTORY } from '@/gql/inventory'
 

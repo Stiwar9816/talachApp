@@ -18,4 +18,3 @@ export interface Polygons extends PolygonProperties {
     strokeColor: string
     fillColor: string
 };
-

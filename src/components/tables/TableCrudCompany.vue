@@ -101,6 +101,45 @@
                           required
                         ></v-text-field>
                       </v-col>
+                      <v-col cols="12" sm="3" md="3">
+                        <v-text-field
+                          v-model="editedItem.lat"
+                          label="Latitud"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="number"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="3" md="3">
+                        <v-text-field
+                          v-model="editedItem.lng"
+                          label="Longitud"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="number"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-textarea
+                          v-model="editedItem.geofence"
+                          label="Geocerca"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          auto-grow
+                          rows="1"
+                          row-height="15"
+                          clearable
+                          required
+                        ></v-textarea>
+                      </v-col>
                       <v-col cols="12" sm="4" md="4">
                         <v-text-field
                           v-model="editedItem.phone"
@@ -206,7 +245,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, reactive, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 // Interface
 import type { CompanyItem } from '@/interface'
 import { useCompanyStore } from '@/stores'
@@ -231,7 +270,10 @@ const editedItem = ref<CompanyItem>({
   address: '',
   department: '',
   city: '',
-  postal_code: 0
+  postal_code: 0,
+  geofence: '',
+  lat: 0,
+  lng: 0
 })
 const defaultItem = ref<CompanyItem>({
   name_company: '',
@@ -242,7 +284,10 @@ const defaultItem = ref<CompanyItem>({
   address: '',
   department: '',
   city: '',
-  postal_code: 0
+  postal_code: 0,
+  geofence: '',
+  lat: 0,
+  lng: 0
 })
 
 // Validations
@@ -282,20 +327,24 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, postal_code, ...create } = editedItem.value
+    let { id, phone, postal_code, lat, lng, ...create } = editedItem.value
     phone = +phone
     postal_code = +postal_code
+    lat = +lat
+    lng = +lng
     if (!id) {
       // Add new company
       await company.createCompany({
         ...create,
         phone,
-        postal_code
+        postal_code,
+        lat,
+        lng
       })
       close()
     } else {
       // Update company
-      await company.updateCompany(+id, { ...create, phone, postal_code })
+      await company.updateCompany(+id, { ...create, phone, postal_code, lat, lng })
       close()
     }
   } catch (error) {

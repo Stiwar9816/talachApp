@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, Item, PriceItem, PricesFields } from '@/interface'
+import type { Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, UPDATE_PRICE } from '@/gql/price'
 
@@ -39,7 +39,7 @@ export const useProductStore = defineStore({
       this.cache.allProduct = this.items;
       return this.items
     },
-    async createProduct(payload: Item) {
+    async createProduct(payload: PriceItem) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_PRICE,
         variables: {
@@ -50,7 +50,7 @@ export const useProductStore = defineStore({
       this.cache.allProduct = this.items; // Actualizar caché
       return this.items
     },
-    async updateProduct(id: number, payload: Item) {
+    async updateProduct(id: number, payload: PriceItem) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_PRICE,
         variables: {

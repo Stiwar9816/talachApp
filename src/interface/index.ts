@@ -1,6 +1,7 @@
 export type {
     Field,
     Item,
+    ItemPrice,
     UserItem,
     PriceItem,
     InventoryItem,

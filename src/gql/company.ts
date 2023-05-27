@@ -14,6 +14,9 @@ query Companies {
     city
     postal_code
     isActive
+    geofence
+    lat
+    lng
   }
 } 
 `
@@ -47,6 +50,9 @@ mutation CreateCompany($createCompanyInput: CreateCompanyInput!) {
     city
     postal_code
     isActive
+    geofence
+    lat
+    lng
   }
 }
 `
@@ -64,6 +70,9 @@ mutation UpdateCompany($updateCompanyInput: UpdateCompanyInput!) {
     city
     postal_code
     isActive
+    geofence
+    lat
+    lng
   }
 }
 `

@@ -89,6 +89,11 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
+        <template v-slot:item.stock="{ item }">
+          <v-chip :color="getColor(item.columns.stock)">
+            {{ item.columns.stock }}
+          </v-chip>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
@@ -104,7 +109,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 // Interface
 import type { InventoryItem } from '@/interface'
 import { useInventoryStore } from '@/stores'
@@ -163,6 +168,11 @@ const close = () => {
   dialog.value = false
   editedItem.value = Object.assign({}, defaultItem.value)
   editedIndex.value = -1
+}
+
+const getColor = (stock: number) => {
+  if (stock < 5) return 'red-accent-4'
+  else return 'green-darken-4'
 }
 
 const save = async () => {

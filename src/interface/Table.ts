@@ -40,26 +40,24 @@ export interface UserItem {
     isActive?: string
     password?: string
 }
-
-export interface PriceItem {
+export interface ItemPrice {
     id?: string | number
     name: string
-    price: number
     type?: string
+}
+
+export interface PriceItem extends ItemPrice {
+    price: number
     stock?: number
 }
 
-export interface InventoryItem {
-    id?: string | number
-    name: string
+export interface InventoryItem extends ItemPrice {
     stock: number
     price?: number
-    type?: string | null
     description: string
 }
-
 export interface CompanyItem {
-    id?: string | number
+    id?: number
     name_company: string
     rfc: string
     cfdi: string
@@ -70,6 +68,9 @@ export interface CompanyItem {
     city: string
     postal_code: number
     isActive?: string
+    geofence: string | number
+    lat: number
+    lng: number
 }
 
 export interface CompanyFields {
