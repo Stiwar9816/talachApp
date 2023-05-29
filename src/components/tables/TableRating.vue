@@ -27,7 +27,7 @@
         <template v-slot:item="{ item }">
           <tr>
             <td>{{ item.columns.id }}</td>
-            <td>{{ item.columns.user }}</td>
+            <td>{{ item.columns.user.fullName }}</td>
             <td>{{ item.columns.quality }}</td>
             <td>
               <v-rating
@@ -37,7 +37,7 @@
                 readonly
               ></v-rating>
             </td>
-            <td>{{ item.columns.date }}</td>
+            <td>{{ item.columns.createdAt }}</td>
           </tr>
         </template>
         <template v-slot:no-data>

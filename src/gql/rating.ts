@@ -6,6 +6,10 @@ query {
     id
     quality
     rank
+    createdAt
+    user {
+      fullName
+    }
   }
 }
 `
