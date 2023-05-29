@@ -19,7 +19,7 @@ export interface Item {
     description?: string,
     responsible?: string,
     quality?: string,
-    rating?: number,
+    rank?: number,
     role?: string,
     email?: string,
     phone?: number,

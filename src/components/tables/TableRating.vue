@@ -17,8 +17,8 @@
     <!-- Data Table -->
     <v-col cols="12">
       <v-data-table
-        :fields="props.fields"
-        :items="props.items"
+        :headers="fields"
+        :items="items"
         :search="search"
         :items-per-page="perPage"
         item-value="id"
@@ -31,7 +31,7 @@
             <td>{{ item.columns.quality }}</td>
             <td>
               <v-rating
-                v-model="item.columns.rating"
+                v-model="item.columns.rank"
                 color="amber"
                 density="comfortable"
                 readonly
@@ -51,13 +51,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { useRatingsStore } from '@/stores'
+import { onMounted, ref } from 'vue'
 // Const
-const search = ref<string>('')
-const perPage = ref<number>(5)
+const search = ref<String>('')
+const perPage = ref<Number>(5)
 
 const props = defineProps({
   fields: Object,
   items: Object
 })
+
+const ratingStore = useRatingsStore()
+
+const initialize = async () => {
+  try {
+    const result = await ratingStore.allRatings()
+     return result
+  } catch (error) {
+    console.log(error)
+  }
+}
+onMounted(() => {
+  initialize()
+})
+
 </script>
