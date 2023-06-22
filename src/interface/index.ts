@@ -11,7 +11,9 @@ export type {
     InventoryFields,
     UsersFields,
     RatingItem,
-    RatingFields
+    RatingFields,
+    OrdersFields,
+    OrdersItem
 } from './Table'
 export type { Marker, LatLgn, Polygons, PolygonProperties } from './maps';
 export type { User, AuthState } from './auth'

@@ -37,6 +37,13 @@ export interface RatingItem {
     fullName: string
     createdAt: string
 }
+export interface OrdersItem {
+    id?: string | number
+    fullName: string
+    createdAt: string
+    name_company: string
+    total: number
+}
 export interface UserItem {
     id?: string | number
     fullName: string
@@ -103,4 +110,9 @@ export interface RatingFields {
     fields: Field[]
     items: RatingItem[]
     cache: Record<string, RatingItem[]>
+}
+export interface OrdersFields {
+    fields: Field[]
+    items: OrdersItem[]
+    cache: Record<string, OrdersItem[]>
 }

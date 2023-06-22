@@ -1,9 +1,9 @@
+import moment from 'moment'
 import { defineStore } from 'pinia'
 // Interface
 import type { Field, RatingFields, RatingItem } from '@/interface'
-import apolloClient from '@/plugins/apollo'
 import { ALL_RATINGS } from '@/gql/rating'
-import moment from 'moment'
+import apolloClient from '@/plugins/apollo'
 
 export const useRatingsStore = defineStore({
   id: 'ratings',

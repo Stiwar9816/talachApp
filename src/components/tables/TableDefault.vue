@@ -40,6 +40,15 @@
           class="elevation-1 mt-3 rounded-lg"
           ref="tableRef"
         >
+          <template v-slot:item="{ item }">
+            <tr>
+              <td>{{ item.columns.id }}</td>
+              <td>{{ item.columns.user.fullName }}</td>
+              <td>{{ new Date(item.columns.createdAt).toLocaleString() }}</td>
+              <td>{{ item.columns.companies.name_company }}</td>
+              <td>{{ item.columns.total }}</td>
+            </tr>
+          </template>
           <template v-slot:no-data>
             <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
           </template>
@@ -52,10 +61,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, onMounted } from 'vue'
 import * as XLSX from 'xlsx'
 import FileSaver from 'file-saver'
 const tableRef = ref<HTMLElement | null>(null)
+import { useOrdersStore } from '@/stores'
 // Const
 const search = ref<string>('')
 const perPage = ref<number>(5)
@@ -69,6 +79,19 @@ const props = defineProps({
     type: Array,
     default: () => []
   }
+})
+const ordersStore = useOrdersStore()
+
+const initialize = async () => {
+  try {
+    const result = await ordersStore.allOrders()
+    return result
+  } catch (error) {
+    console.log(error)
+  }
+}
+onMounted(() => {
+  initialize()
 })
 
 const exportData = () => {
