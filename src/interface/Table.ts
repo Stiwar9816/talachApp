@@ -1,6 +1,6 @@
 export interface Field {
-    title: string,
-    sortable?: boolean,
+    title: string
+    sortable?: boolean
     align?: string
     key: string
 }
@@ -30,7 +30,13 @@ export interface Item {
     address?: string
     type?: string
 }
-
+export interface RatingItem {
+    id?: string | number
+    quality: string
+    rank: number
+    fullName: string
+    createdAt: string
+}
 export interface UserItem {
     id?: string | number
     fullName: string
@@ -92,4 +98,9 @@ export interface UsersFields {
     fields: Field[]
     items: UserItem[]
     cache: Record<string, UserItem[]>
+}
+export interface RatingFields {
+    fields: Field[]
+    items: RatingItem[]
+    cache: Record<string, RatingItem[]>
 }

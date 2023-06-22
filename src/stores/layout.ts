@@ -47,11 +47,6 @@ export const useLayoutStore = defineStore('layout', () => {
       route: '/orders'
     },
     {
-      name: 'Pagos',
-      icon: 'mdi-account-cash',
-      route: '/payment'
-    },
-    {
       name: 'Calificaciones',
       icon: 'mdi-account-star',
       route: '/ratings'

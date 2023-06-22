@@ -9,7 +9,9 @@ export type {
     CompanyFields,
     PricesFields,
     InventoryFields,
-    UsersFields
+    UsersFields,
+    RatingItem,
+    RatingFields
 } from './Table'
 export type { Marker, LatLgn, Polygons, PolygonProperties } from './maps';
 export type { User, AuthState } from './auth'
