@@ -53,7 +53,7 @@
 <script>
 import { reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
-import { rules } from '../../utils/validations';
+import { rules } from '@/utils';
 
 export default {
   setup() {

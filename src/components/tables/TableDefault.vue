@@ -46,7 +46,7 @@
               <td>{{ item.columns.user.fullName }}</td>
               <td>{{ new Date(item.columns.createdAt).toLocaleString() }}</td>
               <td>{{ item.columns.companies.name_company }}</td>
-              <td>{{ item.columns.total }}</td>
+              <td>{{ currencyFormatter('MXN', item.columns.total) }} MXN</td>
             </tr>
           </template>
           <template v-slot:no-data>
@@ -64,8 +64,9 @@
 import { ref, type PropType, onMounted } from 'vue'
 import * as XLSX from 'xlsx'
 import FileSaver from 'file-saver'
-const tableRef = ref<HTMLElement | null>(null)
+import { currencyFormatter } from '@/utils'
 import { useOrdersStore } from '@/stores'
+const tableRef = ref<HTMLElement | null>(null)
 // Const
 const search = ref<string>('')
 const perPage = ref<number>(5)

@@ -92,7 +92,9 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
-        <template v-slot:item.price="{ item }"> $ {{ item.columns.price }} MXN </template>
+        <template v-slot:item.price="{ item }"
+          >{{ currencyFormatter('MXN', item.columns.price) }} MXN</template
+        >
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
@@ -108,13 +110,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, toRefs, reactive, onBeforeMount } from 'vue'
+import { ref, computed, onMounted, toRefs, reactive } from 'vue'
 import { useRoute } from 'vue-router'
+import { currencyFormatter } from '@/utils'
 import { useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
 import type { PriceItem } from '@/interface'
-import { onUpdated } from 'vue'
-import { onUnmounted } from 'vue'
 interface Price {
   fields: Record<string, string>
   items: PriceItem[]
