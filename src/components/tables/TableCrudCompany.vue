@@ -241,6 +241,15 @@
         <template v-slot:no-results>¡No hay datos!</template>
       </v-data-table>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -289,6 +298,10 @@ const defaultItem = ref<CompanyItem>({
   lat: 0,
   lng: 0
 })
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
 
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
@@ -299,8 +312,10 @@ const initialize = async () => {
   try {
     const result = await company.allCompanies()
     data.value = result
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 
@@ -341,14 +356,22 @@ const save = async () => {
         lat,
         lng
       })
+      snackbar.value = true
+      message.value = '¡Nueva empresa agregada con exito!'
+      color.value = 'orange-darken-2'
       close()
     } else {
       // Update company
       await company.updateCompany(+id, { ...create, phone, postal_code, lat, lng })
+      snackbar.value = true
+      message.value = '¡Empresa Actualizada con exito!'
+      color.value = 'cyan-darken-1'
       close()
     }
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 </script>

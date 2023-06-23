@@ -57,6 +57,15 @@
       </v-col>
       <!-- DataTable -->
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -70,6 +79,10 @@ const tableRef = ref<HTMLElement | null>(null)
 // Const
 const search = ref<string>('')
 const perPage = ref<number>(5)
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
 // Props
 const props = defineProps({
   fields: {
@@ -87,8 +100,10 @@ const initialize = async () => {
   try {
     const result = await ordersStore.allOrders()
     return result
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 onMounted(() => {
@@ -113,8 +128,10 @@ const exportData = () => {
     const fileName = 'orders.xlsx'
     const file = new Blob([wbout], { type: 'application/octet-stream' })
     FileSaver.saveAs(file, fileName)
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 </script>

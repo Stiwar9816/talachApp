@@ -105,6 +105,15 @@
         <template v-slot:no-results> No hay datos!</template>
       </v-data-table>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -135,6 +144,10 @@ const defaultItem = ref<InventoryItem>({
   stock: 0,
   description: ''
 })
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
@@ -144,8 +157,10 @@ const initialize = async () => {
   try {
     const result = await inventory.allInventory()
     data.value = result
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 
@@ -181,10 +196,15 @@ const save = async () => {
   try {
     if (id) {
       await inventory.updateInventory(+id, { ...inevntory, stock })
+      snackbar.value = true
+      message.value = '¡Nuevo producto agregado con exito!'
+      color.value = 'orange-darken-2'
       close()
     }
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 </script>

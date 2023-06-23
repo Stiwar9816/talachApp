@@ -142,6 +142,15 @@
         <template v-slot:no-results> No hay datos!</template>
       </v-data-table>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -157,9 +166,9 @@ interface User {
 // Props
 const props = defineProps<User>()
 // Const
-const dialog = ref<Boolean>(false)
-const search = ref<String>('')
-const perPage = ref<Number>(5)
+const dialog = ref<boolean>(false)
+const search = ref<string>('')
+const perPage = ref<number>(5)
 const data = ref<UserItem[]>([])
 const editedIndex = ref(-1)
 const editedItem = ref<UserItem>({
@@ -176,6 +185,10 @@ const defaultItem = ref<UserItem>({
   roles: '',
   isActive: ''
 })
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 const emailRules = ref([
@@ -192,8 +205,10 @@ const initialize = async () => {
   try {
     const result = await user.allUsers()
     data.value = result
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 
@@ -225,10 +240,16 @@ const save = async () => {
     if (!id) {
       // Add new user
       await user.createUser({ fullName, email, password, phone })
+      snackbar.value = true
+      message.value = '¡Nuevo usuario agregado con exito!'
+      color.value = 'orange-darken-2'
       close()
     } else {
       //Update user
       await user.updateUser(+id, { ...edit, fullName, email, password, phone })
+      snackbar.value = true
+      message.value = '¡Usuario Actualizado con exito!'
+      color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error) {

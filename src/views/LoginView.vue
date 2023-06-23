@@ -70,7 +70,7 @@
 import { onBeforeUnmount, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required, helpers } from '@vuelidate/validators'
-import { useAuthStore, useErrorsStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 import router from '@/router'
 
 export default {
@@ -101,16 +101,13 @@ export default {
     }
 
     const v$ = useVuelidate(rules, state)
-    const errors = useErrorsStore()
     const authStore = useAuthStore()
     const handleLogin = async () => {
-      // console.log(state)
       try {
         await authStore.login(state)
         router.push({ name: 'home' })
       } catch (error) {
-        console.error(error.graphQLErrors[0].message)
-        errors.$reset()
+        console.error(error.message)
       }
     }
     onBeforeUnmount(() => errors.$reset())

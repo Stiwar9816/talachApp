@@ -106,6 +106,15 @@
         <template v-slot:no-results> No hay datos!</template>
       </v-data-table>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -124,9 +133,9 @@ interface Price {
 // Props
 const props = defineProps<Price>()
 // Const
-const dialog = ref<Boolean>(false)
-const search = ref<String>('')
-const perPage = ref<Number>(5)
+const dialog = ref<boolean>(false)
+const search = ref<string>('')
+const perPage = ref<number>(5)
 const data = ref<PriceItem[]>([])
 const editedIndex = ref(-1)
 const editedItem = ref<PriceItem>({
@@ -137,11 +146,15 @@ const defaultItem = ref<PriceItem>({
   name: '',
   price: 0
 })
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
+
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
 //Initialize table
-
 const route = useRoute()
 const currentPage = reactive({
   pageTitle: ref<string>('')
@@ -156,8 +169,10 @@ const initialize = async () => {
     await cost.allCost()
     await product.allProduct()
     await service.allService()
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 
@@ -194,10 +209,16 @@ const save = async () => {
         if (!id) {
           // Add new cost
           await cost.createCost({ price, type, ...payload })
+          snackbar.value = true
+          message.value = '¡Costo agregado con exito!'
+          color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await cost.updateCost(+id, { ...payload, price, type })
+          snackbar.value = true
+          message.value = '¡Costo Actualizado con exito!'
+          color.value = 'light-blue-darken-3'
           close()
         }
         break
@@ -206,10 +227,16 @@ const save = async () => {
         if (!id) {
           // Add new cost
           await service.createService({ price, type, ...payload })
+          snackbar.value = true
+          message.value = '¡Servicio agregado con exito!'
+          color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await service.updateService(+id, { ...payload, price, type })
+          snackbar.value = true
+          message.value = '¡Servicio Actualizado con exito!'
+          color.value = 'light-blue-darken-3'
           close()
         }
         break
@@ -218,18 +245,26 @@ const save = async () => {
         if (!id) {
           // Add new cost
           await product.createProduct({ price, type, ...payload })
+          snackbar.value = true
+          message.value = '¡Producto agregado con exito!'
+          color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await product.updateProduct(+id, { ...payload, price, type })
+          snackbar.value = true
+          message.value = '¡Producto Actualizado con exito!'
+          color.value = 'light-blue-darken-3'
           close()
         }
         break
       default:
         break
     }
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 </script>
