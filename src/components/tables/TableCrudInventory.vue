@@ -197,8 +197,8 @@ const save = async () => {
     if (id) {
       await inventory.updateInventory(+id, { ...inevntory, stock })
       snackbar.value = true
-      message.value = '¡Nuevo producto agregado con exito!'
-      color.value = 'orange-darken-2'
+      message.value = '¡Producto actualizado con exito!'
+      color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error: any) {

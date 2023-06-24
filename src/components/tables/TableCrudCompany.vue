@@ -365,7 +365,7 @@ const save = async () => {
       await company.updateCompany(+id, { ...create, phone, postal_code, lat, lng })
       snackbar.value = true
       message.value = '¡Empresa Actualizada con exito!'
-      color.value = 'cyan-darken-1'
+      color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error: any) {
