@@ -20,7 +20,9 @@ export const useOrdersStore = defineStore({
       { key: 'total', sortable: false, title: 'Total' },
     ] as Field[],
     items: [] as OrdersItem[],
-    cache: {} as Record<string, OrdersItem[]>
+    cache: {} as Record<string, OrdersItem[]>,
+    count: 0 as number,
+    cacheCount: 0 as number
   }),
   actions: {
     async allOrders() {
@@ -39,6 +41,22 @@ export const useOrdersStore = defineStore({
       });
       this.cache.allOrders = this.items
       return this.items
+    },
+    async countPayment(){
+      if (this.cacheCount){
+        this.count = this.cacheCount
+        return this.count
+      }
+      const { data } = await apolloClient.query({
+        query: ALL_ORDERS
+      })
+        let count = 0
+      for(const price of data.orders){
+         count += price.total
+        }
+        this.count = +count.toFixed(2)
+        this.cacheCount = this.count
+      return this.count
     }
   }
 })

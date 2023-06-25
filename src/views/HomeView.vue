@@ -5,11 +5,11 @@
       <!-- Card Payments -->
       <v-col cols="12" md="6">
         <CardHome
-          title="Pagos realizados"
-          description="Pagos realizados esta semana:"
-          value="$ 0.00 MXN"
-          text-button="Ver Pagos"
-          route="/payment"
+          title="Pedidos realizados"
+          description="Pedidos realizados esta semana:"
+          :value="ordersStore.count"
+          text-button="Ver Pedidos"
+          route="/orders"
           bg-card="orange-accent-4"
           bg-button="grey-darken-4"
         />
@@ -40,4 +40,8 @@
 <script setup lang="ts">
 import CardHome from '@/components/cards/CardHome.vue'
 import Maps from '@/components/maps/Maps.vue'
+
+import { useOrdersStore } from '@/stores'
+const ordersStore = useOrdersStore()
+
 </script>

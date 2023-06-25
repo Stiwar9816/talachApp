@@ -9,7 +9,7 @@
           <v-icon class="me-3" icon="mdi-cash-register" size="x-large" color="orange-darken-3" />
           <span class="text-h6 text-black mb-2">{{ props.description }}</span>
         </div>
-        <span class="text-h5 text-black font-weight-bold">{{ props.value }}</span>
+        <span class="text-h5 text-black font-weight-bold">{{ currencyFormatter('MXN',props.value)  }} MXN</span>
       </v-card-text>
       <v-card-actions>
         <v-btn
@@ -26,6 +26,25 @@
 </template>
 
 <script lang="ts" setup>
+import { useOrdersStore } from '@/stores'
+import { onMounted } from 'vue'
+import { currencyFormatter } from '../../utils/currencyFormatter';
+
+const ordersStore = useOrdersStore()
+
+const initialize = async () => {
+  try {
+    const result = await ordersStore.countPayment()
+    return result
+  } catch (error: any) {
+    console.log(error.message)
+  }
+}
+
+onMounted(() => {
+  initialize()
+})
+
 const props = defineProps({
   title: {
     type: String,
@@ -37,7 +56,7 @@ const props = defineProps({
   },
   value: {
     type: String || Number,
-    default: 'value'
+    required: true
   },
   textButton: {
     type: String,
@@ -47,4 +66,5 @@ const props = defineProps({
   bgCard: String,
   bgButton: String
 })
+
 </script>

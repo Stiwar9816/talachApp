@@ -115,4 +115,6 @@ export interface OrdersFields {
     fields: Field[]
     items: OrdersItem[]
     cache: Record<string, OrdersItem[]>
+    count: number
+    cacheCount: number
 }
