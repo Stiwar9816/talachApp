@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { CompanyItem, CompanyFields, Field } from '@/interface'
+import type { CompanyItem, CompanyFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_COMPANIES, CREATE_COMPANY, UPDATE_COMPANY } from '@/gql/company'
 
@@ -31,7 +31,7 @@ export const useCompanyStore = defineStore({
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
       { title: 'Activo', sortable: false, key: 'isActive' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
-    ] as Field[],
+    ],
     items: [] as CompanyItem[],
     cache: {} as Record<string, CompanyItem[]>
   }),

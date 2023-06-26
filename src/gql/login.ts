@@ -1,7 +1,7 @@
-import gql from 'graphql-tag'
+import { gql } from 'graphql-tag'
 
 export const LOGIN_MUTATION = gql`
-  mutation ($signinInput: SigninInput!) {
+  mutation Signin($signinInput: SigninInput!) {
     signin(signinInput: $signinInput) {
       token
       user {

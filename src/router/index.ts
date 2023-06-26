@@ -3,7 +3,6 @@ import LoginView from '@/views/LoginView.vue'
 import HomeView from '@/views/HomeView.vue'
 import InventoryView from '@/views/InventoryView.vue'
 import OrdersView from '@/views/OrdersView.vue'
-import PaymentView from '@/views/PaymentView.vue'
 import RatingsView from '@/views/RatingsView.vue'
 import UsersView from '@/views/UsersView.vue'
 import ProductView from '@/views/ProductView.vue'
@@ -71,16 +70,6 @@ const router = createRouter({
       path: '/orders',
       name: 'orders',
       component: OrdersView,
-      meta: {
-        layout: 'Dashboard',
-        requireAuth: true
-      },
-      beforeEnter: requiredAuth
-    },
-    {
-      path: '/payment',
-      name: 'payment',
-      component: PaymentView,
       meta: {
         layout: 'Dashboard',
         requireAuth: true

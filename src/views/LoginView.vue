@@ -19,7 +19,6 @@
             />
             <v-text-field
               v-model="state.email"
-              :error-messages="v$.email.$errors.map((e) => e.$message)"
               label="Correo electronico"
               aria-label="Email"
               variant="underlined"
@@ -32,7 +31,6 @@
 
             <v-text-field
               v-model="state.password"
-              :error-messages="v$.password.$errors.map((e) => e.$message)"
               label="Contraseña"
               id="current-password"
               aria-label="current-password"
@@ -64,58 +62,71 @@
         </v-sheet>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
-<script>
-import { onBeforeUnmount, reactive } from 'vue'
+
+<script setup lang="ts">
+import { onBeforeUnmount, reactive, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required, helpers } from '@vuelidate/validators'
 import { useAuthStore, useErrorsStore } from '@/stores'
 import router from '@/router'
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
 
-export default {
-  name: 'login',
-  components: 'LoginView',
-  data() {
-    return {
-      show1: false
-    }
+let show1 = ref(false)
+interface SigninInput {
+  email: string
+  password: string
+}
+
+const initialState: SigninInput = {
+  email: '',
+  password: ''
+}
+const state = reactive({
+  ...initialState
+})
+const rules = {
+  email: {
+    required: helpers.withMessage('El campo correo electronico es requerido', required),
+    email: helpers.withMessage('El texto ingresado no es correo electronico valido', email)
   },
-  setup() {
-    const initialState = {
-      email: '',
-      password: ''
-    }
-    const state = reactive({
-      ...initialState
-    })
-
-    const rules = {
-      email: {
-        required: helpers.withMessage('El campo correo electronico es requerido', required),
-        email: helpers.withMessage('El texto ingresado no es correo electronico valido', email)
-      },
-      password: {
-        required: helpers.withMessage('El campo contraseña es requerido', required)
-      }
-    }
-
-    const v$ = useVuelidate(rules, state)
-    const errors = useErrorsStore()
-    const authStore = useAuthStore()
-    const handleLogin = async () => {
-      try {
-        await authStore.login(state)
-        router.push({ name: 'home' })
-      } catch (error) {
-        console.error(error.message)
-        errors.$reset()
-      }
-    }
-    onBeforeUnmount(() => errors.$reset())
-    return { state, v$, handleLogin }
+  password: {
+    required: helpers.withMessage('El campo contraseña es requerido', required)
   }
 }
+
+const v$ = useVuelidate(rules, state)
+const errors = useErrorsStore()
+const authStore = useAuthStore()
+const handleLogin = async () => {
+  try {
+    const signinInput: SigninInput = {
+      email: state.email,
+      password: state.password
+    }
+    await authStore.login(signinInput)
+    router.push({ name: 'home' })
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
+    errors.$reset()
+  }
+}
+onBeforeUnmount(() => errors.$reset())
 </script>
 
 <style>

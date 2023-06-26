@@ -87,32 +87,32 @@ export interface CompanyItem {
 }
 
 export interface CompanyFields {
-    fields: Field[]
+    fields: Record<string, any>
     items: CompanyItem[]
     cache: Record<string, CompanyItem[]>
 }
 export interface PricesFields {
-    fields: Field[]
+    fields: Record<string, any>
     items: PriceItem[]
     cache: Record<string, PriceItem[]>
 }
 export interface InventoryFields {
-    fields: Field[]
+    fields: Record<string, any>
     items: InventoryItem[]
     cache: Record<string, InventoryItem[]>
 }
 export interface UsersFields {
-    fields: Field[]
+    fields: Record<string, any>
     items: UserItem[]
     cache: Record<string, UserItem[]>
 }
 export interface RatingFields {
-    fields: Field[]
+    fields: Record<string, any>
     items: RatingItem[]
     cache: Record<string, RatingItem[]>
 }
 export interface OrdersFields {
-    fields: Field[]
+    fields: Record<string, any>
     items: OrdersItem[]
     cache: Record<string, OrdersItem[]>
 }

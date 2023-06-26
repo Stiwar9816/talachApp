@@ -6,7 +6,6 @@
         <form class="mt-5">
           <v-text-field
             v-model="state.name"
-            :error-messages="v$.name.$errors.map((e) => e.$message)"
             label="Nombre"
             required
             variant="underlined"
@@ -16,8 +15,7 @@
 
           <v-text-field
             v-model="state.email"
-            :error-messages="v$.email.$errors.map((e) => e.$message)"
-            label="Correo electronico"
+            label="Correo electrónico"
             required
             variant="underlined"
             @input="v$.email.$touch"
@@ -27,7 +25,6 @@
           <v-text-field
             class="mb-3"
             v-model="state.phone"
-            :error-messages="v$.phone.$errors.map((e) => e.$message)"
             label="Teléfono"
             type="number"
             min="0"
@@ -42,7 +39,7 @@
           <v-btn class="me-4" @click="clear" color="grey-lighten-1" variant="flat">
             Cancelar
           </v-btn>
-          <v-btn @click="v$.$validate" color="orange-darken-3" variant="flat"> Guardar </v-btn>
+          <v-btn @click="v$.$validate" color="orange-darken-3" variant="flat">Guardar</v-btn>
         </form>
       </v-col>
       <v-col md="3"></v-col>
@@ -50,35 +47,33 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
-import { rules } from '@/utils';
+import { rules } from '@/utils'
 
-export default {
-  setup() {
-    const initialState = {
-      name: '',
-      email: '',
-      phone: ''
-    }
+const initialState = {
+  name: '',
+  email: '',
+  phone: ''
+}
 
-    const state = reactive({
-      ...initialState
-    })
+const state: {
+  name: string
+  email: string
+  phone: string
+} = reactive({
+  ...initialState
+})
 
-    // Validations
-    const v$ = useVuelidate(rules, state)
+// Validations
+const v$ = useVuelidate(rules, state)
 
-    function clear() {
-      v$.value.$reset()
+function clear() {
+  v$.value.$reset()
 
-      for (const [key, value] of Object.entries(initialState)) {
-        state[key] = value
-      }
-    }
-
-    return { state, clear, v$ }
+  for (const [key, value] of Object.entries<string>(initialState)) {
+    state[key as keyof typeof state] = value
   }
 }
 </script>
