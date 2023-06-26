@@ -63,6 +63,7 @@ yarn lint
 | style    | Style changes in the application                      |
 | sintax   | Code syntax changes                                   |
 | test     | Add or correct test                                   |
+| delete   | File deletion                                         |
 
 ## Example
 
