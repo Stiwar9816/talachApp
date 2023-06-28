@@ -5,31 +5,6 @@ export interface Field {
     key: string
 }
 
-export interface Item {
-    id?: string | number,
-    name?: string,
-    user?: string,
-    date?: string,
-    talachero?: string,
-    payment?: string,
-    total?: number,
-    state?: string,
-    price?: number,
-    stock?: number,
-    description?: string,
-    responsible?: string,
-    quality?: string,
-    rank?: number,
-    role?: string,
-    email?: string,
-    phone?: number,
-    bussiness_name?: string,
-    departament?: string,
-    city?: string,
-    postal_code?: number,
-    address?: string
-    type?: string
-}
 export interface RatingItem {
     id?: string | number
     quality: string
@@ -59,6 +34,10 @@ export interface ItemPrice {
     type?: string
 }
 
+export interface Count {
+    count: number
+    cacheCount: number
+}
 export interface PriceItem extends ItemPrice {
     price: number
     stock?: number
@@ -96,7 +75,7 @@ export interface PricesFields {
     items: PriceItem[]
     cache: Record<string, PriceItem[]>
 }
-export interface InventoryFields {
+export interface InventoryFields extends Count {
     fields: Record<string, any>
     items: InventoryItem[]
     cache: Record<string, InventoryItem[]>
@@ -111,10 +90,8 @@ export interface RatingFields {
     items: RatingItem[]
     cache: Record<string, RatingItem[]>
 }
-export interface OrdersFields {
+export interface OrdersFields extends Count {
     fields: Record<string, any>
     items: OrdersItem[]
     cache: Record<string, OrdersItem[]>
-    count: number
-    cacheCount: number
 }

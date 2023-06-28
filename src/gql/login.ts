@@ -15,3 +15,19 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `
+
+export const RESET_PASSWORD = gql`
+  mutation ($resetPassword: String!) {
+  resetPassword(resetPassword: $resetPassword) {
+    email
+  }
+}
+`
+
+export const RESET_PASSWORD_AUTH = gql`
+  mutation ($newPassword: String!) {
+  resetPasswordAuth(newPassword: $newPassword) {
+    email
+  }
+}
+`

@@ -12,6 +12,7 @@
           route="/orders"
           bg-card="orange-accent-4"
           bg-button="grey-darken-4"
+          :show-currency="true"
         />
       </v-col>
       <!-- Card Payments -->
@@ -20,11 +21,12 @@
         <CardHome
           title="Inventarios"
           description="Talacheros con inventario bajo:"
-          value="15"
+          :value="invetoryStore.count"
           text-button="Ver Inventario"
           route="/inventory"
           bg-card="blue-darken-4"
           bg-button="grey-darken-4"
+          :show-inventory="true"
         />
         <!-- Card Inventory -->
       </v-col>
@@ -41,7 +43,8 @@
 import CardHome from '@/components/cards/CardHome.vue'
 import Maps from '@/components/maps/Maps.vue'
 
-import { useOrdersStore } from '@/stores'
+import { useOrdersStore, useInventoryStore } from '@/stores'
 const ordersStore = useOrdersStore()
+const invetoryStore = useInventoryStore()
 
 </script>

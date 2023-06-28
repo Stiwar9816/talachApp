@@ -1,16 +1,15 @@
 <template>
-  <div class="login">
+  <div class="resetPassword">
     <v-row no-gutters>
       <v-col cols="12">
         <v-sheet
           color="orange-accent-1"
           rounded="lg"
-          height="420"
-          width="350"
+          width="380"
           elevation="18"
           class="mx-auto pa-6"
         >
-          <form @submit.prevent="handleLogin">
+          <form @submit.prevent="handleReset">
             <v-img
               src="/images/logo-talachapp.webp"
               alt="Logo TalachAPP"
@@ -29,23 +28,6 @@
               @blur="v$.email.$touch"
             ></v-text-field>
 
-            <v-text-field
-              v-model="state.password"
-              label="Contraseña"
-              id="current-password"
-              aria-label="current-password"
-              autocomplete="false"
-              variant="underlined"
-              prepend-icon="mdi-lock"
-              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="show1 ? 'text' : 'password'"
-              @click:append="show1 = !show1"
-              required
-              clearable
-              @input="v$.password.$touch"
-              @blur="v$.password.$touch"
-            ></v-text-field>
-
             <v-btn
               type="submit"
               block
@@ -53,13 +35,13 @@
               color="orange-accent-4"
               rounded="lg"
               size="large"
-              class="my-3"
+              class="mt-4"
               @click="v$.$validate"
             >
-              Iniciar Sesión
+              Recuperar Contraseña
             </v-btn>
-            <router-link class="mt-3 reset" to="/reset-password"
-              >¿Has olvidado la contraseña? - Click Aquí</router-link
+            <router-link class="mt-3 reset" to="/"
+              >¿No la necesitas recuperar? - Click aquí</router-link
             >
           </form>
         </v-sheet>
@@ -88,39 +70,24 @@ const snackbar = ref(false)
 const color = ref('')
 const message = ref('')
 
-let show1 = ref(false)
-interface SigninInput {
-  email: string
-  password: string
-}
-
-const initialState: SigninInput = {
-  email: '',
-  password: ''
-}
 const state = reactive({
-  ...initialState
+  email: ''
 })
+
 const rules = {
   email: {
     required: helpers.withMessage('El campo correo electronico es requerido', required),
     email: helpers.withMessage('El texto ingresado no es correo electronico valido', email)
-  },
-  password: {
-    required: helpers.withMessage('El campo contraseña es requerido', required)
   }
 }
 
 const v$ = useVuelidate(rules, state)
 const errors = useErrorsStore()
 const authStore = useAuthStore()
-const handleLogin = async () => {
+
+const handleReset = async () => {
   try {
-    const signinInput: SigninInput = {
-      email: state.email,
-      password: state.password
-    }
-    await authStore.login(signinInput)
+    await authStore.resetPassword(state.email)
     router.push({ name: 'home' })
   } catch (error: any) {
     snackbar.value = true
@@ -129,11 +96,12 @@ const handleLogin = async () => {
     errors.$reset()
   }
 }
+
 onBeforeUnmount(() => errors.$reset())
 </script>
 
 <style>
-.login {
+.resetPassword {
   background: rgb(239, 108, 0);
   background: linear-gradient(
     190deg,
@@ -144,7 +112,6 @@ onBeforeUnmount(() => errors.$reset())
   display: grid;
   place-items: center;
 }
-
 .reset {
   display: grid;
   place-items: center;

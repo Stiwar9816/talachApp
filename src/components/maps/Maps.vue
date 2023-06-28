@@ -54,3 +54,9 @@ onMounted(() => {
   initialize()
 })
 </script>
+
+<style>
+.mapdiv {
+  border-radius: 10px;
+}
+</style>

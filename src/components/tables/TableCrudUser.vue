@@ -22,6 +22,9 @@
       >
         <template v-slot:top>
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
+            <!-- Modal Reset Password -->
+            <form-reset-password-auth class="mx-2" />
+            <!-- Modal Reset Password -->
             <v-spacer></v-spacer>
             <!-- Add Modal -->
             <v-dialog v-model="dialog" max-width="500px">
@@ -156,6 +159,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
+import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 // Interface
 import type { UserItem } from '@/interface'
 import { useUserStore } from '@/stores'
@@ -252,8 +256,10 @@ const save = async () => {
       color.value = 'light-blue-darken-3'
       close()
     }
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 </script>

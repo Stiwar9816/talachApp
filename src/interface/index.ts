@@ -1,6 +1,5 @@
 export type {
     Field,
-    Item,
     ItemPrice,
     UserItem,
     PriceItem,
@@ -13,7 +12,8 @@ export type {
     RatingItem,
     RatingFields,
     OrdersFields,
-    OrdersItem
+    OrdersItem,
+    Count
 } from './Table'
 export type { Marker, LatLgn, Polygons, PolygonProperties } from './maps';
 export type { User, AuthState } from './auth'

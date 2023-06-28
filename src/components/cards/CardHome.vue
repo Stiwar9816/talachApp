@@ -9,7 +9,13 @@
           <v-icon class="me-3" icon="mdi-cash-register" size="x-large" color="orange-darken-3" />
           <span class="text-h6 text-black mb-2">{{ props.description }}</span>
         </div>
-        <span class="text-h5 text-black font-weight-bold">{{ currencyFormatter('MXN',props.value)  }} MXN</span>
+
+        <span v-show="props.showCurrency" class="text-h5 text-black font-weight-bold"
+          >{{ currencyFormatter('MXN', props.value) }} MXN</span
+        >
+        <span v-show="props.showInventory" class="text-h5 text-black font-weight-bold">
+          {{ props.value }}</span
+        >
       </v-card-text>
       <v-card-actions>
         <v-btn
@@ -22,22 +28,39 @@
         >
       </v-card-actions>
     </v-card>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useOrdersStore } from '@/stores'
-import { onMounted } from 'vue'
-import { currencyFormatter } from '../../utils/currencyFormatter';
-
+import { onMounted, ref } from 'vue'
+import { useOrdersStore, useInventoryStore } from '@/stores'
+import { currencyFormatter } from '../../utils/currencyFormatter'
+// Stores Initialization
 const ordersStore = useOrdersStore()
+const invetoryStore = useInventoryStore()
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
 
 const initialize = async () => {
   try {
-    const result = await ordersStore.countPayment()
-    return result
+    const inventory = await invetoryStore.countLowInventory()
+    const orders = await ordersStore.countPayment()
+    return { inventory, orders }
   } catch (error: any) {
-    console.log(error.message)
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
 }
 
@@ -55,7 +78,7 @@ const props = defineProps({
     default: 'description card'
   },
   value: {
-    type: String || Number,
+    type: Number,
     required: true
   },
   textButton: {
@@ -64,7 +87,8 @@ const props = defineProps({
   },
   route: String,
   bgCard: String,
-  bgButton: String
+  bgButton: String,
+  showCurrency: Boolean,
+  showInventory: Boolean
 })
-
 </script>

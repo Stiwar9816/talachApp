@@ -61,7 +61,7 @@ yarn lint
 | refactor | Code refactoring processes                            |
 | revert   | Rollbacks to a previous commit                        |
 | style    | Style changes in the application                      |
-| sintax   | Code syntax changes                                   |
+| syntax   | Code syntax changes                                   |
 | test     | Add or correct test                                   |
 | delete   | File deletion                                         |
 

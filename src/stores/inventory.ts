@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, InventoryFields, InventoryItem} from '@/interface'
+import type { Field, InventoryFields, InventoryItem } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_INVENTORY, UPDATE_INVENTORY } from '@/gql/inventory'
 
@@ -18,7 +18,9 @@ export const useInventoryStore = defineStore({
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
     items: [] as InventoryItem[],
-    cache: {} as Record<string, InventoryItem[]>
+    cache: {} as Record<string, InventoryItem[]>,
+    count: 0 as number,
+    cacheCount: 0 as number
   }),
   actions: {
     async allInventory() {
@@ -49,6 +51,24 @@ export const useInventoryStore = defineStore({
       this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
       this.cache.allProduct = this.items; // Actualizar caché
       return this.items;
+    },
+    async countLowInventory() {
+      if (this.cacheCount) {
+        this.count = this.cacheCount;
+        return this.count;
+      }
+      const { data } = await apolloClient.query({
+        query: ALL_INVENTORY,
+        variables: {
+          priceType: 'Producto'
+        }
+      });
+      const lowInventoryProducts = data.priceByType.filter(
+        (inventory: any) => inventory.stock < 5
+      );
+      this.count = lowInventoryProducts.length; // Asignar el valor de count a this.count
+      this.cacheCount = this.count;
+      return this.count;
     }
   }
 })
