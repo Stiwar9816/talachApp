@@ -20,7 +20,6 @@ export const ALL_PRICES_BY_TYPE = gql`
       name
       price
       stock
-      image
     }
   }
 `

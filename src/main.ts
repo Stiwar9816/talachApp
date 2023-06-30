@@ -9,7 +9,6 @@ import apolloClient from './plugins/apollo';
 import { vuetify } from './plugins/vuetify'
 
 const app = createApp(App)
-
 app.provide(DefaultApolloClient, apolloClient)
 registerLayouts(app);
 app.use(createPinia())

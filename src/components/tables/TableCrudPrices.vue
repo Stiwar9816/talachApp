@@ -92,13 +92,9 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
-        <template v-slot:item.image="{ item }">
-          <img :src="item.columns.image" alt="Product Image" />
-          <!-- Resto de los detalles del producto -->
-        </template>
-        <template v-slot:item.price="{ item }">
-          {{ currencyFormatter('MXN', item.columns.price) }} MXN
-        </template>
+        <template v-slot:item.price="{ item }"
+          >{{ currencyFormatter('MXN', item.columns.price) }} MXN</template
+        >
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
