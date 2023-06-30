@@ -3,12 +3,26 @@ import { defineStore } from 'pinia'
 import type { Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, UPDATE_PRICE } from '@/gql/price'
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 
+const s3Client = new S3Client({
+  region: import.meta.env.VITE_REGION,
+  credentials: {
+    accessKeyId: import.meta.env.VITE_ACCESS_KEY_ID,
+    secretAccessKey: import.meta.env.VITE_SECRET_ACCESS_KEY,
+  },
+  endpoint: import.meta.env.VITE_ENDPOINT,
+});
 export const useProductStore = defineStore({
   id: 'product',
   state: (): PricesFields => ({
     fields: [
       { title: 'ID', sortable: false, key: 'id' },
+      {
+        title: 'Imagen',
+        sortable: false,
+        key: 'image'
+      },
       {
         title: 'Nombre',
         sortable: false,
@@ -21,23 +35,41 @@ export const useProductStore = defineStore({
     cache: {} as Record<string, PriceItem[]>
   }),
   actions: {
+
     async allProduct() {
       if (this.cache.allProduct) {
         // Devolver datos almacenados en caché si están disponibles
         this.items = this.cache.allProduct;
         return this.items;
       }
+
       const { data } = await apolloClient.query({
         query: ALL_PRICES_BY_TYPE,
         variables: {
           priceType: 'Producto'
         }
-      })
-      const [...product] = data.priceByType
-      this.items = [...product]
-      // Guardar en caché los datos obtenidos
+      });
+
+      const [image, ...product] = data.priceByType;
+
+      const input = {
+        "Bucket": import.meta.env.VITE_BUCKET,
+        "Key": "e11a11dd-f7f8-4781-9574-ed6df116746a-stiwar_color.png",
+      };
+      const command = new GetObjectCommand(input);
+      try {
+        const response = await s3Client.send(command);
+        console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
+      // Asigna los productos a la propiedad 'items'
+      this.items = product;
+
+      // Guarda en caché los datos obtenidos
       this.cache.allProduct = this.items;
-      return this.items
+
+      return this.items;
     },
     async createProduct(payload: PriceItem) {
       const { data } = await apolloClient.mutate({
