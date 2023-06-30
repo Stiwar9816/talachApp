@@ -1,14 +1,32 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client/core'
 import { onError } from '@apollo/client/link/error'
 import { useErrorsStore } from '../stores/useErrors'
 import { setContext } from '@apollo/client/link/context'
+import { getMainDefinition } from '@apollo/client/utilities'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { createClient } from 'graphql-ws'
 
 // HTTP connection to the API
-const httpLink = createHttpLink({
+const httpLink = new HttpLink({
   // You should use an absolute URL here
   uri: import.meta.env.VITE_GRAPHQL_URL,
   credentials: 'include'
 })
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: import.meta.env.VITE_GRAPHQL_URL_WS,
+    lazy: true
+  })
+)
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+  },
+  wsLink,
+  httpLink
+)
 
 const errorHandler = onError(({ graphQLErrors }) => {
   if (graphQLErrors)
@@ -36,7 +54,7 @@ const cache = new InMemoryCache({
 
 // Create the apollo client
 const apolloClient = new ApolloClient({
-  link: authLink.concat(errorHandler.concat(httpLink)),
+  link: authLink.concat(errorHandler.concat(splitLink)),
   cache
 })
 
