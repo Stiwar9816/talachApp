@@ -1,82 +1,74 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, Item } from '@/interface'
+import type { Field, InventoryFields, InventoryItem } from '@/interface'
+import apolloClient from '@/plugins/apollo'
+import { ALL_INVENTORY, UPDATE_INVENTORY } from '@/gql/inventory'
 
-export const useInventoryStore = defineStore('inventory', () => {
-  const fields: Array<Field> = [
-    {
-      title: 'Nombre',
-      sortable: false,
-      key: 'name'
+export const useInventoryStore = defineStore({
+  id: 'inventory',
+  state: (): InventoryFields => ({
+    fields: [
+      {
+        title: 'Nombre',
+        sortable: false,
+        key: 'name'
+      },
+      { title: 'Stock', key: 'stock' },
+      { title: 'Descripción', key: 'description' },
+      { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
+    ] as Field[],
+    items: [] as InventoryItem[],
+    cache: {} as Record<string, InventoryItem[]>,
+    count: 0 as number,
+    cacheCount: 0 as number
+  }),
+  actions: {
+    async allInventory() {
+      if (this.cache.allProduct) {
+        // Devolver datos almacenados en caché si están disponibles
+        this.items = this.cache.allProduct;
+        return this.items;
+      }
+      const { data } = await apolloClient.query({
+        query: ALL_INVENTORY,
+        variables: {
+          priceType: 'Producto'
+        }
+      })
+      const [...invetory] = data.priceByType
+      this.items = [...invetory]
+      // Guardar en caché los datos obtenidos
+      this.cache.allProduct = this.items;
+      return this.items;
     },
-    { title: 'Stock', key: 'stock' },
-    { title: 'Descripción', key: 'description' },
-    { title: 'Responsable', key: 'responsible' },
-    { title: 'Acciones', key: 'actions', sortable: false }
-  ]
-
-  const items: Array<Item> = [
-    {
-      name: 'Llanta 11.22.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
+    async updateInventory(id: number, payload: InventoryItem) {
+      const { data } = await apolloClient.mutate({
+        mutation: UPDATE_INVENTORY,
+        variables: {
+          updatePriceInput: { id, ...payload }
+        }
+      })
+      this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
+      this.cache.allProduct = this.items; // Actualizar caché
+      return this.items;
     },
-    {
-      name: 'Llanta 11.24.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.21.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.20.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.22.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.22.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.22.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.22.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.22.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-    {
-      name: 'Llanta 11.22.5 R',
-      stock: 159,
-      description: 'Pariatur consectetur ex deserunt reprehenderit elit elit incididunt.',
-      responsible: 'Jhon doe'
-    },
-  ]
-
-  return { fields, items }
+    async countLowInventory() {
+      if (this.cacheCount) {
+        this.count = this.cacheCount;
+        return this.count;
+      }
+      const { data } = await apolloClient.query({
+        query: ALL_INVENTORY,
+        variables: {
+          priceType: 'Producto'
+        }
+      });
+      const lowInventoryProducts = data.priceByType.filter(
+        (inventory: any) => inventory.stock < 5
+      );
+      this.count = lowInventoryProducts.length; // Asignar el valor de count a this.count
+      this.cacheCount = this.count;
+      return this.count;
+    }
+  }
 })

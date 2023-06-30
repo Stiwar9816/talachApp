@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import TableCrudInventory from '../components/tables/TableCrudInventory.vue'
 // Store
-import { useInventoryStore } from '@/stores/inventory'
+import { useInventoryStore } from '@/stores'
 // Initialization Store
 const storeInventory = useInventoryStore()
 </script>

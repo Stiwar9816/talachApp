@@ -5,13 +5,14 @@
       <!-- Card Payments -->
       <v-col cols="12" md="6">
         <CardHome
-          title="Pagos realizados"
-          description="Pagos realizados esta semana:"
-          value="$ 0.00 MXN"
-          text-button="Ver Pagos"
-          route="/payment"
+          title="Pedidos realizados"
+          description="Pedidos realizados esta semana:"
+          :value="ordersStore.count"
+          text-button="Ver Pedidos"
+          route="/orders"
           bg-card="orange-accent-4"
           bg-button="grey-darken-4"
+          :show-currency="true"
         />
       </v-col>
       <!-- Card Payments -->
@@ -20,11 +21,12 @@
         <CardHome
           title="Inventarios"
           description="Talacheros con inventario bajo:"
-          value="15"
+          :value="invetoryStore.count"
           text-button="Ver Inventario"
           route="/inventory"
           bg-card="blue-darken-4"
           bg-button="grey-darken-4"
+          :show-inventory="true"
         />
         <!-- Card Inventory -->
       </v-col>
@@ -40,4 +42,9 @@
 <script setup lang="ts">
 import CardHome from '@/components/cards/CardHome.vue'
 import Maps from '@/components/maps/Maps.vue'
+
+import { useOrdersStore, useInventoryStore } from '@/stores'
+const ordersStore = useOrdersStore()
+const invetoryStore = useInventoryStore()
+
 </script>

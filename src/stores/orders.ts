@@ -1,85 +1,62 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, Item } from '@/interface'
+import type { Field, OrdersFields, OrdersItem } from '@/interface'
+import moment from 'moment'
+import apolloClient from '@/plugins/apollo'
+import { ALL_ORDERS } from '@/gql/order'
 
-export const useOrdersStore = defineStore('orders', () => {
-  const fields:Array<Field> = [
-    {
-      key: 'id',
-      sortable: false,
-      title: 'ID'
+export const useOrdersStore = defineStore({
+  id: 'orders',
+  state: (): OrdersFields => ({
+    fields: [
+      {
+        key: 'id',
+        sortable: false,
+        title: 'ID'
+      },
+      { key: 'user.fullName', sortable: false, title: 'Usuario' },
+      { key: 'createdAt', sortable: true, title: 'Fecha de servicio' },
+      { key: 'companies.name_company', sortable: false, title: 'Talachero' },
+      { key: 'total', sortable: false, title: 'Total' },
+    ] as Field[],
+    items: [] as OrdersItem[],
+    cache: {} as Record<string, OrdersItem[]>,
+    count: 0 as number,
+    cacheCount: 0 as number
+  }),
+  actions: {
+    async allOrders() {
+      if (this.cache.allOrders) {
+        this.items = this.cache.allOrders
+        return this.items;
+      }
+      const { data } = await apolloClient.query({
+        query: ALL_ORDERS
+      })
+      this.items = data.orders.map((item: OrdersItem) => {
+        return {
+          ...item,
+          createdAt: moment(item.createdAt).format('LLL') // Aquí defines el formato de fecha deseado
+        };
+      });
+      this.cache.allOrders = this.items
+      return this.items
     },
-    { key: 'user', sortable: false, title: 'Usuario' },
-    { key: 'date', sortable: true, title: 'Fecha de servicio' },
-    { key: 'talachero', sortable: false, title: 'Talachero' },
-    { key: 'payment', sortable: false, title: 'Método de pago' },
-    { key: 'total', sortable: false, title: 'Total' },
-    { key: 'state', sortable: true, title: 'Estado' }
-  ]
-  const items:Array<Item> = [
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      date: '13-04-2023',
-      talachero: 'Frozen Yogurt',
-      payment: 'Conekta',
-      total: 1000,
-      state: 'Creado'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      date: '13-04-2023',
-      talachero: 'Frozen Yogurt',
-      payment: 'Conekta',
-      total: 1000,
-      state: 'Creado'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      date: '13-04-2023',
-      talachero: 'Frozen Yogurt',
-      payment: 'Conekta',
-      total: 1000,
-      state: 'Creado'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      date: '13-04-2023',
-      talachero: 'Frozen Yogurt',
-      payment: 'Conekta',
-      total: 1000,
-      state: 'Creado'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      date: '13-04-2023',
-      talachero: 'Frozen Yogurt',
-      payment: 'Conekta',
-      total: 1000,
-      state: 'Creado'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      date: '13-04-2023',
-      talachero: 'Frozen Yogurt',
-      payment: 'Conekta',
-      total: 1000,
-      state: 'Creado'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      date: '13-04-2023',
-      talachero: 'Frozen Yogurt',
-      payment: 'Conekta',
-      total: 1000,
-      state: 'Creado'
+    async countPayment() {
+      if (this.cacheCount) {
+        this.count = this.cacheCount
+        return this.count
+      }
+      const { data } = await apolloClient.query({
+        query: ALL_ORDERS
+      })
+      let count = 0
+      for (const price of data.orders) {
+        count += price.total
+      }
+      this.count = +count.toFixed(2)
+      this.cacheCount = this.count
+      return this.count
     }
-  ]
-  return { fields, items }
+  }
 })

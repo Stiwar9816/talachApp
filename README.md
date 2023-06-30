@@ -15,8 +15,8 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
 1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
 ## Customize configuration
@@ -45,4 +45,44 @@ yarn build
 
 ```sh
 yarn lint
+```
+
+## COMMIT STRUCUTRE
+
+| Type     | Definition                                            |
+| -------- | ----------------------------------------------------- |
+| feat     | When new features are added                           |
+| fix      | Correction of some error                              |
+| build    | Build system changes                                  |
+| chore    | Changes that do not affect the production environment |
+| ci       | Continuous Integration configuration changes          |
+| docs     | Documentation Changes                                 |
+| perf     | Application performance improvements                  |
+| refactor | Code refactoring processes                            |
+| revert   | Rollbacks to a previous commit                        |
+| style    | Style changes in the application                      |
+| syntax   | Code syntax changes                                   |
+| test     | Add or correct test                                   |
+| delete   | File deletion                                         |
+
+## Example
+
+```sh
+fix (button) = Change of any button
+```
+
+```sh
+fix (User) = Change in an entity
+```
+
+If the commit has a change that makes it incompatible with the new version, for example the ORM change, the commit will be created as follows:
+
+```sh
+fix (database)! = If you have the "!" at the end it means that it is a breaking change
+```
+
+and finally add a short message:
+
+```sh
+fix (UserController): Changing the HTTP method used in /register
 ```

@@ -22,6 +22,9 @@
       >
         <template v-slot:top>
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
+            <!-- Modal Reset Password -->
+            <form-reset-password-auth class="mx-2" />
+            <!-- Modal Reset Password -->
             <v-spacer></v-spacer>
             <!-- Add Modal -->
             <v-dialog v-model="dialog" max-width="500px">
@@ -55,7 +58,7 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
-                          v-model="editedItem.name"
+                          v-model="editedItem.fullName"
                           label="Nombre"
                           :rules="requiredValue"
                           variant="underlined"
@@ -67,6 +70,19 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
+                          v-model="editedItem.phone"
+                          label="Teléfono"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="number"
+                          min="0"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field
                           v-model="editedItem.email"
                           label="Correo electronico"
                           :rules="emailRules"
@@ -77,32 +93,33 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-select
-                          v-model="editedItem.role"
-                          label="Rol"
-                          :rules="requiredValue"
-                          :items="['Administrador', 'Centro Talachero', 'Usuario']"
-                          variant="underlined"
-                          density="comfortable"
-                          type="text"
-                          clearable
-                          required
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-select
-                          v-model="editedItem.state"
-                          label="Estado"
-                          :rules="requiredValue"
-                          :items="['Activo', 'Inactivo']"
-                          variant="underlined"
-                          density="comfortable"
-                          type="text"
-                          clearable
-                          required
-                        ></v-select>
-                      </v-col>
+                      <template v-if="editedItem.id">
+                        <v-col cols="12" sm="6" md="6">
+                          <v-select
+                            v-model="editedItem.roles"
+                            label="Rol"
+                            :rules="requiredValue"
+                            :items="['Administrador', 'Talachero', 'Usuario']"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                            required
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-select
+                            v-model="editedItem.isActive"
+                            label="Estado"
+                            :rules="requiredValue"
+                            :items="['Activo', 'Inactivo']"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                          ></v-select>
+                        </v-col>
+                      </template>
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -115,31 +132,11 @@
               </v-card>
             </v-dialog>
             <!-- Add Modal -->
-            <!-- Delete Modal -->
-            <v-dialog v-model="dialogDelete" max-width="500px">
-              <v-card class="rounded-lg">
-                <v-card-text class="text-h6 text-center"
-                  >¿Estás seguro de que quieres eliminar este artículo?
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer />
-                  <v-btn color="grey-lighten-1" variant="flat" @click="closeDelete">Cancelar</v-btn>
-                  <v-btn color="orange-darken-3" variant="flat" @click="deleteItemConfirm"
-                    >OK</v-btn
-                  >
-                  <v-spacer />
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <!-- Delete Modal -->
           </v-toolbar>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
-          </v-icon>
-          <v-icon size="large" class="my-1" color="red-darken-1" @click="deleteItem(item.raw)">
-            mdi-delete
           </v-icon>
         </template>
         <template v-slot:no-data>
@@ -148,13 +145,24 @@
         <template v-slot:no-results> No hay datos!</template>
       </v-data-table>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
+import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 // Interface
 import type { UserItem } from '@/interface'
+import { useUserStore } from '@/stores'
 interface User {
   fields: Record<string, string>
   items: UserItem[]
@@ -162,24 +170,29 @@ interface User {
 // Props
 const props = defineProps<User>()
 // Const
-const dialog = ref<Boolean>(false)
-const dialogDelete = ref<Boolean>(false)
-const search = ref<String>('')
-const perPage = ref<Number>(5)
+const dialog = ref<boolean>(false)
+const search = ref<string>('')
+const perPage = ref<number>(5)
 const data = ref<UserItem[]>([])
 const editedIndex = ref(-1)
 const editedItem = ref<UserItem>({
-  name: '',
+  fullName: '',
+  phone: 0,
   email: '',
-  role: '',
-  state: ''
+  roles: '',
+  isActive: ''
 })
 const defaultItem = ref<UserItem>({
-  name: '',
+  fullName: '',
+  phone: 0,
   email: '',
-  role: '',
-  state: ''
+  roles: '',
+  isActive: ''
 })
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 const emailRules = ref([
@@ -190,34 +203,32 @@ const emailRules = ref([
     ) || 'Correo electronico no es valido, Verifiquelo nuevamente'
 ])
 
+const user = useUserStore()
+
+const initialize = async () => {
+  try {
+    const result = await user.allUsers()
+    data.value = result
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
+  }
+}
+
 onMounted(() => {
   initialize()
 })
 
 // Methods / Actions
 const formTitle = computed(() => {
-  return editedIndex.value === -1 ? 'Agregar Usuario' : 'Editar Usuario'
+  return !editedItem.value.id ? 'Agregar Usuario' : 'Editar Usuario'
 })
-
-const initialize = () => {
-  data.value = props.items
-}
 
 const editItem = (item: UserItem) => {
   editedIndex.value = data.value.indexOf(item)
   editedItem.value = Object.assign({}, item)
   dialog.value = true
-}
-
-const deleteItem = (item: UserItem) => {
-  editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
-  dialogDelete.value = true
-}
-
-const deleteItemConfirm = () => {
-  data.value.splice(editedIndex.value, 1)
-  closeDelete()
 }
 
 const close = () => {
@@ -226,18 +237,29 @@ const close = () => {
   editedIndex.value = -1
 }
 
-const closeDelete = () => {
-  dialogDelete.value = false
-  editedItem.value = Object.assign({}, defaultItem.value)
-  editedIndex.value = -1
-}
-
-const save = () => {
-  if (editedIndex.value > -1) {
-    Object.assign(data.value[editedIndex.value], editedItem.value)
-  } else {
-    data.value.push(editedItem.value)
+const save = async () => {
+  try {
+    let { id, fullName, email, password, phone, ...edit } = editedItem.value
+    phone = +phone
+    if (!id) {
+      // Add new user
+      await user.createUser({ fullName, email, password, phone })
+      snackbar.value = true
+      message.value = '¡Nuevo usuario agregado con exito!'
+      color.value = 'orange-darken-2'
+      close()
+    } else {
+      //Update user
+      await user.updateUser(+id, { ...edit, fullName, email, password, phone })
+      snackbar.value = true
+      message.value = '¡Usuario Actualizado con exito!'
+      color.value = 'light-blue-darken-3'
+      close()
+    }
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
   }
-  close()
 }
 </script>

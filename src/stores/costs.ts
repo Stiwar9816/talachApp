@@ -1,71 +1,75 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, Item } from '@/interface'
+import type { Field, PriceItem, PricesFields } from '@/interface'
+import apolloClient from '@/plugins/apollo'
+import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, UPDATE_PRICE } from '@/gql/price'
 
-export const useCostsStore = defineStore('costs', () => {
-  const fields: Array<Field> = [
-    { title: 'ID', sortable: false, key: 'id' },
-    {
-      title: 'Nombre',
-      sortable: false,
-      key: 'name'
+export const useCostsStore = defineStore({
+  id: 'costs',
+  state: (): PricesFields => ({
+    fields: [
+      { title: 'ID', sortable: false, key: 'id' },
+      {
+        title: 'Nombre',
+        sortable: false,
+        key: 'name'
+      },
+      { title: 'Precio', align: 'center', key: 'price' },
+      { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
+    ] as Field[],
+    items: [] as PriceItem[],
+    cache: {} as Record<string, PriceItem[]>
+  }), actions: {
+    async allCost() {
+      if (this.cache.allCost) {
+        // Devolver datos almacenados en caché si están disponibles
+        this.items = this.cache.allCost;
+        return this.items;
+      }
+      const { data } = await apolloClient.query({
+        query: ALL_PRICES_BY_TYPE,
+        variables: {
+          priceType: 'Costo'
+        }
+      })
+      const [...cost] = data.priceByType
+      this.items = [...cost]
+      // Guardar en caché los datos obtenidos
+      this.cache.allCost = this.items;
+      return this.items;
     },
-    { title: 'Precio', align: 'center', key: 'price' },
-    { title: 'Acciones', sortable: false, key: 'actions' }
-  ]
-
-  const items: Array<Item> = [
-    {
-      id: 159,
-      name: 'Frozen Yogurt',
-      price: 6.0
+    async createCost(payload: PriceItem) {
+      const { data } = await apolloClient.mutate({
+        mutation: CREATE_PRICE,
+        variables: {
+          createPriceInput: payload
+        }
+      })
+      this.items = [...this.items, data.createPrice]
+      this.cache.allCost = this.items; // Actualizar caché
+      return this.items
     },
-    {
-      id: 237,
-      name: 'Ice cream sandwich',
-      price: 9.0
+    async updateCost(id: number, payload: PriceItem) {
+      const { data } = await apolloClient.mutate({
+        mutation: UPDATE_PRICE,
+        variables: {
+          updatePriceInput: { id, ...payload }
+        }
+      })
+      this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
+      this.cache.allCost = this.items; // Actualizar caché
+      return this.items;
     },
-    {
-      id: 262,
-      name: 'Eclair',
-      price: 16.0
-    },
-    {
-      id: 305,
-      name: 'Cupcake',
-      price: 3.7
-    },
-    {
-      id: 356,
-      name: 'Gingerbread',
-      price: 16.0
-    },
-    {
-      id: 375,
-      name: 'Jelly bean',
-      price: 0.0
-    },
-    {
-      id: 392,
-      name: 'Lollipop',
-      price: 0.2
-    },
-    {
-      id: 408,
-      name: 'Honeycomb',
-      price: 3.2
-    },
-    {
-      id: 452,
-      name: 'Donut',
-      price: 25.0
-    },
-    {
-      id: 518,
-      name: 'KitKat',
-      price: 26.0
+    async deleteCost(id: number) {
+      const { data } = await apolloClient.mutate({
+        mutation: REMOVE_PRICE,
+        variables: {
+          removePriceId: id
+        }
+      })
+      this.items = this.items.filter(item => item.id !== id)
+      this.cache.allCost = this.items; // Actualizar caché
+      return this.items;
     }
-  ]
-
-  return { fields, items }
+  }
 })

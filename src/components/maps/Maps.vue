@@ -6,22 +6,57 @@
       :center="storeMaps.center"
       :zoom="storeMaps.zoom"
     >
-      <template v-for="polygon in storeMaps.myPolygons" :key="polygon">
+      <template v-for="(polygon, i) in storeMaps.myPolygons" :key="i">
         <Polygon :options="polygon" />
       </template>
       <MarkerCluster>
-        <template v-for="marker in storeMaps.markers" :key="marker">
+        <template v-for="(marker, i) in storeMaps.markers" :key="i">
           <Marker :options="marker" />
         </template>
       </MarkerCluster>
     </GoogleMap>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { GoogleMap, Polygon, Marker, MarkerCluster } from 'vue3-google-map'
 // Store
-import { useMapsStore } from '@/stores/maps'
+import { useMapsStore } from '@/stores'
+import { onMounted, ref } from 'vue'
 // Initialization Store
 const storeMaps = useMapsStore()
+// Alerts
+const snackbar = ref(false)
+const color = ref('')
+const message = ref('')
+
+const initialize = async () => {
+  try {
+    await storeMaps.allLocations()
+    await storeMaps.allGeofences()
+  } catch (error: any) {
+    snackbar.value = true
+    message.value = `¡Ha ocurrido un error: ${error.message}!`
+    color.value = 'red-darken-3'
+  }
+}
+
+onMounted(() => {
+  initialize()
+})
 </script>
+
+<style>
+.mapdiv {
+  border-radius: 10px;
+}
+</style>

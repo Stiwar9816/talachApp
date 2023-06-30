@@ -1,75 +1,82 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import apolloClient from '@/plugins/apollo';
 // Inferface
 import type { Marker, LatLgn, Polygons, PolygonProperties } from '@/interface'
+import { ALL_GEOFENCE, ALL_LOCATION } from '@/gql/maps';
 
-export const useMapsStore = defineStore('maps', () => {
-    const center = ref<LatLgn>({ lat: 28.7749, lng: -90.4194 })
-    const key = ref<string>(import.meta.env.VITE_MAPS_API_KEY);
-    const zoom = ref<number>(4)
-    // Exact point of each talachero center
-    const markers: Marker[] = [
-        { position: { lat: 24.712776, lng: -70.005974 }, label: "CT", title: "Centro Talachero" },
-        { position: { lat: 35.712776, lng: -80.005974 }, label: "CT", title: "Centro Talachero" },
-        { position: { lat: 36.712776, lng: -84.005974 }, label: "CT", title: "Centro Talachero" },
-        { position: { lat: 31.712776, lng: -92.005974 }, label: "CT", title: "Centro Talachero" }
-        // Add more bookmarks here...
-    ]
+const colorHexRandom = (): string => {
+    const lettersHex = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += lettersHex[Math.floor(Math.random() * 16)];
+    }
+    return color;
+};
 
-    // Random Color Hexadecimal
-    const colorHexRandom = (): string => {
-        const lettersHex = '0123456789ABCDEF';
-        let color = '#';
-
-        for (let i = 0; i < 6; i++) {
-            color += lettersHex[Math.floor(Math.random() * 16)];
+export const useMapsStore = defineStore({
+    id: 'maps',
+    state: () => ({
+        center: ref<LatLgn>({ lat: 6.24742, lng: -75.56659 }),
+        key: ref<string>(import.meta.env.VITE_MAPS_API_KEY),
+        zoom: ref<number>(12),
+        markers: [] as Marker[],
+        myPolygons: [] as Polygons[],
+        propertiesPolygon: {
+            strokeOpacity: 0.9,
+            strokeWeight: 0.9,
+            fillOpacity: 0.30
+        } as PolygonProperties,
+        createPolygon: (paths: LatLgn[], properties: PolygonProperties): Polygons => ({
+            paths,
+            strokeColor: colorHexRandom(),
+            fillColor: colorHexRandom(),
+            ...properties
+        }),
+    }),
+    actions: {
+        async allLocations() {
+            try {
+                const { data } = await apolloClient.query({
+                    query: ALL_LOCATION,
+                });
+                const [...markers] = data.companies.map(({ lat, lng }: any) => ({
+                    position: { lat: +lat, lng: +lng },
+                    label: 'CT',
+                    title: 'Centro Talachero',
+                }));
+                this.markers = [...markers];
+                return markers;
+            } catch (error) {
+                console.error('Error fetching locations:', error);
+                return [];
+            }
+        },
+        async allGeofences() {
+            try {
+                const { data } = await apolloClient.query({
+                    query: ALL_GEOFENCE
+                });
+                const [...geofences] = data.companies.map((company: any) => {
+                    const paths: LatLgn[] = [];
+                    company.geofence[0].split(', ').forEach((coordinate: string, index: number) => {
+                        const value = +coordinate.trim();
+                        const isLatitude = index % 2 === 0;
+                        if (isLatitude) {
+                            paths.push({ lat: value, lng: 0 });
+                        } else {
+                            const [lastPath] = paths.slice(-1);
+                            lastPath.lng = value;
+                        }
+                    });
+                    return this.createPolygon(paths, this.propertiesPolygon);
+                });
+                this.myPolygons = [...geofences];
+                return geofences;
+            } catch (error) {
+                console.error('Error fetching geofences:', error);
+                return [];
+            }
         }
-
-        return color;
-    }
-
-    // Common properties of polygons
-    const propertiesPolygon: PolygonProperties = {
-        strokeOpacity: 0.9,
-        strokeWeight: 0.9,
-        fillOpacity: 0.30
-    }
-
-    // Create new polygon by passing parameters
-    const createPolygon = (paths: LatLgn[], properties: PolygonProperties): Polygons => ({
-        paths,
-        strokeColor: colorHexRandom(),
-        fillColor: colorHexRandom(),
-        ...properties
-    });
-
-    // Using the createPolygon function
-    const myPolygons: Polygons[] = [
-        createPolygon(
-            [
-                { lat: 25.774, lng: -80.19 },
-                { lat: 18.466, lng: -66.118 },
-                { lat: 32.321, lng: -64.757 }
-            ],
-            propertiesPolygon
-        ),
-        createPolygon(
-            [
-                { lat: 35.774, lng: -90.19 },
-                { lat: 28.466, lng: -76.118 },
-                { lat: 42.321, lng: -74.757 }
-            ],
-            propertiesPolygon
-        ),
-        createPolygon(
-            [
-                { lat: 38.774, lng: -95.190 },
-                { lat: 20.466, lng: -96.118 },
-                { lat: 26.321, lng: -84.757 }
-            ],
-            propertiesPolygon
-        )
-    ];
-
-    return { center, zoom, key, markers, myPolygons, colorHexRandom }
+    },
 })

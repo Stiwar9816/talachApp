@@ -9,7 +9,7 @@
 // Components
 import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
 // Store
-import { useCostsStore } from '@/stores/costs'
+import { useCostsStore } from '@/stores';
 // Initialization Store
 const storeCosts = useCostsStore()
 </script>

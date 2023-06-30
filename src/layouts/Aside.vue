@@ -20,11 +20,6 @@
         {{ storeLayout.nameProfile }}
         <v-tooltip activator="parent" location="end">{{ storeLayout.nameProfile }}</v-tooltip>
       </v-list-item>
-      <v-divider />
-      <v-list-item prepend-icon="mdi-card-account-details" to="/profile">
-        Perfil
-        <v-tooltip activator="parent" location="end">Perfil</v-tooltip>
-      </v-list-item>
     </v-list>
 
     <v-divider></v-divider>

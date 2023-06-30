@@ -1,70 +1,43 @@
+import moment from 'moment'
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, Item } from '@/interface'
+import type { Field, RatingFields, RatingItem } from '@/interface'
+import { ALL_RATINGS } from '@/gql/rating'
+import apolloClient from '@/plugins/apollo'
 
-export const useRatingsStore = defineStore('ratings', () => {
-  const fields: Array<Field> = [
-    {
-      title: 'ID',
-      align: 'start',
-      sortable: false,
-      key: 'id'
+export const useRatingsStore = defineStore({
+  id: 'ratings',
+  state: (): RatingFields => ({
+    fields: [
+      {
+        title: 'ID',
+        align: 'start',
+        sortable: false,
+        key: 'id'
+      },
+      { title: 'Usuario', sortable: false, key: 'user.fullName' },
+      { title: 'Calidad', sortable: false, key: 'quality' },
+      { title: 'Calificación', key: 'rank' },
+      { title: 'Fecha de calificación', sortable: false, key: 'createdAt' }
+    ] as Field[],
+    items: [] as RatingItem[]
+  }),
+  actions: {
+    async allRatings() {
+      const { data } = await apolloClient.query({
+        query: ALL_RATINGS
+      })
+      
+      this.updateItems(data.scores)
+      return this.items
     },
-    { title: 'Usuario', sortable: false, key: 'user' },
-    { title: 'Calidad', sortable: false, key: 'quality' },
-    { title: 'Calificación', key: 'rating' },
-    { title: 'Fecha de calificación', key: 'date' }
-  ]
-  const items: Array<Item> = [
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      quality: 'Frozen Yogurt',
-      rating: 3,
-      date: '13-04-2023'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      quality: 'Frozen Yogurt',
-      rating: 1,
-      date: '13-04-2023'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      quality: 'Frozen Yogurt',
-      rating: 3.5,
-      date: '13-04-2023'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      quality: 'Frozen Yogurt',
-      rating: 5,
-      date: '13-04-2023'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      quality: 'Frozen Yogurt',
-      rating: 4.5,
-      date: '13-04-2023'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      quality: 'Frozen Yogurt',
-      rating: 2,
-      date: '13-04-2023'
-    },
-    {
-      id: 1,
-      user: 'Frozen Yogurt',
-      quality: 'Frozen Yogurt',
-      rating: 1.5,
-      date: '13-04-2023'
+    updateItems(newItems: RatingItem[]) {
+      this.items = newItems.map((item: RatingItem) => {
+        return {
+          ...item,
+          createdAt: moment(item.createdAt).format('LLL') // Aquí defines el formato de fecha deseado
+        };
+      });
     }
-  ]
-  return { fields, items }
+  }
 })

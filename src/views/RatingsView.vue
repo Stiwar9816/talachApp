@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import TableRating from '@/components/tables/TableRating.vue'
 // Store
-import { useRatingsStore } from '@/stores/ratings'
+import { useRatingsStore } from '@/stores'
 // Initialization Store
 const storeRatings = useRatingsStore()
 </script>

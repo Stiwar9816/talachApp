@@ -6,7 +6,7 @@ import { ref } from 'vue'
 export const useLayoutStore = defineStore('layout', () => {
   const nameProfile = ref<String | null>(localStorage.getItem('user'))
   const imageProfile: string = 'mdi-account-circle'
-  const drawer: boolean = false
+  const drawer: boolean = true
   const rail: boolean = false
   const prices: Array<Routes> = [
     {
@@ -45,11 +45,6 @@ export const useLayoutStore = defineStore('layout', () => {
       name: 'Pedidos',
       icon: 'mdi-order-bool-descending-variant',
       route: '/orders'
-    },
-    {
-      name: 'Pagos',
-      icon: 'mdi-account-cash',
-      route: '/payment'
     },
     {
       name: 'Calificaciones',

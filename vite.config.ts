@@ -12,15 +12,5 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  },
-  server: {
-    cors: {
-      origin: process.env.VITE_GRAPHQL_URL,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      preflightContinue: false,
-      optionsSuccessStatus: 204,
-      credentials: true,
-      allowedHeaders: 'Content-Type, Authorization, X-Requested-With',
-    }
   }
 })

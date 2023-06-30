@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import TableCrudUser from '@/components/tables/TableCrudUser.vue'
 // Store
-import { useUserStore } from '@/stores/users'
+import { useUserStore } from '@/stores'
 // Initialization Store
 const storeUser = useUserStore()
 </script>
