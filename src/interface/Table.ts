@@ -88,7 +88,7 @@ export interface UsersFields {
 export interface RatingFields {
     fields: Record<string, any>
     items: RatingItem[]
-    cache: Record<string, RatingItem[]>
+    // cache: Record<string, RatingItem[]>
 }
 export interface OrdersFields extends Count {
     fields: Record<string, any>

@@ -20,26 +20,24 @@ export const useRatingsStore = defineStore({
       { title: 'Calificación', key: 'rank' },
       { title: 'Fecha de calificación', sortable: false, key: 'createdAt' }
     ] as Field[],
-    items: [] as RatingItem[],
-    cache: {} as Record<string, RatingItem[]>
+    items: [] as RatingItem[]
   }),
   actions: {
     async allRatings() {
-      if (this.cache.allRatings) {
-        this.items = this.cache.allRatings
-        return this.items;
-      }
       const { data } = await apolloClient.query({
         query: ALL_RATINGS
       })
-      this.items = data.scores.map((item: RatingItem) => {
+      
+      this.updateItems(data.scores)
+      return this.items
+    },
+    updateItems(newItems: RatingItem[]) {
+      this.items = newItems.map((item: RatingItem) => {
         return {
           ...item,
           createdAt: moment(item.createdAt).format('LLL') // Aquí defines el formato de fecha deseado
         };
       });
-      this.cache.allRatings = this.items
-      return this.items
     }
   }
 })
