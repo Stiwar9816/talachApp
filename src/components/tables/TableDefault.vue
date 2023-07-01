@@ -43,16 +43,15 @@
           <template v-slot:item="{ item }">
             <tr>
               <td>{{ item.columns.id }}</td>
-              <td>{{ item.columns.user.fullName }}</td>
+              <td>{{ item.columns.user?.fullName }}</td>
               <td>{{ new Date(item.columns.createdAt).toLocaleString() }}</td>
-              <td>{{ item.columns.companies.name_company }}</td>
+              <td>{{ item.columns.companies?.name_company }}</td>
               <td>{{ currencyFormatter('MXN', item.columns.total) }} MXN</td>
             </tr>
           </template>
           <template v-slot:no-data>
             <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
           </template>
-          <template v-slot:no-results> No hay datos!</template>
         </v-data-table>
       </v-col>
       <!-- DataTable -->

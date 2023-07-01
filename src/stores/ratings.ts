@@ -15,7 +15,7 @@ export const useRatingsStore = defineStore({
         sortable: false,
         key: 'id'
       },
-      { title: 'Usuario', sortable: false, key: 'user.fullName' },
+      { title: 'Usuario', sortable: false, key: 'user' },
       { title: 'Calidad', sortable: false, key: 'quality' },
       { title: 'Calificación', key: 'rank' },
       { title: 'Fecha de calificación', sortable: false, key: 'createdAt' }

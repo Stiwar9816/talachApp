@@ -142,7 +142,6 @@
         <template v-slot:no-data>
           <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
         </template>
-        <template v-slot:no-results> No hay datos!</template>
       </v-data-table>
     </v-row>
     <v-snackbar

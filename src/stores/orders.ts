@@ -14,9 +14,9 @@ export const useOrdersStore = defineStore({
         sortable: false,
         title: 'ID'
       },
-      { key: 'user.fullName', sortable: false, title: 'Usuario' },
+      { key: 'user', sortable: false, title: 'Usuario' },
       { key: 'createdAt', sortable: true, title: 'Fecha de servicio' },
-      { key: 'companies.name_company', sortable: false, title: 'Talachero' },
+      { key: 'companies', sortable: false, title: 'Talachero' },
       { key: 'total', sortable: false, title: 'Total' },
     ] as Field[],
     items: [] as OrdersItem[],

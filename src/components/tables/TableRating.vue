@@ -28,7 +28,7 @@
           <template v-slot:item="{ item }">
             <tr>
               <td>{{ item.columns.id }}</td>
-              <td>{{ item.columns.user.fullName }}</td>
+              <td>{{ item.columns.user?.fullName }}</td>
               <td>{{ item.columns.quality }}</td>
               <td>
                 <v-rating
@@ -44,7 +44,6 @@
           <template v-slot:no-data>
             <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
           </template>
-          <template v-slot:no-results> No hay datos!</template>
         </v-data-table>
       </v-col>
       <!-- Data Table -->
