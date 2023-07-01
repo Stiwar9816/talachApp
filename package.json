@@ -15,12 +15,6 @@
     "@vuelidate/core": "^2.0.2",
     "@vuelidate/validators": "^2.0.2",
     "apollo-link-context": "^1.0.20",
-<<<<<<< HEAD
-    "aws-sdk": "^2.1408.0",
-    "dotenv": "^16.3.1",
-    "apollo-link-ws": "^1.0.20",
-=======
->>>>>>> parent of 37e4ec9 (aws-sdk)
     "file-saver": "^2.0.5",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.14.0",
