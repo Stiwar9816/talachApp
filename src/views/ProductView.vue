@@ -1,7 +1,12 @@
 <template>
   <div>
     <h1>Productos</h1>
-    <TableCrudPrices :fields="storeProduct.fields" :items="storeProduct.items" page="Producto" />
+    <TableCrudPrices
+      :fields="storeProduct.fields"
+      :items="storeProduct.items"
+      page="Producto"
+      :show-button="true"
+    />
   </div>
 </template>
 

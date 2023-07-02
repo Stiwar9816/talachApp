@@ -1,7 +1,12 @@
 <template>
   <div>
     <h1>Costos Fijos</h1>
-    <TableCrudPrices :fields="storeCosts.fields" :items="storeCosts.items" page="Costos" />
+    <TableCrudPrices
+      :fields="storeCosts.fields"
+      :items="storeCosts.items"
+      page="Costos"
+      :show-button="false"
+    />
   </div>
 </template>
 
@@ -9,7 +14,7 @@
 // Components
 import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
 // Store
-import { useCostsStore } from '@/stores';
+import { useCostsStore } from '@/stores'
 // Initialization Store
 const storeCosts = useCostsStore()
 </script>

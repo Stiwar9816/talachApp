@@ -27,6 +27,7 @@
             <v-dialog v-model="dialog" max-width="500px">
               <template v-slot:activator="{ props }">
                 <v-btn
+                  v-show="showButton"
                   prepend-icon="mdi-plus"
                   variant="flat"
                   color="grey-lighten-2"
@@ -127,6 +128,7 @@ import type { PriceItem } from '@/interface'
 interface Price {
   fields: Record<string, string>
   items: PriceItem[]
+  showButton: Boolean
 }
 
 // Props
