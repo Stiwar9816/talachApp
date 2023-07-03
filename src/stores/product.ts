@@ -14,12 +14,12 @@ export const useProductStore = defineStore({
         sortable: false,
         key: 'name'
       },
+      { title: 'Precio', align: 'center', key: 'price' },
       {
         title: 'Responsable',
         sortable: false,
         key: 'user'
       },
-      { title: 'Precio', align: 'center', key: 'price' },
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],
     items: [] as PriceItem[],

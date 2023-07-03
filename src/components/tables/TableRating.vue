@@ -81,21 +81,21 @@ const props = defineProps({
 const ratingStore = useRatingsStore()
 
 // Realiza la suscripción al iniciar el componente
-const observableQuery = apolloClient.subscribe({
-  query: SUBSCRIBE_SCORE
-})
+// const observableQuery = apolloClient.subscribe({
+//   query: SUBSCRIBE_SCORE
+// })
 
-const subscription = observableQuery.subscribe({
-  next({ data }) {
-    const newRating = data.newScore
-    // Actualiza el estado del store con la nueva calificación recibida
-    ratingStore.items = [...ratingStore.items, newRating]
-  },
-  error(error) {
-    // Maneja errores de suscripción
-    console.log(error)
-  }
-})
+// const subscription = observableQuery.subscribe({
+//   next({ data }) {
+//     const newRating = data.newScore
+//     // Actualiza el estado del store con la nueva calificación recibida
+//     ratingStore.items = [...ratingStore.items, newRating]
+//   },
+//   error(error) {
+//     // Maneja errores de suscripción
+//     console.log(error)
+//   }
+// })
 
 const initialize = async () => {
   try {
@@ -112,7 +112,7 @@ onMounted(() => {
 })
 
 // Cancela la suscripción al desmontar el componente
-onUnmounted(() => {
-  subscription.unsubscribe()
-})
+// onUnmounted(() => {
+//   subscription.unsubscribe()
+// })
 </script>

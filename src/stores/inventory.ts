@@ -15,6 +15,11 @@ export const useInventoryStore = defineStore({
       },
       { title: 'Stock', key: 'stock' },
       { title: 'Descripción', key: 'description' },
+      {
+        title: 'Responsable',
+        sortable: false,
+        key: 'user'
+      },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
     items: [] as InventoryItem[],
