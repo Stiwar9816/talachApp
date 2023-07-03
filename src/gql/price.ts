@@ -9,6 +9,9 @@ export const CREATE_PRICE = gql`
       stock
       type
       description
+      user{
+        fullName
+      }
     }
   }
 `
@@ -34,6 +37,9 @@ export const PRICE_BY_ID = gql`
       name
       price
       stock
+      user{
+        fullName
+      }
     }
   }
 `
