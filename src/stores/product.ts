@@ -14,6 +14,11 @@ export const useProductStore = defineStore({
         sortable: false,
         key: 'name'
       },
+      {
+        title: 'Responsable',
+        sortable: false,
+        key: 'user'
+      },
       { title: 'Precio', align: 'center', key: 'price' },
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],
@@ -24,8 +29,8 @@ export const useProductStore = defineStore({
     async allProduct() {
       if (this.cache.allProduct) {
         // Devolver datos almacenados en caché si están disponibles
-        this.items = this.cache.allProduct;
-        return this.items;
+        this.items = this.cache.allProduct
+        return this.items
       }
       const { data } = await apolloClient.query({
         query: ALL_PRICES_BY_TYPE,
@@ -36,7 +41,7 @@ export const useProductStore = defineStore({
       const [...product] = data.priceByType
       this.items = [...product]
       // Guardar en caché los datos obtenidos
-      this.cache.allProduct = this.items;
+      this.cache.allProduct = this.items
       return this.items
     },
     async createProduct(payload: PriceItem) {
@@ -47,7 +52,7 @@ export const useProductStore = defineStore({
         }
       })
       this.items = [...this.items, data.createPrice]
-      this.cache.allProduct = this.items; // Actualizar caché
+      this.cache.allProduct = this.items // Actualizar caché
       return this.items
     },
     async updateProduct(id: number, payload: PriceItem) {
@@ -57,9 +62,9 @@ export const useProductStore = defineStore({
           updatePriceInput: { id, ...payload }
         }
       })
-      this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
-      this.cache.allProduct = this.items; // Actualizar caché
-      return this.items;
+      this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
+      this.cache.allProduct = this.items // Actualizar caché
+      return this.items
     },
     async deleteProduct(id: number) {
       const { data } = await apolloClient.mutate({
@@ -68,9 +73,9 @@ export const useProductStore = defineStore({
           removePriceId: id
         }
       })
-      this.items = this.items.filter(item => item.id !== id)
-      this.cache.allProduct = this.items; // Actualizar caché
-      return this.items;
+      this.items = this.items.filter((item) => item.id !== id)
+      this.cache.allProduct = this.items // Actualizar caché
+      return this.items
     }
   }
 })

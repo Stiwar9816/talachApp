@@ -20,6 +20,9 @@ export const ALL_PRICES_BY_TYPE = gql`
       name
       price
       stock
+      user{
+        fullName
+      }
     }
   }
 `
@@ -41,6 +44,9 @@ export const UPDATE_PRICE = gql`
       id
       name
       price
+      user{
+        fullName
+      }
     }
   }
 `

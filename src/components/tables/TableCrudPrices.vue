@@ -93,6 +93,7 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
+        <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
         <template v-slot:item.price="{ item }"
           >{{ currencyFormatter('MXN', item.columns.price) }} MXN</template
         >
@@ -189,7 +190,15 @@ const formTitle = computed(() => {
 
 const editItem = (item: PriceItem) => {
   editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
+  editedItem.value = Object.assign(
+    {},
+    {
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      stock: item.stock
+    }
+  )
   dialog.value = true
 }
 
