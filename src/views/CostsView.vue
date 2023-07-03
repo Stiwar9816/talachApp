@@ -5,7 +5,7 @@
       :fields="storeCosts.fields"
       :items="storeCosts.items"
       page="Costos"
-      :show-button="false"
+      :show-button="role"
     />
   </div>
 </template>
@@ -17,4 +17,8 @@ import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
 import { useCostsStore } from '@/stores'
 // Initialization Store
 const storeCosts = useCostsStore()
+
+const userRole = localStorage.getItem('role')
+
+const role = userRole === 'superAdmin'
 </script>

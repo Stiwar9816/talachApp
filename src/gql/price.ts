@@ -41,6 +41,7 @@ export const UPDATE_PRICE = gql`
       id
       name
       price
+      stock
     }
   }
 `
