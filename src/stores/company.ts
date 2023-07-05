@@ -100,8 +100,8 @@ export const useCompanyStore = defineStore({
       });
       return () => subscription.unsubscribe();
     },
-    updateItems(newCompany: CompanyItem[]) {
-      const updatedItems = newCompany.map((newCompany: CompanyItem) => {
+    updateItems(newCompanies: CompanyItem[]) {
+      const updatedItems = newCompanies.map((newCompany: CompanyItem) => {
         return {
           ...newCompany
         };

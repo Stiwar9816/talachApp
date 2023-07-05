@@ -98,9 +98,9 @@ export const useServiceStore = defineStore({
       return () => subscription.unsubscribe();
     },
     updateItems(newServices: PriceItem[]) {
-      const updatedItems = newServices.map((newServices: PriceItem) => {
+      const updatedItems = newServices.map((newService: PriceItem) => {
         return {
-          ...newServices
+          ...newService
         };
       });
 

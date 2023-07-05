@@ -105,9 +105,9 @@ export const useProductStore = defineStore({
       return () => subscription.unsubscribe();
     },
     updateItems(newProducts: PriceItem[]) {
-      const updatedItems = newProducts.map((newProducts: PriceItem) => {
+      const updatedItems = newProducts.map((newProduct: PriceItem) => {
         return {
-          ...newProducts
+          ...newProduct
         };
       });
 

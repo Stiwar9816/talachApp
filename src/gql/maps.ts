@@ -15,3 +15,20 @@ query {
   }
 }
 `
+
+export const SUBSCRIBE_GEOFENCE = gql`
+subscription NewCompany {
+  newCompany {
+    geofence
+  }
+}
+`
+
+export const SUBSCRIBE_LOCATION = gql`
+subscription NewCompany {
+  newCompany {
+    lat
+    lng
+  }
+}
+`

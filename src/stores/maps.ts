@@ -47,8 +47,8 @@ export const useMapsStore = defineStore({
                 }));
                 this.markers = [...markers];
                 return markers;
-            } catch (error) {
-                console.error('Error fetching locations:', error);
+            } catch (error: any) {
+                console.error('Error fetching locations:', error.message);
                 return [];
             }
         },
@@ -73,8 +73,8 @@ export const useMapsStore = defineStore({
                 });
                 this.myPolygons = [...geofences];
                 return geofences;
-            } catch (error) {
-                console.error('Error fetching geofences:', error);
+            } catch (error: any) {
+                console.error('Error fetching geofences:', error.message);
                 return [];
             }
         }

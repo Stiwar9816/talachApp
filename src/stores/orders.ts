@@ -29,11 +29,18 @@ export const useOrdersStore = defineStore({
         query: ALL_ORDERS
       })
 
-      this.items = data.orders.map((item: OrdersItem) => {
+      const newItems = data.orders.map((item: OrdersItem) => {
         return {
           ...item,
-          createdAt: moment(item.createdAt).format('LLL') // Aquí defines el formato de fecha deseado
+          createdAt: moment(item.createdAt).format('LLL')
         };
+      });
+
+      newItems.forEach((newItem: OrdersItem) => {
+        const existingItem = this.items.find((item: OrdersItem) => item.id === newItem.id);
+        if (!existingItem) {
+          this.items.push(newItem);
+        }
       });
 
       return this.items
@@ -73,10 +80,10 @@ export const useOrdersStore = defineStore({
       return () => subscription.unsubscribe();
     },
     updateItems(newOrders: OrdersItem[]) {
-      const updatedItems = newOrders.map((newOrders: OrdersItem) => {
+      const updatedItems = newOrders.map((newOrder: OrdersItem) => {
         return {
-          ...newOrders,
-          createdAt: moment(newOrders.createdAt).format('LLL')
+          ...newOrder,
+          createdAt: moment(newOrder.createdAt).format('LLL')
         };
       });
 

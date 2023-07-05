@@ -49,7 +49,10 @@ export const UPDATE_PRICE = gql`
     updatePrice(updatePriceInput: $updatePriceInput) {
       id
       name
-      price      
+      price
+      user {
+        fullName
+      }
     }
   }
 `
