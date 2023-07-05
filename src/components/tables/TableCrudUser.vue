@@ -157,7 +157,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 // Interface
 import type { UserItem } from '@/interface'
@@ -203,6 +203,8 @@ const emailRules = ref([
 ])
 
 const user = useUserStore()
+// Realiza la suscripción al iniciar el componente
+const unsubscribeUsers = user.subscribeToUsers()
 
 const initialize = async () => {
   try {
@@ -261,4 +263,9 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+// Cancela la suscripción al desmontar el componente
+onUnmounted(() => {
+  unsubscribeUsers()
+})
 </script>

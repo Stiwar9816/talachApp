@@ -9,7 +9,7 @@ export const CREATE_PRICE = gql`
       stock
       type
       description
-      user{
+      user {
         fullName
       }
     }
@@ -23,7 +23,7 @@ export const ALL_PRICES_BY_TYPE = gql`
       name
       price
       stock
-      user{
+      user {
         fullName
       }
     }
@@ -37,7 +37,7 @@ export const PRICE_BY_ID = gql`
       name
       price
       stock
-      user{
+      user {
         fullName
       }
     }
@@ -49,10 +49,7 @@ export const UPDATE_PRICE = gql`
     updatePrice(updatePriceInput: $updatePriceInput) {
       id
       name
-      price
-      user{
-        fullName
-      }
+      price      
     }
   }
 `
@@ -63,4 +60,18 @@ export const REMOVE_PRICE = gql`
       name
     }
   }
+`
+export const SUBSCRIBE_PRICE = gql`
+subscription NewPrice {
+  newPrice {
+    id
+    name
+    price
+    stock
+    description
+    user {
+     fullName
+    }
+  }
+}
 `

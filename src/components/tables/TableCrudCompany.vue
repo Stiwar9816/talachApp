@@ -253,7 +253,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 // Interface
 import type { CompanyItem } from '@/interface'
 import { useCompanyStore } from '@/stores'
@@ -306,6 +306,8 @@ const message = ref('')
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
 const company = useCompanyStore()
+// Realiza la suscripción al iniciar el componente
+const unsubscribe = company.subscribeToRatings()
 
 const initialize = async () => {
   try {
@@ -373,4 +375,9 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+// Cancela la suscripción al desmontar el componente
+onUnmounted(() => {
+  unsubscribe()
+})
 </script>

@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, toRefs, reactive } from 'vue'
+import { ref, computed, onMounted, toRefs, reactive, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { currencyFormatter } from '@/utils'
 import { useCostsStore, useProductStore, useServiceStore } from '@/stores'
@@ -165,6 +165,10 @@ const currentPage = reactive({
 const cost = useCostsStore()
 const service = useServiceStore()
 const product = useProductStore()
+// Realiza la suscripción al iniciar el componente
+const unsubscribeCosts = cost.subscribeToCosts()
+const unsubscribeProducts = product.subscribeToProducts()
+const unsubscribeServices = service.subscribeToServices()
 
 const initialize = async () => {
   try {
@@ -277,4 +281,11 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+// Cancela la suscripción al desmontar el componente
+onUnmounted(() => {
+  unsubscribeCosts()
+  unsubscribeProducts()
+  unsubscribeServices()
+})
 </script>

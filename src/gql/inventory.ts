@@ -38,9 +38,6 @@ mutation ($updatePriceInput: UpdatePriceInput!) {
     price
     stock
     description
-    user {
-      fullName
-    }
   }
 }
 `

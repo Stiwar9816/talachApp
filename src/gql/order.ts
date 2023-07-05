@@ -15,3 +15,18 @@ query {
   }
 }
 `
+export const SUBSCRIBE_ORDER = gql`
+subscription NewOrder {
+  newOrder {
+    id
+    user {
+      fullName
+    }
+    createdAt
+    companies {
+      name_company
+    }
+    total
+  }
+}
+`

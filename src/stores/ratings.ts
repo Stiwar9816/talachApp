@@ -52,15 +52,13 @@ export const useRatingsStore = defineStore({
         next: (result) => {
           const newRating = result.data?.newScore;
           if (newRating) {
-            console.log(newRating);
             this.updateItems([newRating]);
           }
         },
-        error(error) {
-          console.log(error);
+        error(error: any) {
+          console.log(error.message);
         }
       });
-
       return () => subscription.unsubscribe();
     },
     updateItems(newRatings: RatingItem[]) {
