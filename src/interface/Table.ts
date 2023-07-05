@@ -26,7 +26,6 @@ export interface UserItem {
     email: string
     roles?: string
     isActive?: string
-    password?: string
 }
 export interface ItemPrice {
     id?: string | number

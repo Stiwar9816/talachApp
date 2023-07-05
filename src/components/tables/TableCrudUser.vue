@@ -93,7 +93,6 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <template v-if="editedItem.id">
                         <v-col cols="12" sm="6" md="6">
                           <v-select
                             v-model="editedItem.roles"
@@ -107,6 +106,7 @@
                             required
                           ></v-select>
                         </v-col>
+                      <template v-if="editedItem.id">
                         <v-col cols="12" sm="6" md="6">
                           <v-select
                             v-model="editedItem.isActive"
@@ -240,18 +240,18 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, fullName, email, password, phone, ...edit } = editedItem.value
+    let { id, phone, isActive, ...rest  } = editedItem.value
     phone = +phone
     if (!id) {
       // Add new user
-      await user.createUser({ fullName, email, password, phone })
+      await user.createUser({ phone, ...rest  })
       snackbar.value = true
       message.value = '¡Nuevo usuario agregado con exito!'
       color.value = 'orange-darken-2'
       close()
     } else {
       //Update user
-      await user.updateUser(+id, { ...edit, fullName, email, password, phone })
+      await user.updateUser(+id, { phone, isActive, ...rest })
       snackbar.value = true
       message.value = '¡Usuario Actualizado con exito!'
       color.value = 'light-blue-darken-3'
