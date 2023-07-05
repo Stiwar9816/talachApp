@@ -54,14 +54,13 @@ export const useUserStore = defineStore({
           signupInput: payload
         }
       })
-      const newUsers = data.signup;
+      const newUsers = data.signup.user;
 
       const existingItem = this.items.find((item: UserItem) => item.id === newUsers.id);
       if (!existingItem) {
         this.items.push(newUsers);
       }
 
-      // this.items = [...this.items, data.signup.user]
       return this.items;
     },
     async updateUser(id: number, payload: UserItem) {
@@ -81,7 +80,7 @@ export const useUserStore = defineStore({
 
       const subscription = observableQuery.subscribe({
         next: (result) => {
-          const newUsers = result.data?.newUsers;
+          const newUsers = result.data?.newUser.user;
           if (newUsers) {
             this.updateItems([newUsers]);
           }
