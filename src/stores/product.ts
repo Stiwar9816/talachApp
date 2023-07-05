@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 // Interface
 import type { Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, UPDATE_PRICE } from '@/gql/price'
+import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, SUBSCRIBE_PRICE, UPDATE_PRICE } from '@/gql/price'
 
 export const useProductStore = defineStore({
   id: 'product',
@@ -22,26 +22,31 @@ export const useProductStore = defineStore({
       },
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],
-    items: [] as PriceItem[],
-    cache: {} as Record<string, PriceItem[]>
+    items: [] as PriceItem[]
   }),
   actions: {
     async allProduct() {
-      if (this.cache.allProduct) {
-        // Devolver datos almacenados en caché si están disponibles
-        this.items = this.cache.allProduct
-        return this.items
-      }
+
       const { data } = await apolloClient.query({
         query: ALL_PRICES_BY_TYPE,
         variables: {
           priceType: 'Producto'
         }
       })
-      const [...product] = data.priceByType
-      this.items = [...product]
-      // Guardar en caché los datos obtenidos
-      this.cache.allProduct = this.items
+
+      const newItems = data.priceByType.map((item: PriceItem) => {
+        return {
+          ...item
+        };
+      });
+
+      newItems.forEach((newItem: PriceItem) => {
+        const existingItem = this.items.find((item: PriceItem) => item.id === newItem.id);
+        if (!existingItem) {
+          this.items.push(newItem);
+        }
+      });
+
       return this.items
     },
     async createProduct(payload: PriceItem) {
@@ -51,8 +56,14 @@ export const useProductStore = defineStore({
           createPriceInput: payload
         }
       })
-      this.items = [...this.items, data.createPrice]
-      this.cache.allProduct = this.items // Actualizar caché
+
+      const newProducts = data.createPrice;
+
+      const existingItem = this.items.find((item: PriceItem) => item.id === newProducts.id);
+      if (!existingItem) {
+        this.items.push(newProducts);
+      }
+
       return this.items
     },
     async updateProduct(id: number, payload: PriceItem) {
@@ -63,7 +74,6 @@ export const useProductStore = defineStore({
         }
       })
       this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
-      this.cache.allProduct = this.items // Actualizar caché
       return this.items
     },
     async deleteProduct(id: number) {
@@ -74,8 +84,34 @@ export const useProductStore = defineStore({
         }
       })
       this.items = this.items.filter((item) => item.id !== id)
-      this.cache.allProduct = this.items // Actualizar caché
       return this.items
+    },
+    subscribeToProducts() {
+      const observableQuery = apolloClient.subscribe({
+        query: SUBSCRIBE_PRICE
+      });
+
+      const subscription = observableQuery.subscribe({
+        next: (result) => {
+          const newProducts = result.data?.newProducts;
+          if (newProducts) {
+            this.updateItems([newProducts]);
+          }
+        },
+        error(error: any) {
+          console.log(error.message);
+        }
+      });
+      return () => subscription.unsubscribe();
+    },
+    updateItems(newProducts: PriceItem[]) {
+      const updatedItems = newProducts.map((newProducts: PriceItem) => {
+        return {
+          ...newProducts
+        };
+      });
+
+      this.items = [...this.items, ...updatedItems];
     }
   }
 })

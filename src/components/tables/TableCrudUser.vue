@@ -93,7 +93,7 @@
                           required
                         ></v-text-field>
                       </v-col>
-                        <v-col cols="12" sm="6" md="6">
+                        <v-col cols="12">
                           <v-select
                             v-model="editedItem.roles"
                             label="Rol"
@@ -157,7 +157,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 // Interface
 import type { UserItem } from '@/interface'
@@ -203,6 +203,8 @@ const emailRules = ref([
 ])
 
 const user = useUserStore()
+// Realiza la suscripción al iniciar el componente
+const unsubscribeUsers = user.subscribeToUsers()
 
 const initialize = async () => {
   try {
@@ -261,4 +263,9 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+// Cancela la suscripción al desmontar el componente
+onUnmounted(() => {
+  unsubscribeUsers()
+})
 </script>

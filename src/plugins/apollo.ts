@@ -15,24 +15,24 @@ const authLink = setContext((_, { headers }) => {
     }
   }
 })
+
 const errorHandler = onError(({ graphQLErrors }) => {
   if (graphQLErrors)
     useErrorsStore().$state = {
-      message: graphQLErrors[0].message,
-      // category: graphQLErrors[0].extensions.category,
-      // fields: graphQLErrors[0].extensions.validation ?? { input: {} }
+      message: graphQLErrors[0].message
     }
 })
 
-
 const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
+
 // HTTP connection to the API
 const httpLink = new HttpLink({
   // You should use an absolute URL here
   uri: import.meta.env.VITE_GRAPHQL_URL,
   credentials: 'include'
 })
-const wsLink = new GraphQLWsLink(
+
+export const wsLink = new GraphQLWsLink(
   createClient({
     url: import.meta.env.VITE_GRAPHQL_URL_WS,
     lazy: true,
@@ -50,8 +50,6 @@ const splitLink = split(
   authLink.concat(wsLink),
   authLink.concat(errorHandler.concat(httpLink))
 )
-
-
 
 // Cache implementation
 const cache = new InMemoryCache({

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import type { Field, OrdersFields, OrdersItem } from '@/interface'
 import moment from 'moment'
 import apolloClient from '@/plugins/apollo'
-import { ALL_ORDERS } from '@/gql/order'
+import { ALL_ORDERS, SUBSCRIBE_ORDER } from '@/gql/order'
 
 export const useOrdersStore = defineStore({
   id: 'orders',
@@ -20,26 +20,22 @@ export const useOrdersStore = defineStore({
       { key: 'total', sortable: false, title: 'Total' },
     ] as Field[],
     items: [] as OrdersItem[],
-    cache: {} as Record<string, OrdersItem[]>,
     count: 0 as number,
     cacheCount: 0 as number
   }),
   actions: {
     async allOrders() {
-      if (this.cache.allOrders) {
-        this.items = this.cache.allOrders
-        return this.items;
-      }
       const { data } = await apolloClient.query({
         query: ALL_ORDERS
       })
+
       this.items = data.orders.map((item: OrdersItem) => {
         return {
           ...item,
           createdAt: moment(item.createdAt).format('LLL') // Aquí defines el formato de fecha deseado
         };
       });
-      this.cache.allOrders = this.items
+
       return this.items
     },
     async countPayment() {
@@ -57,6 +53,34 @@ export const useOrdersStore = defineStore({
       this.count = +count.toFixed(2)
       this.cacheCount = this.count
       return this.count
+    },
+    subscribeToOrders() {
+      const observableQuery = apolloClient.subscribe({
+        query: SUBSCRIBE_ORDER
+      });
+
+      const subscription = observableQuery.subscribe({
+        next: (result) => {
+          const newOrders = result.data?.newOrder;
+          if (newOrders) {
+            this.updateItems([newOrders]);
+          }
+        },
+        error(error: any) {
+          console.log(error.message);
+        }
+      });
+      return () => subscription.unsubscribe();
+    },
+    updateItems(newOrders: OrdersItem[]) {
+      const updatedItems = newOrders.map((newOrders: OrdersItem) => {
+        return {
+          ...newOrders,
+          createdAt: moment(newOrders.createdAt).format('LLL')
+        };
+      });
+
+      this.items = [...this.items, ...updatedItems];
     }
   }
 })

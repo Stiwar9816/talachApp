@@ -1,28 +1,9 @@
 import gql from 'graphql-tag'
 
-// export const FRAGMENT_FIELDS_COMPANY = gql`
-//   fragment CompanyParts on Company {
-//     id
-//     name_company
-//     rfc
-//     cfdi
-//     phone
-//     bussiness_name
-//     address
-//     department
-//     city
-//     postal_code
-//     isActive
-//     geofence
-//     lat
-//     lng
-//   }
-// `
-
 export const ALL_COMPANIES = gql`
   query Companies {
     companies {
-      id
+    id
     name_company
     rfc
     cfdi

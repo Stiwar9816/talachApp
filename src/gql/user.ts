@@ -62,3 +62,18 @@ export const BLOCK_USER = gql`
     }
   }
 `
+
+export const SUBSCRIBE_USER = gql`
+  subscription NewUser {
+    newUser {
+      user {
+        id
+        fullName
+        phone
+        email
+        roles
+        isActive
+      }
+    }
+}
+`

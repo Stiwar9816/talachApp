@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, type PropType, onMounted } from 'vue'
+import { ref, type PropType, onMounted, onUnmounted } from 'vue'
 import * as XLSX from 'xlsx'
 import FileSaver from 'file-saver'
 import { currencyFormatter } from '@/utils'
@@ -94,6 +94,8 @@ const props = defineProps({
   }
 })
 const ordersStore = useOrdersStore()
+// Realiza la suscripción al iniciar el componente
+const unsubscribeOrders = ordersStore.subscribeToOrders()
 
 const initialize = async () => {
   try {
@@ -133,4 +135,9 @@ const exportData = () => {
     color.value = 'red-darken-3'
   }
 }
+
+// Cancela la suscripción al desmontar el componente
+onUnmounted(() => {
+  unsubscribeOrders()
+})
 </script>

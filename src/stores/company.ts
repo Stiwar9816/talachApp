@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 // Interface
 import type { CompanyItem, CompanyFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_COMPANIES, CREATE_COMPANY, UPDATE_COMPANY } from '@/gql/company'
+import { ALL_COMPANIES, CREATE_COMPANY, SUBSCRIBE_COMPANY, UPDATE_COMPANY } from '@/gql/company'
 
 export const useCompanyStore = defineStore({
   id: 'company',
@@ -32,22 +32,27 @@ export const useCompanyStore = defineStore({
       { title: 'Activo', sortable: false, key: 'isActive' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ],
-    items: [] as CompanyItem[],
-    cache: {} as Record<string, CompanyItem[]>
+    items: [] as CompanyItem[]
   }),
   actions: {
     async allCompanies() {
-      if (this.cache.allCompanies) {
-        // Devolver datos almacenados en caché si están disponibles
-        this.items = this.cache.allCompanies;
-        return this.items;
-      }
       const { data } = await apolloClient.query({
         query: ALL_COMPANIES
       })
-      this.items = data.companies
-      // Guardar en caché los datos obtenidos
-      this.cache.allCompanies = this.items;
+
+      const newItems = data.companies.map((item: CompanyItem) => {
+        return {
+          ...item
+        };
+      });
+
+      newItems.forEach((newItem: CompanyItem) => {
+        const existingItem = this.items.find((item: CompanyItem) => item.id === newItem.id);
+        if (!existingItem) {
+          this.items.push(newItem);
+        }
+      });
+
       return this.items
     },
     async createCompany(formInput: CompanyItem) {
@@ -57,8 +62,14 @@ export const useCompanyStore = defineStore({
           createCompanyInput: formInput
         }
       })
-      this.items = [...this.items, data.createCompany]
-      this.cache.allCompanies = this.items; // Actualizar caché
+
+      const newCompany = data.createCompany;
+
+      const existingItem = this.items.find((item: CompanyItem) => item.id === newCompany.id);
+      if (!existingItem) {
+        this.items.push(newCompany);
+      }
+
       return this.items
     },
     async updateCompany(id: number, payload: CompanyItem) {
@@ -69,8 +80,34 @@ export const useCompanyStore = defineStore({
         }
       })
       this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
-      this.cache.allCompanies = this.items; // Actualizar caché
       return this.items;
+    },
+    subscribeToRatings() {
+      const observableQuery = apolloClient.subscribe({
+        query: SUBSCRIBE_COMPANY
+      });
+
+      const subscription = observableQuery.subscribe({
+        next: (result) => {
+          const newCompany = result.data?.newCompany;
+          if (newCompany) {
+            this.updateItems([newCompany]);
+          }
+        },
+        error(error: any) {
+          console.log(error.message);
+        }
+      });
+      return () => subscription.unsubscribe();
+    },
+    updateItems(newCompany: CompanyItem[]) {
+      const updatedItems = newCompany.map((newCompany: CompanyItem) => {
+        return {
+          ...newCompany
+        };
+      });
+
+      this.items = [...this.items, ...updatedItems];
     }
   }
 })
