@@ -21,4 +21,10 @@ const storeCosts = useCostsStore()
 const userRole = localStorage.getItem('role')
 
 const role = userRole === 'superAdmin'
+
+if (userRole !== 'superAdmin' && userRole !== 'Administrador'){
+  const fields = storeCosts.fields
+  delete fields[3]
+}
+
 </script>

@@ -20,7 +20,7 @@
         :items-per-page="perPage"
         class="elevation-1 rounded-lg"
       >
-        <template v-slot:top>
+        <template v-if="showButton" v-slot:top>
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <v-spacer></v-spacer>
             <!-- Add Modal -->
@@ -51,11 +51,11 @@
                   </v-card-title>
                 </v-toolbar>
 
-                <v-card-text class="bg-grey-lighten-3">
+                <v-card-text  class="bg-grey-lighten-3">
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
+                      <v-col  cols="12" sm="6" md="6">
+                        <v-text-field 
                           v-model="editedItem.name"
                           label="Nombre"
                           :rules="requiredValue"

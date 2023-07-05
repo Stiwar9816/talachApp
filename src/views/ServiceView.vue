@@ -21,4 +21,9 @@ const storeService = useServiceStore()
 const userRole = localStorage.getItem('role')
 
 const role = userRole === 'superAdmin'
+
+if (userRole !== 'superAdmin' && userRole !== 'Administrador'){
+  const fields = storeService.fields
+  delete fields[3]
+}
 </script>
