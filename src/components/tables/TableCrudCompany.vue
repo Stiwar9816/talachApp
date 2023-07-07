@@ -358,14 +358,14 @@ const save = async () => {
         lng
       })
       snackbar.value = true
-      message.value = '¡Nueva empresa agregada con exito!'
+      message.value = `¡Nuevo centro talachero ${create.name_company} fue agregado con exito!`
       color.value = 'orange-darken-2'
       close()
     } else {
       // Update company
       await company.updateCompany(+id, { ...create, phone, postal_code, lat, lng })
       snackbar.value = true
-      message.value = '¡Empresa Actualizada con exito!'
+      message.value = `¡Centro Talachero ${create.name_company} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }

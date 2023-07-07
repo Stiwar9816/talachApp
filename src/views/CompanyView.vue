@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Empresas</h1>
+    <h1>Centros talacheros</h1>
     <TableCrudCompany :fields="storeCompany.fields" :items="storeCompany.items" />
   </div>
 </template>

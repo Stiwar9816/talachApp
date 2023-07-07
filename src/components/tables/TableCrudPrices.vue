@@ -51,11 +51,11 @@
                   </v-card-title>
                 </v-toolbar>
 
-                <v-card-text  class="bg-grey-lighten-3">
+                <v-card-text class="bg-grey-lighten-3">
                   <v-container>
                     <v-row>
-                      <v-col  cols="12" sm="6" md="6">
-                        <v-text-field 
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
                           v-model="editedItem.name"
                           label="Nombre"
                           :rules="requiredValue"
@@ -79,6 +79,23 @@
                           required
                         ></v-text-field>
                       </v-col>
+                      <template v-if="!editedItem.id">
+                        <v-col cols="12">
+                          <v-select
+                            v-model="editedItem.companies"
+                            label="Centro talachero"
+                            :rules="requiredValue"
+                            :items="product.companies"
+                            item-title="name_company"
+                            item-value="id"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                          >
+                          </v-select>
+                        </v-col>
+                      </template>
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -94,6 +111,9 @@
           </v-toolbar>
         </template>
         <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
+        <template v-slot:item.companies="{ item }">
+          {{ item.columns.companies?.name_company }}
+        </template>
         <template v-slot:item.price="{ item }"
           >{{ currencyFormatter('MXN', item.columns.price) }} MXN</template
         >
@@ -142,11 +162,13 @@ const data = ref<PriceItem[]>([])
 const editedIndex = ref(-1)
 const editedItem = ref<PriceItem>({
   name: '',
-  price: 0
+  price: 0,
+  companies: null
 })
 const defaultItem = ref<PriceItem>({
   name: '',
-  price: 0
+  price: 0,
+  companies: null
 })
 // Alerts
 const snackbar = ref(false)
@@ -174,6 +196,7 @@ const initialize = async () => {
   try {
     await cost.allCost()
     await product.allProduct()
+    await product.allCompanies()
     await service.allService()
   } catch (error: any) {
     snackbar.value = true
@@ -200,7 +223,8 @@ const editItem = (item: PriceItem) => {
       id: item.id,
       name: item.name,
       price: item.price,
-      stock: item.stock
+      stock: item.stock,
+      companies: item.companies
     }
   )
   dialog.value = true
@@ -215,7 +239,7 @@ const close = () => {
 const save = async () => {
   try {
     let { pageTitle } = toRefs(currentPage)
-    let { id, price, type, ...payload } = editedItem.value
+    let { id, price, type, companies, ...payload } = editedItem.value
     price = +price
     switch (pageTitle.value) {
       case 'costs':
@@ -224,14 +248,14 @@ const save = async () => {
           // Add new cost
           await cost.createCost({ price, type, ...payload })
           snackbar.value = true
-          message.value = '¡Costo agregado con exito!'
+          message.value = `¡Nuevo costo ${payload.name} fue agregado con exito!`
           color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await cost.updateCost(+id, { ...payload, price, type })
           snackbar.value = true
-          message.value = '¡Costo Actualizado con exito!'
+          message.value = `¡Costo ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
         }
@@ -242,14 +266,14 @@ const save = async () => {
           // Add new cost
           await service.createService({ price, type, ...payload })
           snackbar.value = true
-          message.value = '¡Servicio agregado con exito!'
+          message.value = `¡Nuevo servicio ${payload.name} fue agregado con exito!`
           color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await service.updateService(+id, { ...payload, price, type })
           snackbar.value = true
-          message.value = '¡Servicio Actualizado con exito!'
+          message.value = `¡Servicio ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
         }
@@ -258,16 +282,16 @@ const save = async () => {
         type = 'Producto'
         if (!id) {
           // Add new cost
-          await product.createProduct({ price, type, ...payload })
+          await product.createProduct(companies, { price, type, ...payload })
           snackbar.value = true
-          message.value = '¡Producto agregado con exito!'
+          message.value = `¡Nuevo producto ${payload.name} agregado con exito!`
           color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await product.updateProduct(+id, { ...payload, price, type })
           snackbar.value = true
-          message.value = '¡Producto Actualizado con exito!'
+          message.value = `¡Producto ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
         }

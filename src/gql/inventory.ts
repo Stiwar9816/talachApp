@@ -11,6 +11,9 @@ query ($priceType: String!) {
     user {
       fullName
     }
+    companies {
+      name_company
+    }
   }
 }
 `

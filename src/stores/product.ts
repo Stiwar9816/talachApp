@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 import type { Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, SUBSCRIBE_PRICE, UPDATE_PRICE } from '@/gql/price'
+import { ALL_COMPANIES_NAME } from '@/gql/company'
+import { ref } from 'vue'
 
 export const useProductStore = defineStore({
   id: 'product',
@@ -16,13 +18,19 @@ export const useProductStore = defineStore({
       },
       { title: 'Precio', align: 'center', key: 'price' },
       {
-        title: 'Responsable',
+        title: 'Creado por',
         sortable: false,
         key: 'user'
       },
+      {
+        title: 'Centro Talachero',
+        sortable: false,
+        key: 'companies'
+      },
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],
-    items: [] as PriceItem[]
+    items: [] as PriceItem[],
+    companies: ref([])
   }),
   actions: {
     async allProduct() {
@@ -49,11 +57,21 @@ export const useProductStore = defineStore({
 
       return this.items
     },
-    async createProduct(payload: PriceItem) {
+    async allCompanies() {
+      const { data } = await apolloClient.query({
+        query: ALL_COMPANIES_NAME
+      })
+
+      let company = data.companies.filter((item: any) => item.isActive !== 'Inactivo')
+      this.companies = [...company]
+      return this.companies
+    },
+    async createProduct(companies: number = 0, payload: PriceItem) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_PRICE,
         variables: {
-          createPriceInput: payload
+          idCompany: companies,
+          createPriceInput: payload,
         }
       })
 

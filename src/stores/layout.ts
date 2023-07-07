@@ -32,7 +32,7 @@ export const useLayoutStore = defineStore('layout', () => {
       route: '/home'
     },
     {
-      name: 'Empresas',
+      name: 'Centros Talacheros',
       icon: 'mdi-domain',
       route: '/companies'
     },
