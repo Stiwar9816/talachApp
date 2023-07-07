@@ -114,7 +114,14 @@ onMounted(() => {
 const exportData = () => {
   try {
     if (!tableRef.value || props.items.length === 0) return
-    const data = props.items.map((item: any) => Object.values(item))
+    const data = props.items.map((item:any) =>
+      Object.values(item).flatMap((value:any) => {
+        if (typeof value === 'object') {
+          return [value.fullName, value.name_company].filter((val) => val !== undefined);
+        }
+        return value
+      })
+    )
     // Obtener los encabezados personalizados
     const headers = Object.values(props.fields).map((field: any) => field.title)
     const worksheet = XLSX.utils.json_to_sheet([headers, ...data])
