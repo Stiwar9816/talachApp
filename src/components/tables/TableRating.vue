@@ -36,6 +36,7 @@
                   color="amber"
                   density="comfortable"
                   readonly
+                  half-increments
                 ></v-rating>
               </td>
               <td>{{ item.columns.createdAt }}</td>
