@@ -251,7 +251,7 @@ const save = async () => {
       close()
     } else {
       //Update user
-      await user.updateUser(+id, { phone, isActive, ...rest })
+      await user.updateUser(id, { phone, isActive, ...rest })
       snackbar.value = true
       message.value = `¡Usuario ${rest.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'

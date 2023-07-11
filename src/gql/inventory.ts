@@ -19,7 +19,7 @@ query ($priceType: String!) {
 `
 
 export const INVENTORY_BY_ID = gql`
-query ($priceId: Int!) {
+query ($priceId: String!) {
   price(id: $priceId) {
     id
     name
@@ -49,7 +49,7 @@ mutation ($updatePriceInput: UpdatePriceInput!) {
 `
 
 export const REMOVE_INVENOTRY = gql`
-mutation ($removePriceId: Int!) {
+mutation ($removePriceId: String!) {
   removePrice(id: $removePriceId) {
     id
   }

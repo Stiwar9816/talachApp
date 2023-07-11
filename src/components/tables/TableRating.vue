@@ -28,14 +28,24 @@
           <template v-slot:item="{ item }">
             <tr>
               <td>{{ item.columns.id }}</td>
-              <td>{{ item.columns.user?.fullName }}</td>
+              <td>{{ item.columns.user.fullName }}</td>
               <td>{{ item.columns.quality }}</td>
               <td>
                 <v-rating
-                  v-model="item.columns.rank"
+                  v-model="item.columns.rankClient"
                   color="amber"
                   density="comfortable"
                   readonly
+                  half-increments
+                ></v-rating>
+              </td>
+              <td>
+                <v-rating
+                  v-model="item.columns.rankTalachero"
+                  color="amber"
+                  density="comfortable"
+                  readonly
+                  half-increments
                 ></v-rating>
               </td>
               <td>{{ item.columns.createdAt }}</td>

@@ -17,7 +17,8 @@ export const useRatingsStore = defineStore({
       },
       { title: 'Usuario', sortable: false, key: 'user' },
       { title: 'Calidad', sortable: false, key: 'quality' },
-      { title: 'Calificación', key: 'rank' },
+      { title: 'Calificación usuario', key: 'rankClient' },
+      { title: 'Calificación talachero', key: 'rankTalachero' },
       { title: 'Fecha de calificación', sortable: false, key: 'createdAt' }
     ] as Field[],
     items: [] as RatingItem[]

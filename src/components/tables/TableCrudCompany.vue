@@ -307,7 +307,7 @@ const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerid
 
 const company = useCompanyStore()
 // Realiza la suscripción al iniciar el componente
-const unsubscribe = company.subscribeToRatings()
+const unsubscribe = company.subscribeToCompanies()
 
 const initialize = async () => {
   try {
@@ -363,7 +363,7 @@ const save = async () => {
       close()
     } else {
       // Update company
-      await company.updateCompany(+id, { ...create, phone, postal_code, lat, lng })
+      await company.updateCompany(id, { ...create, phone, postal_code, lat, lng })
       snackbar.value = true
       message.value = `¡Centro Talachero ${create.name_company} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'

@@ -63,7 +63,7 @@ export const useUserStore = defineStore({
 
       return this.items;
     },
-    async updateUser(id: number, payload: UserItem) {
+    async updateUser(id: string, payload: UserItem) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_USER,
         variables: {

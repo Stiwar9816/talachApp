@@ -72,7 +72,7 @@ export const useCompanyStore = defineStore({
 
       return this.items
     },
-    async updateCompany(id: number, payload: CompanyItem) {
+    async updateCompany(id: string, payload: CompanyItem) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_COMPANY,
         variables: {
@@ -82,7 +82,7 @@ export const useCompanyStore = defineStore({
       this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
       return this.items;
     },
-    subscribeToRatings() {
+    subscribeToCompanies() {
       const observableQuery = apolloClient.subscribe({
         query: SUBSCRIBE_COMPANY
       });

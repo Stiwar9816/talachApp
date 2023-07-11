@@ -66,7 +66,7 @@ export const useProductStore = defineStore({
       this.companies = [...company]
       return this.companies
     },
-    async createProduct(companies: number = 0, payload: PriceItem) {
+    async createProduct(companies: string, payload: PriceItem) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_PRICE,
         variables: {
@@ -84,7 +84,7 @@ export const useProductStore = defineStore({
 
       return this.items
     },
-    async updateProduct(id: number, payload: PriceItem) {
+    async updateProduct(id: string, payload: PriceItem) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_PRICE,
         variables: {
@@ -94,7 +94,7 @@ export const useProductStore = defineStore({
       this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
       return this.items
     },
-    async deleteProduct(id: number) {
+    async deleteProduct(id: string) {
       const { data } = await apolloClient.mutate({
         mutation: REMOVE_PRICE,
         variables: {

@@ -51,7 +51,7 @@ export const useInventoryStore = defineStore({
       this.cache.allProduct = this.items;
       return this.items;
     },
-    async updateInventory(id: number, payload: InventoryItem) {
+    async updateInventory(id: string, payload: InventoryItem) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_INVENTORY,
         variables: {

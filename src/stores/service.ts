@@ -59,7 +59,7 @@ export const useServiceStore = defineStore({
 
       return this.items
     },
-    async updateService(id: number, payload: PriceItem) {
+    async updateService(id: string, payload: PriceItem) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_PRICE,
         variables: {
@@ -69,7 +69,7 @@ export const useServiceStore = defineStore({
       this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
       return this.items;
     },
-    async deleteService(id: number) {
+    async deleteService(id: string) {
       const { data } = await apolloClient.mutate({
         mutation: REMOVE_PRICE,
         variables: {

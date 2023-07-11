@@ -6,21 +6,21 @@ export interface Field {
 }
 
 export interface RatingItem {
-    id?: string | number
+    id?: string
     quality: string
     rank: number
     fullName: string
     createdAt: string
 }
 export interface OrdersItem {
-    id?: string | number
+    id?: string
     fullName: string
     createdAt: string
     name_company: string
     total: number
 }
 export interface UserItem {
-    id?: string | number
+    id?: string
     fullName: string
     phone: number
     email: string
@@ -28,7 +28,7 @@ export interface UserItem {
     isActive?: string
 }
 export interface ItemPrice {
-    id?: string | number
+    id?: string
     name: string
     type?: string
 }
@@ -49,7 +49,7 @@ export interface InventoryItem extends ItemPrice {
     description: string
 }
 export interface CompanyItem {
-    id?: number
+    id?: string
     name_company: string
     rfc: string
     cfdi: string
@@ -72,7 +72,7 @@ export interface CompanyFields {
 export interface PricesFields {
     fields: Record<string, any>
     items: PriceItem[]
-    companies: any
+    companies?: any
 }
 export interface InventoryFields extends Count {
     fields: Record<string, any>

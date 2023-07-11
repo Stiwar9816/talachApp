@@ -79,22 +79,24 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <template v-if="!editedItem.id">
-                        <v-col cols="12">
-                          <v-select
-                            v-model="editedItem.companies"
-                            label="Centro talachero"
-                            :rules="requiredValue"
-                            :items="product.companies"
-                            item-title="name_company"
-                            item-value="id"
-                            variant="underlined"
-                            density="comfortable"
-                            type="text"
-                            clearable
-                          >
-                          </v-select>
-                        </v-col>
+                      <template v-if="(route.name == 'products')">
+                        <template v-if="!editedItem.id">
+                          <v-col cols="12">
+                            <v-select
+                              v-model="editedItem.companies"
+                              label="Centro talachero"
+                              :rules="requiredValue"
+                              :items="product.companies"
+                              item-title="name_company"
+                              item-value="id"
+                              variant="underlined"
+                              density="comfortable"
+                              type="text"
+                              clearable
+                            >
+                            </v-select>
+                          </v-col>
+                        </template>
                       </template>
                     </v-row>
                   </v-container>
@@ -253,7 +255,7 @@ const save = async () => {
           close()
         } else {
           // Update cost
-          await cost.updateCost(+id, { ...payload, price, type })
+          await cost.updateCost(id, { ...payload, price, type })
           snackbar.value = true
           message.value = `¡Costo ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
@@ -271,7 +273,7 @@ const save = async () => {
           close()
         } else {
           // Update cost
-          await service.updateService(+id, { ...payload, price, type })
+          await service.updateService(id, { ...payload, price, type })
           snackbar.value = true
           message.value = `¡Servicio ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
@@ -289,7 +291,7 @@ const save = async () => {
           close()
         } else {
           // Update cost
-          await product.updateProduct(+id, { ...payload, price, type })
+          await product.updateProduct(id, { ...payload, price, type })
           snackbar.value = true
           message.value = `¡Producto ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'

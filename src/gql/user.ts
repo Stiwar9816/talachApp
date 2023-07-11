@@ -29,7 +29,7 @@ export const CREATE_USER = gql`
 `
 
 export const USER_BY_ID = gql`
-  query ($userId: Int!) {
+  query ($userId: String!) {
     user(id: $userId) {
       id
       fullName
@@ -55,7 +55,7 @@ export const UPDATE_USER = gql`
 `
 
 export const BLOCK_USER = gql`
-  mutation ($blockUserId: Int!) {
+  mutation ($blockUserId: String!) {
     blockUser(id: $blockUserId) {
       id
       isActive

@@ -31,7 +31,7 @@ export const ALL_COMPANIES_NAME = gql`
 `
 
 export const COMPANY_BY_ID = gql`
-  query ($companyId: Int!) {
+  query ($companyId: String!) {
     company(id: $companyId) {
       id
       name_company

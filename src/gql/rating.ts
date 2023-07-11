@@ -6,7 +6,8 @@ export const ALL_RATINGS = gql`
     scores {
       id
       quality
-      rank
+      rankClient
+      rankTalachero
       createdAt
       user {
         fullName
@@ -20,7 +21,8 @@ export const SUBSCRIBE_SCORE = gql`
     newScore {
       id
       quality
-      rank
+      rankClient
+      rankTalachero
       createdAt
       user {
         fullName
