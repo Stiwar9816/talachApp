@@ -93,19 +93,19 @@
                           required
                         ></v-text-field>
                       </v-col>
-                        <v-col cols="12">
-                          <v-select
-                            v-model="editedItem.roles"
-                            label="Rol"
-                            :rules="requiredValue"
-                            :items="['Administrador', 'Talachero', 'Usuario']"
-                            variant="underlined"
-                            density="comfortable"
-                            type="text"
-                            clearable
-                            required
-                          ></v-select>
-                        </v-col>
+                      <v-col cols="12">
+                        <v-select
+                          v-model="editedItem.roles"
+                          label="Rol"
+                          :rules="requiredValue"
+                          :items="['Administrador', 'Talachero', 'Usuario']"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          clearable
+                          required
+                        ></v-select>
+                      </v-col>
                       <template v-if="editedItem.id">
                         <v-col cols="12" sm="6" md="6">
                           <v-select
@@ -240,20 +240,20 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, isActive, ...rest  } = editedItem.value
+    let { id, phone, isActive, ...rest } = editedItem.value
     phone = +phone
     if (!id) {
       // Add new user
-      await user.createUser({ phone, ...rest  })
+      await user.createUser({ phone, ...rest })
       snackbar.value = true
-      message.value = '¡Nuevo usuario agregado con exito!'
+      message.value = `¡Nuevo usuario ${rest.fullName} fue agregado con exito!`
       color.value = 'orange-darken-2'
       close()
     } else {
       //Update user
       await user.updateUser(+id, { phone, isActive, ...rest })
       snackbar.value = true
-      message.value = '¡Usuario Actualizado con exito!'
+      message.value = `¡Usuario ${rest.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }

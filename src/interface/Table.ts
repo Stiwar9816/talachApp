@@ -40,6 +40,7 @@ export interface Count {
 export interface PriceItem extends ItemPrice {
     price: number
     stock?: number
+    companies?: number | any
 }
 
 export interface InventoryItem extends ItemPrice {
@@ -71,6 +72,7 @@ export interface CompanyFields {
 export interface PricesFields {
     fields: Record<string, any>
     items: PriceItem[]
+    companies: any
 }
 export interface InventoryFields extends Count {
     fields: Record<string, any>

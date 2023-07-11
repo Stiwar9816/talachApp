@@ -95,6 +95,9 @@
             {{ item.columns.stock }}
           </v-chip>
         </template>
+        <template v-slot:item.companies="{ item }">
+          {{ item.columns.companies?.name_company }}
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
@@ -206,7 +209,7 @@ const save = async () => {
     if (id) {
       await inventory.updateInventory(+id, { ...inevntory, stock })
       snackbar.value = true
-      message.value = '¡Producto actualizado con exito!'
+      message.value = `¡Producto ${inevntory.name} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }

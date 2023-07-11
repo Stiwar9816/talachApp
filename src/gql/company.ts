@@ -20,6 +20,15 @@ export const ALL_COMPANIES = gql`
     }
   }
 `
+export const ALL_COMPANIES_NAME = gql`
+  query Companies {
+    companies {
+      id
+      name_company
+      isActive
+    }
+  }
+`
 
 export const COMPANY_BY_ID = gql`
   query ($companyId: Int!) {
