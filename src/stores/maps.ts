@@ -59,7 +59,7 @@ export const useMapsStore = defineStore({
                 });
                 const [...geofences] = data.companies.map((company: any) => {
                     const paths: LatLgn[] = [];
-                    company.geofence[0].split(', ').forEach((coordinate: string, index: number) => {
+                    company.geofence[0].split(',').forEach((coordinate: string, index: number) => {
                         const value = +coordinate.trim();
                         const isLatitude = index % 2 === 0;
                         if (isLatitude) {
