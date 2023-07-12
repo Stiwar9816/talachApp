@@ -5,7 +5,7 @@
       :fields="storeService.fields"
       :items="storeService.items"
       page="Servicio"
-      :show-button="role"
+      :show-button="extractRoleFromToken(token)"
     />
   </div>
 </template>
@@ -15,15 +15,14 @@
 import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
 // Store
 import { useServiceStore } from '@/stores'
+import { extractRoleFromToken } from '@/utils/extractRoleToken';
+import { onMounted } from 'vue';
 // Initialization Store
 const storeService = useServiceStore()
 
-const userRole = localStorage.getItem('role')
+const token = localStorage.getItem('token')
 
-const role = userRole === 'superAdmin'
-
-if (userRole !== 'superAdmin' && userRole !== 'Administrador'){
-  const fields = storeService.fields
-  delete fields[3]
-}
+onMounted(() => {
+  extractRoleFromToken(token)
+})
 </script>

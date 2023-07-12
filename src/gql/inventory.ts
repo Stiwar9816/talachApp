@@ -1,57 +1,60 @@
 import gql from 'graphql-tag'
 
 export const ALL_INVENTORY = gql`
-query ($priceType: String!) {
-  priceByType(priceType: $priceType) {
-    id
-    name
-    price
-    stock
-    description
-    user {
-      fullName
-    }
-    companies {
-      name_company
+  query ($priceType: String!) {
+    priceByType(priceType: $priceType) {
+      id
+      name
+      price
+      stock
+      description
+      user {
+        fullName
+      }
+      companies {
+        name_company
+      }
     }
   }
-}
 `
 
 export const INVENTORY_BY_ID = gql`
-query ($priceId: String!) {
-  price(id: $priceId) {
-    id
-    name
-    price
-    stock
-    description
-    user {
-      fullName
+  query ($priceId: String!) {
+    price(id: $priceId) {
+      id
+      name
+      price
+      stock
+      description
+      user {
+        fullName
+      }
     }
   }
-}
 `
 
 export const UPDATE_INVENTORY = gql`
-mutation ($updatePriceInput: UpdatePriceInput!) {
-  updatePrice(updatePriceInput: $updatePriceInput) {
-    id
-    name
-    price
-    stock
-    description
-    user {
-      fullName
+  mutation ($updatePriceInput: UpdatePriceInput!) {
+    updatePrice(updatePriceInput: $updatePriceInput) {
+      id
+      name
+      price
+      stock
+      description
+      user {
+        fullName
+      }
+      companies {
+        name_company
+      }
     }
   }
-}
 `
 
 export const REMOVE_INVENOTRY = gql`
-mutation ($removePriceId: String!) {
-  removePrice(id: $removePriceId) {
-    id
+  mutation ($removePriceId: String!) {
+    removePrice(id: $removePriceId) {
+      id
+    }
   }
-}
 `

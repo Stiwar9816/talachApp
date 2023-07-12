@@ -5,26 +5,20 @@
       :fields="storeCosts.fields"
       :items="storeCosts.items"
       page="Costos"
-      :show-button="role"
+      :show-button="extractRoleFromToken(token)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-// Components
+import { onMounted } from 'vue'
 import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
-// Store
 import { useCostsStore } from '@/stores'
-// Initialization Store
+import { extractRoleFromToken } from '@/utils/extractRoleToken'
 const storeCosts = useCostsStore()
+const token = localStorage.getItem('token')
 
-const userRole = localStorage.getItem('role')
-
-const role = userRole === 'superAdmin'
-
-if (userRole !== 'superAdmin' && userRole !== 'Administrador'){
-  const fields = storeCosts.fields
-  delete fields[3]
-}
-
+onMounted(() => {
+  extractRoleFromToken(token)
+})
 </script>

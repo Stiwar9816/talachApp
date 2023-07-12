@@ -8,8 +8,7 @@ export const useAuthStore = defineStore({
   id: 'auth',
   state: (): AuthState => ({
     token: localStorage.getItem('token') || null,
-    user: null,
-    role: null
+    user: null
   }),
   getters: {
     isAuthenticated(state): boolean {
@@ -27,17 +26,14 @@ export const useAuthStore = defineStore({
       const { user, token } = data.signin
       localStorage.setItem('token', token)
       localStorage.setItem('user', user.fullName)
-      localStorage.setItem('role', user.roles)
       this.token = token
       this.user = user.fullName
-      this.role = user.roles
       await apolloClient.resetStore()
       return user
     },
     logout() {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      localStorage.removeItem('role')
       this.token = null
       this.user = null
       router.replace('/')
