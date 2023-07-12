@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 // Interface
 import type { Routes } from '@/interface'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { extractFullNameFromToken } from '@/utils'
 
 export const useLayoutStore = defineStore('layout', () => {
-  const nameProfile = ref<String | null>(localStorage.getItem('user'))
+  const token = ref<string | null>(localStorage.getItem('token'))
   const imageProfile: string = 'mdi-account-circle'
   const drawer: boolean = true
   const rail: boolean = false
@@ -57,5 +58,7 @@ export const useLayoutStore = defineStore('layout', () => {
       route: '/users'
     }
   ]
+  const nameProfile = computed(() => extractFullNameFromToken(token.value) || '')
+
   return { drawer, rail, routes, prices, nameProfile, imageProfile }
 })

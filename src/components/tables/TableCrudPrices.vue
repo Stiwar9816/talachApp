@@ -114,7 +114,7 @@
         </template>
         <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
         <template v-slot:item.companies="{ item }">
-          {{ item.columns.companies?.name_company }}
+          {{ item.columns.companies.name_company }}
         </template>
         <template v-slot:item.price="{ item }"
           >{{ currencyFormatter('MXN', item.columns.price) }} MXN</template

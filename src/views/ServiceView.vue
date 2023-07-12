@@ -15,7 +15,7 @@
 import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
 // Store
 import { useServiceStore } from '@/stores'
-import { extractRoleFromToken } from '@/utils/extractRoleToken';
+import { extractRoleFromToken } from '@/utils'
 import { onMounted } from 'vue';
 // Initialization Store
 const storeService = useServiceStore()

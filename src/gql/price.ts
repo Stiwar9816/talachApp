@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 export const CREATE_PRICE = gql`
-  mutation CreatePrice($createPriceInput: CreatePriceInput!,$idCompany: String) {
-    createPrice(createPriceInput: $createPriceInput,idCompany: $idCompany) {
+  mutation CreatePrice($createPriceInput: CreatePriceInput!, $idCompany: String) {
+    createPrice(createPriceInput: $createPriceInput, idCompany: $idCompany) {
       id
       name
       price
@@ -12,7 +12,7 @@ export const CREATE_PRICE = gql`
       user {
         fullName
       }
-       companies {
+      companies {
         id
         name_company
       }
@@ -48,7 +48,7 @@ export const PRICE_BY_ID = gql`
       user {
         fullName
       }
-       companies {
+      companies {
         name_company
       }
     }
@@ -64,6 +64,9 @@ export const UPDATE_PRICE = gql`
       user {
         fullName
       }
+      companies {
+        name_company
+      }
     }
   }
 `
@@ -76,21 +79,18 @@ export const REMOVE_PRICE = gql`
   }
 `
 export const SUBSCRIBE_PRICE = gql`
-subscription NewPrice {
-  newPrice {
-    id
-    name
-    price
-    stock
-    description
-    user {
-     fullName
-    }
-    companies {
+  subscription NewPrice {
+    newPrice {
       id
-      name_company
-      isActive
+      name
+      price
+      stock
+      description
+      companies {
+        id
+        name_company
+        isActive
+      }
     }
   }
-}
 `

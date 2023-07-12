@@ -7,8 +7,7 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore({
   id: 'auth',
   state: (): AuthState => ({
-    token: localStorage.getItem('token') || null,
-    user: null
+    token: localStorage.getItem('token') || null
   }),
   getters: {
     isAuthenticated(state): boolean {
@@ -25,17 +24,13 @@ export const useAuthStore = defineStore({
       })
       const { user, token } = data.signin
       localStorage.setItem('token', token)
-      localStorage.setItem('user', user.fullName)
       this.token = token
-      this.user = user.fullName
       await apolloClient.resetStore()
       return user
     },
     logout() {
       localStorage.removeItem('token')
-      localStorage.removeItem('user')
       this.token = null
-      this.user = null
       router.replace('/')
     },
     async resetPassword(email: string) {

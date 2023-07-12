@@ -10,8 +10,13 @@ import type { ModuleNamespace } from 'vite/types/hot';
  */
 export function registerLayouts(app: App<Element>) {
   const layouts = import.meta.globEager<string, ModuleNamespace>('./*.vue');
+  const registeredComponents = new Set<string>();
 
-  Object.entries(layouts).forEach(([, layout]) => {
-    app.component(layout?.default?.name, layout?.default);
+  Object.values(layouts).forEach((layout) => {
+    const layoutComponent = layout.default;
+    if (layoutComponent && !registeredComponents.has(layoutComponent.name)) {
+      app.component(layoutComponent.name, layoutComponent);
+      registeredComponents.add(layoutComponent.name);
+    }
   });
 }
