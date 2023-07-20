@@ -21,7 +21,7 @@ export const useInventoryStore = defineStore({
         key: 'user'
       },
       {
-        title: 'Centro talchero',
+        title: 'Centro talachero',
         sortable: false,
         key: 'companies'
       },
