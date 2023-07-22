@@ -2,7 +2,13 @@ import { defineStore } from 'pinia'
 // Interface
 import type { CompanyItem, CompanyFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_COMPANIES, CREATE_COMPANY, SUBSCRIBE_COMPANY, UPDATE_COMPANY } from '@/gql/company'
+import {
+  ALL_COMPANIES,
+  CREATE_COMPANY,
+  SUBSCRIBE_COMPANY,
+  UPDATE_COMPANY,
+  WORKER_COUNT_BY_COMPANY
+} from '@/gql/company'
 
 export const useCompanyStore = defineStore({
   id: 'company',
@@ -29,7 +35,9 @@ export const useCompanyStore = defineStore({
       { title: 'Estado', sortable: false, key: 'department' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
-      { title: 'Activo', sortable: false, key: 'isActive' },
+      { title: 'Régimen Fiscal', sortable: true, key: 'tax_regime' },
+      { title: 'Trabajadores Activos', sortable: true, key: 'workerCount' },
+      { title: 'Activo', sortable: true, key: 'isActive' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ],
     items: [] as CompanyItem[]
@@ -42,16 +50,31 @@ export const useCompanyStore = defineStore({
 
       const newItems = data.companies.map((item: CompanyItem) => {
         return {
-          ...item
-        };
-      });
+          ...item,
+          workerCount: 0
+        }
+      })
+
+      await Promise.all(
+        newItems.map(async (company: any) => {
+          const { data } = await apolloClient.query({
+            query: WORKER_COUNT_BY_COMPANY,
+            variables: {
+              companyId: company.id
+            }
+          })
+
+          const workerCount = data.workerCountByCompany
+          company.workerCount = workerCount
+        })
+      )
 
       newItems.forEach((newItem: CompanyItem) => {
-        const existingItem = this.items.find((item: CompanyItem) => item.id === newItem.id);
+        const existingItem = this.items.find((item: CompanyItem) => item.id === newItem.id)
         if (!existingItem) {
-          this.items.push(newItem);
+          this.items.push(newItem)
         }
-      });
+      })
 
       return this.items
     },
@@ -63,11 +86,11 @@ export const useCompanyStore = defineStore({
         }
       })
 
-      const newCompany = data.createCompany;
+      const newCompany = data.createCompany
 
-      const existingItem = this.items.find((item: CompanyItem) => item.id === newCompany.id);
+      const existingItem = this.items.find((item: CompanyItem) => item.id === newCompany.id)
       if (!existingItem) {
-        this.items.push(newCompany);
+        this.items.push(newCompany)
       }
 
       return this.items
@@ -79,35 +102,35 @@ export const useCompanyStore = defineStore({
           updateCompanyInput: { id, ...payload }
         }
       })
-      this.items = this.items.map(item => item.id === id ? data.updateCompany : item)
-      return this.items;
+      this.items = this.items.map((item) => (item.id === id ? data.updateCompany : item))
+      return this.items
     },
     subscribeToCompanies() {
       const observableQuery = apolloClient.subscribe({
         query: SUBSCRIBE_COMPANY
-      });
+      })
 
       const subscription = observableQuery.subscribe({
         next: (result) => {
-          const newCompany = result.data?.newCompany;
+          const newCompany = result.data?.newCompany
           if (newCompany) {
-            this.updateItems([newCompany]);
+            this.updateItems([newCompany])
           }
         },
         error(error: any) {
-          console.log(error.message);
+          console.log(error.message)
         }
-      });
-      return () => subscription.unsubscribe();
+      })
+      return () => subscription.unsubscribe()
     },
     updateItems(newCompanies: CompanyItem[]) {
       const updatedItems = newCompanies.map((newCompany: CompanyItem) => {
         return {
           ...newCompany
-        };
-      });
+        }
+      })
 
-      this.items = [...this.items, ...updatedItems];
+      this.items = [...this.items, ...updatedItems]
     }
   }
 })

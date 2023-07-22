@@ -3,20 +3,21 @@ import gql from 'graphql-tag'
 export const ALL_COMPANIES = gql`
   query Companies {
     companies {
-    id
-    name_company
-    rfc
-    cfdi
-    phone
-    bussiness_name
-    address
-    department
-    city
-    postal_code
-    isActive
-    geofence
-    lat
-    lng
+      id
+      name_company
+      rfc
+      cfdi
+      phone
+      bussiness_name
+      address
+      department
+      city
+      postal_code
+      isActive
+      geofence
+      lat
+      lng
+      tax_regime
     }
   }
 `
@@ -62,6 +63,7 @@ export const CREATE_COMPANY = gql`
       geofence
       lat
       lng
+      tax_regime
     }
   }
 `
@@ -82,27 +84,35 @@ export const UPDATE_COMPANY = gql`
       geofence
       lat
       lng
+      tax_regime
     }
   }
 `
 
-export const SUBSCRIBE_COMPANY = gql`
-subscription NewCompany {
-  newCompany {
-    id
-    name_company
-    rfc
-    cfdi
-    phone
-    bussiness_name
-    address
-    department
-    city
-    postal_code
-    isActive
-    geofence
-    lat
-    lng
+export const WORKER_COUNT_BY_COMPANY = gql`
+  query Query($companyId: String!) {
+    workerCountByCompany(companyId: $companyId)
   }
-}
+`
+
+export const SUBSCRIBE_COMPANY = gql`
+  subscription NewCompany {
+    newCompany {
+      id
+      name_company
+      rfc
+      cfdi
+      phone
+      bussiness_name
+      address
+      department
+      city
+      postal_code
+      isActive
+      geofence
+      lat
+      lng
+      tax_regime
+    }
+  }
 `

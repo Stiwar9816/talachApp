@@ -26,16 +26,23 @@ export const useLayoutStore = defineStore('layout', () => {
       route: '/costs'
     }
   ]
+  const companies: Array<Routes> = [
+    {
+      name: 'Empresas',
+      icon: 'mdi-city',
+      route: '/companies'
+    },
+    {
+      name: 'Trabajadores',
+      icon: 'mdi-account-network',
+      route: '/workers'
+    }
+  ]
   const routes: Array<Routes> = [
     {
       name: 'Inicio',
       icon: 'mdi-home-account',
       route: '/home'
-    },
-    {
-      name: 'Centros Talacheros',
-      icon: 'mdi-domain',
-      route: '/companies'
     },
     {
       name: 'Inventario',
@@ -60,5 +67,5 @@ export const useLayoutStore = defineStore('layout', () => {
   ]
   const nameProfile = computed(() => extractFullNameFromToken(token.value) || '')
 
-  return { drawer, rail, routes, prices, nameProfile, imageProfile }
+  return { drawer, rail, routes, prices, companies, nameProfile, imageProfile }
 })

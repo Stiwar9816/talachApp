@@ -69,16 +69,6 @@ export const useServiceStore = defineStore({
       this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
       return this.items;
     },
-    async deleteService(id: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: REMOVE_PRICE,
-        variables: {
-          removePriceId: id
-        }
-      })
-      this.items = this.items.filter(item => item.id !== id)
-      return this.items;
-    },
     subscribeToServices() {
       const observableQuery = apolloClient.subscribe({
         query: SUBSCRIBE_PRICE

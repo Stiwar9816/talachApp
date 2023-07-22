@@ -1,34 +1,69 @@
 import gql from 'graphql-tag'
 
 export const ALL_GEOFENCE = gql`
-query {
-  companies {
-    geofence
+  query {
+    companies {
+      geofence
+    }
   }
-}
 `
-export const ALL_LOCATION = gql`
-query {
-  companies {
-    lat
-    lng
+
+export const ALL_GEOFENCE_WORKER = gql`
+  query {
+    workers {
+      geofence
+    }
   }
-}
+`
+
+export const ALL_LOCATION_WORKER = gql`
+  query {
+    workers {
+      lat
+      lng
+    }
+  }
+`
+
+export const ALL_LOCATION = gql`
+  query {
+    companies {
+      lat
+      lng
+    }
+  }
 `
 
 export const SUBSCRIBE_GEOFENCE = gql`
-subscription NewCompany {
-  newCompany {
-    geofence
+  subscription NewCompany {
+    newCompany {
+      geofence
+    }
   }
-}
+`
+
+export const SUBSCRIBE_GEOFENCE_WORKER = gql`
+  subscription NewWorker {
+    newWorker {
+      geofence
+    }
+  }
+`
+
+export const SUBSCRIBE_LOCATION_WORKER = gql`
+  subscription NewWorker {
+    newWorker {
+      lat
+      lng
+    }
+  }
 `
 
 export const SUBSCRIBE_LOCATION = gql`
-subscription NewCompany {
-  newCompany {
-    lat
-    lng
+  subscription NewCompany {
+    newCompany {
+      lat
+      lng
+    }
   }
-}
 `

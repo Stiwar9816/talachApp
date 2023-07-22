@@ -38,6 +38,30 @@
         <template v-slot:activator="{ props }">
           <v-list-item
             v-bind="props"
+            prepend-icon="mdi-domain"
+            append-icon="mdi-chevron-right"
+          >
+            Centros Talacheros
+            <v-tooltip activator="parent" location="end">Centros Talacheros</v-tooltip>
+          </v-list-item>
+        </template>
+        <v-list class="bg-grey-lighten-5" rounded max-width="190">
+          <v-list-item
+            v-for="(item, index) in storeLayout.companies"
+            :key="index"
+            :title="item.name"
+            :value="item.name"
+            :prepend-icon="item.icon"
+            :to="item.route"
+          >
+            <v-tooltip activator="parent" location="end">{{ item.name }}</v-tooltip>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-menu transition="slide-x-transition" location="end">
+        <template v-slot:activator="{ props }">
+          <v-list-item
+            v-bind="props"
             prepend-icon="mdi-currency-usd"
             append-icon="mdi-chevron-right"
           >

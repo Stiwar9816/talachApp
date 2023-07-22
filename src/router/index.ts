@@ -10,8 +10,8 @@ import ProductView from '@/views/ProductView.vue'
 import ServiceView from '@/views/ServiceView.vue'
 import CostsView from '@/views/CostsView.vue'
 import CompanyView from '@/views/CompanyView.vue'
+import WorkerView from '@/views/WorkerView.vue'
 import { requiredAuth, useGuard } from '@/middleware/auth'
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +21,7 @@ const router = createRouter({
       name: ' login',
       component: LoginView,
       meta: {
-        layout: 'Default',
+        layout: 'Default'
       },
       beforeEnter: useGuard
     },
@@ -30,7 +30,7 @@ const router = createRouter({
       name: ' resetPassword',
       component: FormResetPassword,
       meta: {
-        layout: 'Default',
+        layout: 'Default'
       },
       beforeEnter: useGuard
     },
@@ -43,12 +43,21 @@ const router = createRouter({
         requireAuth: true
       },
       beforeEnter: requiredAuth
-
     },
     {
       path: '/companies',
       name: 'companies',
       component: CompanyView,
+      meta: {
+        layout: 'Dashboard',
+        requireAuth: true
+      },
+      beforeEnter: requiredAuth
+    },
+    {
+      path: '/workers',
+      name: 'workers',
+      component: WorkerView,
       meta: {
         layout: 'Dashboard',
         requireAuth: true
@@ -127,6 +136,5 @@ const router = createRouter({
     }
   ]
 })
-
 
 export default router
