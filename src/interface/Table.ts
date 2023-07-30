@@ -107,6 +107,6 @@ export interface OrdersFields extends Count {
 
 export interface WorkerFields {
   fields: Record<string, any>
-  items: WorkerItem[],
+  items: WorkerItem[]
   companies?: any
 }

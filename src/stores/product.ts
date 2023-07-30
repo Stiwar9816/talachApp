@@ -18,6 +18,11 @@ export const useProductStore = defineStore({
     fields: [
       { title: 'ID', sortable: false, key: 'id' },
       {
+        title: 'Imagen',
+        sortable: false,
+        key: 'image'
+      },
+      {
         title: 'Nombre',
         sortable: false,
         key: 'name'

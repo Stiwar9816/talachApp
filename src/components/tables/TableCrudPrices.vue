@@ -79,7 +79,7 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <template v-if="(route.name == 'products')">
+                      <template v-if="route.name == 'products'">
                         <template v-if="!editedItem.id">
                           <v-col cols="12">
                             <v-select
@@ -113,6 +113,15 @@
           </v-toolbar>
         </template>
         <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
+        <template v-slot:item.image="{ item }">
+          <img
+            class="rounded-lg"
+            :src="getImageUrl(item.columns.image)"
+            alt="image_product"
+            width="120"
+            cover
+          />
+        </template>
         <template v-slot:item.companies="{ item }">
           {{ item.columns.companies.name_company }}
         </template>
@@ -172,6 +181,13 @@ const defaultItem = ref<PriceItem>({
   price: 0,
   companies: null
 })
+
+const selectedImageFile = ref<File | null>(null)
+
+// Método para manejar el cambio en el campo de entrada de archivo
+const handleImageChange = (file: File) => {
+  selectedImageFile.value = file
+}
 // Alerts
 const snackbar = ref(false)
 const color = ref('')
@@ -306,6 +322,13 @@ const save = async () => {
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }
+}
+
+const imageUrlBase = import.meta.env.VITE_URL_IMAGE // Reemplaza con la URL base de tu API
+
+// Método para obtener la URL completa de la imagen
+const getImageUrl = (imageName: string) => {
+  return imageUrlBase + imageName
 }
 
 // Cancela la suscripción al desmontar el componente
