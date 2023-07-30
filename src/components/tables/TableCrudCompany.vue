@@ -343,7 +343,7 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, postal_code, lat, lng, ...create } = editedItem.value
+    let { id, phone, postal_code, lat, lng, workerCount, ...create } = editedItem.value
     phone = +phone
     postal_code = +postal_code
     lat = +lat

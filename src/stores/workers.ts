@@ -65,7 +65,7 @@ export const useWorkerStore = defineStore({
       const { data } = await apolloClient.mutate({
         mutation: CREATE_WORKER,
         variables: {
-          createCompanyInput: payload,
+          createWorkerInput: payload,
           idCompany: companies
         }
       })
