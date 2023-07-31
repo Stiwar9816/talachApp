@@ -45,16 +45,16 @@ export const useMapsStore = defineStore({
           query: ALL_LOCATION_WORKER
         })
 
-        const companyMarkers = companiesData.companies.map(({ lat, lng }: any) => ({
+        const companyMarkers = companiesData.companies.map(({ lat, lng, name_company }: any) => ({
           position: { lat: +lat, lng: +lng },
           label: 'CT',
-          title: 'Centro Talachero'
+          title: name_company
         }))
 
-        const workerMarkers = workersData.workers.map(({ lat, lng }: any) => ({
+        const workerMarkers = workersData.workers.map(({ lat, lng, fullName }: any) => ({
           position: { lat: +lat, lng: +lng },
           label: 'T',
-          title: 'Trabajador'
+          title: fullName
         }))
 
         this.markers = [...companyMarkers, ...workerMarkers]

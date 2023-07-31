@@ -19,6 +19,7 @@ export const ALL_GEOFENCE_WORKER = gql`
 export const ALL_LOCATION_WORKER = gql`
   query {
     workers {
+      fullName
       lat
       lng
     }
@@ -28,6 +29,7 @@ export const ALL_LOCATION_WORKER = gql`
 export const ALL_LOCATION = gql`
   query {
     companies {
+      name_company
       lat
       lng
     }
