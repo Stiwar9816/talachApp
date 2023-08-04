@@ -96,6 +96,21 @@
                             >
                             </v-select>
                           </v-col>
+                          <!-- <v-col cols="12">
+                            <v-file-input
+                              v-model="editedItem.file"
+                              :rules="requiredValue"
+                              accept="image/*"
+                              label="Imagen de producto"
+                              variant="underlined"
+                              density="comfortable"
+                              prepend-icon="mdi-image"
+                              clearable
+                              counter
+                              show-size
+                              chips
+                            ></v-file-input>
+                          </v-col> -->
                         </template>
                       </template>
                     </v-row>
@@ -115,7 +130,7 @@
         <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
         <template v-slot:item.image="{ item }">
           <img
-            class="rounded-lg"
+            class="rounded-lg mt-2"
             :src="getImageUrl(item.columns.image)"
             alt="image_product"
             width="120"
@@ -181,13 +196,6 @@ const defaultItem = ref<PriceItem>({
   price: 0,
   companies: null
 })
-
-const selectedImageFile = ref<File | null>(null)
-
-// Método para manejar el cambio en el campo de entrada de archivo
-const handleImageChange = (file: File) => {
-  selectedImageFile.value = file
-}
 // Alerts
 const snackbar = ref(false)
 const color = ref('')
@@ -257,7 +265,7 @@ const close = () => {
 const save = async () => {
   try {
     let { pageTitle } = toRefs(currentPage)
-    let { id, price, type, companies, ...payload } = editedItem.value
+    let { id, price, type, companies, file, ...payload } = editedItem.value
     price = +price
     switch (pageTitle.value) {
       case 'costs':

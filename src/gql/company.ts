@@ -6,7 +6,6 @@ export const ALL_COMPANIES = gql`
       id
       name_company
       rfc
-      cfdi
       phone
       bussiness_name
       address
@@ -52,7 +51,6 @@ export const CREATE_COMPANY = gql`
       id
       name_company
       rfc
-      cfdi
       phone
       bussiness_name
       address
@@ -73,7 +71,6 @@ export const UPDATE_COMPANY = gql`
       id
       name_company
       rfc
-      cfdi
       phone
       bussiness_name
       address
@@ -101,7 +98,6 @@ export const SUBSCRIBE_COMPANY = gql`
       id
       name_company
       rfc
-      cfdi
       phone
       bussiness_name
       address

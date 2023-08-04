@@ -78,16 +78,16 @@
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="editedItem.cfdi"
-                          label="CFDI"
+                        <v-select
+                          v-model="editedItem.tax_regime"
+                          label="Régimen fiscal"
                           :rules="requiredValue"
+                          :items="['Moral', 'Físico']"
                           variant="underlined"
                           density="comfortable"
                           type="text"
                           clearable
-                          required
-                        ></v-text-field>
+                        ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
@@ -272,7 +272,6 @@ const editedIndex = ref<number>(-1)
 const editedItem = ref<CompanyItem>({
   name_company: '',
   rfc: '',
-  cfdi: '',
   phone: 0,
   bussiness_name: '',
   address: '',
@@ -281,12 +280,12 @@ const editedItem = ref<CompanyItem>({
   postal_code: 0,
   geofence: '',
   lat: 0,
-  lng: 0
+  lng: 0,
+  tax_regime: ''
 })
 const defaultItem = ref<CompanyItem>({
   name_company: '',
   rfc: '',
-  cfdi: '',
   phone: 0,
   bussiness_name: '',
   address: '',
@@ -295,7 +294,8 @@ const defaultItem = ref<CompanyItem>({
   postal_code: 0,
   geofence: '',
   lat: 0,
-  lng: 0
+  lng: 0,
+  tax_regime: ''
 })
 // Alerts
 const snackbar = ref(false)
