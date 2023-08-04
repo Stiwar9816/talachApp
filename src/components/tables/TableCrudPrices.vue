@@ -265,7 +265,7 @@ const close = () => {
 const save = async () => {
   try {
     let { pageTitle } = toRefs(currentPage)
-    let { id, price, type, companies, file, ...payload } = editedItem.value
+    let { id, price, type, companies, ...payload } = editedItem.value
     price = +price
     switch (pageTitle.value) {
       case 'costs':
