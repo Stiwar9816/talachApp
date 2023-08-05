@@ -2,13 +2,7 @@ import { defineStore } from 'pinia'
 // Interface
 import type { Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import {
-  ALL_PRICES_BY_TYPE,
-  CREATE_PRICE,
-  REMOVE_PRICE,
-  SUBSCRIBE_PRICE,
-  UPDATE_PRICE
-} from '@/gql/price'
+import { ALL_PRICES_BY_TYPE, CREATE_PRICE, SUBSCRIBE_PRICE, UPDATE_PRICE } from '@/gql/price'
 import { ALL_COMPANIES_NAME } from '@/gql/company'
 import { ref } from 'vue'
 

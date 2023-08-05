@@ -60,7 +60,6 @@ export interface CompanyItem extends Coordinates {
   id?: string
   name_company: string
   rfc: string
-  cfdi: string
   phone: number
   bussiness_name: string
   address: string
@@ -68,7 +67,8 @@ export interface CompanyItem extends Coordinates {
   city: string
   postal_code: number
   isActive?: string
-  workerCount: number
+  tax_regime: string
+  workerCount?: number
 }
 
 export interface WorkerItem extends Coordinates {

@@ -89,6 +89,7 @@ export const SUBSCRIBE_PRICE = gql`
       price
       stock
       description
+      image
       companies {
         id
         name_company

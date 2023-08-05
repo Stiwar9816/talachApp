@@ -130,7 +130,7 @@
         <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
         <template v-slot:item.image="{ item }">
           <img
-            class="rounded-lg"
+            class="rounded-lg mt-2"
             :src="getImageUrl(item.columns.image)"
             alt="image_product"
             width="120"
@@ -201,7 +201,6 @@ const defaultItem = ref<PriceItem>({
   companies: null,
   file: defaultFile
 })
-
 // Alerts
 const snackbar = ref(false)
 const color = ref('')
