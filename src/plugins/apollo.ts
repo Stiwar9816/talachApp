@@ -1,10 +1,12 @@
-import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client/core'
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, split } from '@apollo/client/core'
 import { onError } from '@apollo/client/link/error'
 import { useErrorsStore } from '../stores/useErrors'
 import { setContext } from '@apollo/client/link/context'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
+//@ts-ignore
+import { createUploadLink } from 'apollo-upload-client'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token')
@@ -23,22 +25,31 @@ const errorHandler = onError(({ graphQLErrors }) => {
     }
 })
 
-const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
+const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` }
 
 // HTTP connection to the API
-const httpLink = new HttpLink({
-  // You should use an absolute URL here
-  uri: import.meta.env.VITE_GRAPHQL_URL,
-  credentials: 'include'
-})
+const httpLinkUpload = ApolloLink.from([
+  createUploadLink({
+    // You should use an absolute URL here
+    uri: import.meta.env.VITE_GRAPHQL_URL,
+    credentials: 'include'
+  })
+])
+
+// // HTTP connection to the API
+// const httpLink = new HttpLink({
+//   // You should use an absolute URL here
+//   uri: import.meta.env.VITE_GRAPHQL_URL,
+//   credentials: 'include'
+// })
 
 export const wsLink = new GraphQLWsLink(
   createClient({
     url: import.meta.env.VITE_GRAPHQL_URL_WS,
     lazy: true,
     connectionParams() {
-      return  headers 
-    },
+      return headers
+    }
   })
 )
 
@@ -48,7 +59,7 @@ const splitLink = split(
     return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
   },
   authLink.concat(wsLink),
-  authLink.concat(errorHandler.concat(httpLink))
+  authLink.concat(errorHandler.concat(httpLinkUpload))
 )
 
 // Cache implementation

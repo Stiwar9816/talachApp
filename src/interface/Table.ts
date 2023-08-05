@@ -37,10 +37,12 @@ export interface Count {
   count: number
   cacheCount: number
 }
+
 export interface PriceItem extends ItemPrice {
   price: number
   stock?: number
   companies?: number | any
+  file?: File | null
 }
 
 export interface InventoryItem extends ItemPrice {

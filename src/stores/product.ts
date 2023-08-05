@@ -76,12 +76,16 @@ export const useProductStore = defineStore({
       this.companies = [...company]
       return this.companies
     },
-    async createProduct(companies: string, payload: PriceItem) {
+    async createProduct(companies: string, payload: PriceItem, file: any) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_PRICE,
         variables: {
           idCompany: companies,
-          createPriceInput: payload
+          createPriceInput: payload,
+          file: file[0]
+        },
+        context: {
+          useMultipart: true // Indica a apollo-upload-client que es una solicitud de carga de archivos
         }
       })
 
@@ -94,11 +98,18 @@ export const useProductStore = defineStore({
 
       return this.items
     },
-    async updateProduct(id: string, payload: PriceItem) {
+    async updateProduct(id: string, payload: PriceItem, file: any) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_PRICE,
         variables: {
-          updatePriceInput: { id, ...payload }
+          updatePriceInput: {
+            id,
+            ...payload
+          },
+          file: file[0]
+        },
+        context: {
+          useMultipart: true
         }
       })
       this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
