@@ -93,7 +93,7 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" sm="12" md="12">
                         <v-select
                           v-model="editedItem.roles"
                           label="Rol"
@@ -107,6 +107,18 @@
                         ></v-select>
                       </v-col>
                       <template v-if="editedItem.id">
+                        <v-col cols="12" sm="6" md="6">
+                          <v-text-field
+                            v-model="editedItem.rfc"
+                            label="RFC"
+                            :rules="requiredValue"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                            required
+                          ></v-text-field>
+                        </v-col>
                         <v-col cols="12" sm="6" md="6">
                           <v-select
                             v-model="editedItem.isActive"
@@ -179,14 +191,16 @@ const editedItem = ref<UserItem>({
   phone: 0,
   email: '',
   roles: '',
-  isActive: ''
+  isActive: '',
+  rfc: ''
 })
 const defaultItem = ref<UserItem>({
   fullName: '',
   phone: 0,
   email: '',
   roles: '',
-  isActive: ''
+  isActive: '',
+  rfc: ''
 })
 // Alerts
 const snackbar = ref(false)

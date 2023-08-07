@@ -5,6 +5,7 @@ export const ALL_USERS = gql`
     users {
       id
       fullName
+      rfc
       phone
       email
       roles
@@ -46,6 +47,7 @@ export const UPDATE_USER = gql`
     updateUser(updateUserInput: $updateUserInput) {
       id
       fullName
+      rfc
       phone
       email
       roles
@@ -69,6 +71,7 @@ export const SUBSCRIBE_USER = gql`
       user {
         id
         fullName
+        rfc
         phone
         email
         roles

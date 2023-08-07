@@ -26,6 +26,7 @@ export interface UserItem {
   email: string
   roles?: string
   isActive?: string
+  rfc?: string
 }
 export interface ItemPrice {
   id?: string
