@@ -96,22 +96,22 @@
                             >
                             </v-select>
                           </v-col>
-                          <!-- <v-col cols="12">
-                            <v-file-input
-                              v-model="editedItem.file"
-                              :rules="requiredValue"
-                              accept="image/*"
-                              label="Imagen de producto"
-                              variant="underlined"
-                              density="comfortable"
-                              prepend-icon="mdi-image"
-                              clearable
-                              counter
-                              show-size
-                              chips
-                            ></v-file-input>
-                          </v-col> -->
                         </template>
+                        <v-col cols="12">
+                          <v-file-input
+                            v-model="editedItem.file"
+                            :rules="requiredValue"
+                            accept="image/*"
+                            label="Imagen de producto"
+                            variant="underlined"
+                            density="comfortable"
+                            prepend-icon="mdi-image"
+                            clearable
+                            counter
+                            show-size
+                            chips
+                          ></v-file-input>
+                        </v-col>
                       </template>
                     </v-row>
                   </v-container>
@@ -186,15 +186,20 @@ const search = ref<string>('')
 const perPage = ref<number>(5)
 const data = ref<PriceItem[]>([])
 const editedIndex = ref(-1)
+
+const defaultFile: FileReader | null = null
+
 const editedItem = ref<PriceItem>({
   name: '',
   price: 0,
-  companies: null
+  companies: null,
+  file: defaultFile
 })
 const defaultItem = ref<PriceItem>({
   name: '',
   price: 0,
-  companies: null
+  companies: null,
+  file: defaultFile
 })
 // Alerts
 const snackbar = ref(false)
@@ -250,7 +255,8 @@ const editItem = (item: PriceItem) => {
       name: item.name,
       price: item.price,
       stock: item.stock,
-      companies: item.companies
+      companies: item.companies,
+      file: item.file
     }
   )
   dialog.value = true
@@ -265,7 +271,7 @@ const close = () => {
 const save = async () => {
   try {
     let { pageTitle } = toRefs(currentPage)
-    let { id, price, type, companies, ...payload } = editedItem.value
+    let { id, price, type, file, companies, ...payload } = editedItem.value
     price = +price
     switch (pageTitle.value) {
       case 'costs':
@@ -308,14 +314,15 @@ const save = async () => {
         type = 'Producto'
         if (!id) {
           // Add new cost
-          await product.createProduct(companies, { price, type, ...payload })
+          await product.createProduct(companies, { price, type, ...payload }, file)
           snackbar.value = true
           message.value = `¡Nuevo producto ${payload.name} agregado con exito!`
           color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
-          await product.updateProduct(id, { ...payload, price, type })
+          let fileUpdate = file || ''
+          await product.updateProduct(id, { ...payload, price, type }, fileUpdate)
           snackbar.value = true
           message.value = `¡Producto ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'

@@ -1,14 +1,15 @@
 import gql from 'graphql-tag'
 
 export const CREATE_PRICE = gql`
-  mutation CreatePrice($createPriceInput: CreatePriceInput!, $idCompany: String) {
-    createPrice(createPriceInput: $createPriceInput, idCompany: $idCompany) {
+  mutation CreatePrice($createPriceInput: CreatePriceInput!, $idCompany: String, $file: Upload) {
+    createPrice(createPriceInput: $createPriceInput, idCompany: $idCompany, file: $file) {
       id
       name
       price
       stock
       type
       description
+      image
       user {
         fullName
       }
@@ -57,11 +58,12 @@ export const PRICE_BY_ID = gql`
 `
 
 export const UPDATE_PRICE = gql`
-  mutation UpdatePrice($updatePriceInput: UpdatePriceInput!) {
-    updatePrice(updatePriceInput: $updatePriceInput) {
+  mutation UpdatePrice($updatePriceInput: UpdatePriceInput!, $file: Upload) {
+    updatePrice(updatePriceInput: $updatePriceInput, file: $file) {
       id
       name
       price
+      image
       user {
         fullName
       }
