@@ -32,6 +32,7 @@ export const useCompanyStore = defineStore({
       { title: 'Estado', sortable: false, key: 'department' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
+      { title: 'Administrador', sortable: false, key: 'user' },
       { title: 'Trabajadores Activos', sortable: true, key: 'workerCount' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Logintud', sortable: false, key: 'lng' },
@@ -77,11 +78,12 @@ export const useCompanyStore = defineStore({
 
       return this.items
     },
-    async createCompany(formInput: CompanyItem) {
+    async createCompany(formInput: CompanyItem, idTalachero: string) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_COMPANY,
         variables: {
-          createCompanyInput: formInput
+          createCompanyInput: formInput,
+          idTalachero
         }
       })
 
@@ -94,11 +96,12 @@ export const useCompanyStore = defineStore({
 
       return this.items
     },
-    async updateCompany(id: string, payload: CompanyItem) {
+    async updateCompany(id: string, payload: CompanyItem, idTalachero: string) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_COMPANY,
         variables: {
-          updateCompanyInput: { id, ...payload }
+          updateCompanyInput: { id, ...payload },
+          idTalachero
         }
       })
       this.items = this.items.map((item) => (item.id === id ? data.updateCompany : item))

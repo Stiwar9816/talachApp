@@ -14,8 +14,8 @@
         ></v-text-field>
       </v-col>
       <v-data-table
-        :headers="fields"
-        :items="items"
+        :headers="props.fields"
+        :items="props.items"
         :search="search"
         :items-per-page="perPage"
         class="elevation-1 rounded-lg"
@@ -27,7 +27,7 @@
             <!-- Modal Reset Password -->
             <v-spacer></v-spacer>
             <!-- Add Modal -->
-            <v-dialog v-model="dialog" max-width="500px">
+            <v-dialog v-model="dialog" persistent max-width="500px">
               <template v-slot:activator="{ props }">
                 <v-btn
                   prepend-icon="mdi-plus"
@@ -98,7 +98,7 @@
                           v-model="editedItem.roles"
                           label="Rol"
                           :rules="requiredValue"
-                          :items="['Administrador', 'Talachero', 'Usuario']"
+                          :items="roles"
                           variant="underlined"
                           density="comfortable"
                           type="text"
@@ -106,6 +106,23 @@
                           required
                         ></v-select>
                       </v-col>
+                      <template v-if="editedItem.roles === 'Trabajador'">
+                        <v-col cols="12" sm="12" md="12">
+                          <v-select
+                            v-model="editedItem.companies"
+                            label="Centro talachero"
+                            :rules="requiredValue"
+                            :items="company.$state.items"
+                            item-title="name_company"
+                            item-value="id"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                          >
+                          </v-select>
+                        </v-col>
+                      </template>
                       <template v-if="editedItem.id">
                         <v-col cols="12" sm="6" md="6">
                           <v-text-field
@@ -169,17 +186,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 // Interface
-import type { UserItem } from '@/interface'
-import { useUserStore } from '@/stores'
-interface User {
-  fields: Record<string, string>
-  items: UserItem[]
-}
+import type { DataTableHeader, UserItem } from '@/interface'
+import { useCompanyStore, useUserStore } from '@/stores'
 // Props
-const props = defineProps<User>()
+const props = defineProps({
+  fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
+  items: Array<UserItem[]>
+})
 // Const
 const dialog = ref<boolean>(false)
 const search = ref<string>('')
@@ -202,6 +218,7 @@ const defaultItem = ref<UserItem>({
   isActive: '',
   rfc: ''
 })
+const roles: string[] = ['Administrador', 'Talachero', 'Trabajador', 'Usuario']
 // Alerts
 const snackbar = ref(false)
 const color = ref('')
@@ -217,13 +234,15 @@ const emailRules = ref([
 ])
 
 const user = useUserStore()
+const company = useCompanyStore()
 // Realiza la suscripción al iniciar el componente
 const unsubscribeUsers = user.subscribeToUsers()
+const unsubscribeCompany = company.subscribeToCompanies()
 
 const initialize = async () => {
   try {
-    const result = await user.allUsers()
-    data.value = result
+    await user.allUsers()
+    await company.allCompanies()
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -281,5 +300,6 @@ const save = async () => {
 // Cancela la suscripción al desmontar el componente
 onUnmounted(() => {
   unsubscribeUsers()
+  unsubscribeCompany()
 })
 </script>

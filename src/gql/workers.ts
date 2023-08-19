@@ -19,55 +19,57 @@ export const CREATE_WORKER = gql`
 `
 
 export const ALL_WORKERS = gql`
-  query Workers {
-    workers {
+  query Users($roles: [UserRoles!]) {
+    users(roles: $roles) {
       id
       fullName
       email
       phone
-      companies {
-        name_company
-      }
       lat
       lng
       geofence
       isActive
+      companies {
+        name_company
+      }
     }
   }
 `
 
 export const UPDATE_WORKER = gql`
-  mutation UpdatedWorker($updateWorkerInput: UpdateWorkerInput!) {
-    updatedWorker(updateWorkerInput: $updateWorkerInput) {
+  mutation UpdateUser($updateUserInput: UpdateUserInput!) {
+    updateUser(updateUserInput: $updateUserInput) {
       id
       fullName
       email
       phone
-      companies {
-        name_company
-      }
       lat
       lng
       geofence
       isActive
+      companies {
+        name_company
+      }
     }
   }
 `
 
 export const SUBCRIBE_WORKER = gql`
-  subscription NewWorker {
-    newWorker {
-      id
-      fullName
-      email
-      phone
-      companies {
-        name_company
+  subscription NewUser {
+    newUser {
+      user {
+        id
+        fullName
+        email
+        phone
+        lat
+        lng
+        geofence
+        isActive
+        companies {
+          name_company
+        }
       }
-      lat
-      lng
-      geofence
-      isActive
     }
   }
 `

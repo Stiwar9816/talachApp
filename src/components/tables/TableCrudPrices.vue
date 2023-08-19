@@ -14,8 +14,8 @@
         ></v-text-field>
       </v-col>
       <v-data-table
-        :headers="fields"
-        :items="items"
+        :headers="props.fields"
+        :items="props.items"
         :search="search"
         :items-per-page="perPage"
         class="elevation-1 rounded-lg"
@@ -24,7 +24,7 @@
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <v-spacer></v-spacer>
             <!-- Add Modal -->
-            <v-dialog v-model="dialog" max-width="500px">
+            <v-dialog v-model="dialog" persistent max-width="500px">
               <template v-slot:activator="{ props }">
                 <v-btn
                   v-show="showButton"
@@ -166,20 +166,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, toRefs, reactive, onUnmounted } from 'vue'
+import { ref, computed, onMounted, toRefs, reactive, onUnmounted, type DeepReadonly } from 'vue'
 import { useRoute } from 'vue-router'
 import { currencyFormatter } from '@/utils'
 import { useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
-import type { PriceItem } from '@/interface'
-interface Price {
-  fields: Record<string, string>
-  items: PriceItem[]
-  showButton: Boolean
-}
-
+import type { DataTableHeader, PriceItem } from '@/interface'
 // Props
-const props = defineProps<Price>()
+const props = defineProps({
+  fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
+  items: Array<PriceItem[]>,
+  showButton: Boolean
+})
 // Const
 const dialog = ref<boolean>(false)
 const search = ref<string>('')

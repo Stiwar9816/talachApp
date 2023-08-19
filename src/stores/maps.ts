@@ -51,7 +51,7 @@ export const useMapsStore = defineStore({
           title: name_company
         }))
 
-        const workerMarkers = workersData.workers.map(({ lat, lng, fullName }: any) => ({
+        const workerMarkers = workersData.users.map(({ lat, lng, fullName }: any) => ({
           position: { lat: +lat, lng: +lng },
           label: 'T',
           title: fullName
@@ -91,9 +91,9 @@ export const useMapsStore = defineStore({
 
         let workerGeofences = []
 
-        if (workersGeofenceData && workersGeofenceData.workers) {
+        if (workersGeofenceData && workersGeofenceData.users) {
           // Check if workersGeofenceData and workers array exist
-          workerGeofences = workersGeofenceData.workers.map((worker: any) => {
+          workerGeofences = workersGeofenceData.users.map((worker: any) => {
             const paths: LatLgn[] = []
             worker.geofence[0].split(',').forEach((coordinate: string, index: number) => {
               const value = +coordinate.trim()
@@ -111,6 +111,7 @@ export const useMapsStore = defineStore({
 
         const allGeofences = [...companyGeofences, ...workerGeofences]
         this.myPolygons = allGeofences
+        console.log(this.myPolygons)
         return allGeofences
       } catch (error: any) {
         console.error('Error fetching geofences:', error.message)

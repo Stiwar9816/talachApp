@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 export const ALL_USERS = gql`
-  query {
-    users {
+  query ($roles: [UserRoles!]) {
+    users(roles: $roles) {
       id
       fullName
       rfc
@@ -78,5 +78,5 @@ export const SUBSCRIBE_USER = gql`
         isActive
       }
     }
-}
+  }
 `

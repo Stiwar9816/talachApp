@@ -24,23 +24,7 @@
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <v-spacer></v-spacer>
             <!-- Add Modal -->
-            <v-dialog v-model="dialog" max-width="800px">
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  prepend-icon="mdi-plus"
-                  variant="flat"
-                  color="grey-lighten-2"
-                  rounded="lg"
-                  class="my-2"
-                  v-bind="props"
-                >
-                  <template v-slot:prepend>
-                    <v-icon color="orange-darken-4"></v-icon>
-                  </template>
-                  Agregar
-                </v-btn>
-              </template>
-
+            <v-dialog v-model="dialog" persistent max-width="800px">
               <v-card class="rounded-lg">
                 <v-toolbar color="orange-darken-3">
                   <v-card-title>
@@ -129,7 +113,7 @@
                           required
                         ></v-textarea>
                       </v-col>
-                      <template v-if="!editedItem.id">
+                      <template v-if="editedItem.id">
                         <v-col cols="12">
                           <v-select
                             v-model="editedItem.companies"
@@ -200,16 +184,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 // Interface
-import type { WorkerItem } from '@/interface'
+import type { DataTableHeader, WorkerItem } from '@/interface'
 import { useWorkerStore } from '@/stores'
-interface Worker {
-  fields: Record<string, string>
-  items: WorkerItem[]
-}
 // Props
-const props = defineProps<Worker>()
+const props = defineProps({
+  fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
+  items: Array<WorkerItem>
+})
 // Const
 const dialog = ref<boolean>(false)
 const search = ref<string>('')
@@ -222,8 +205,7 @@ const editedItem = ref<WorkerItem>({
   phone: 0,
   geofence: '',
   lat: 0,
-  lng: 0,
-  companies: null
+  lng: 0
 })
 const defaultItem = ref<WorkerItem>({
   fullName: '',
@@ -231,8 +213,7 @@ const defaultItem = ref<WorkerItem>({
   phone: 0,
   geofence: '',
   lat: 0,
-  lng: 0,
-  companies: null
+  lng: 0
 })
 // Alerts
 const snackbar = ref(false)
@@ -297,14 +278,7 @@ const save = async () => {
     phone = +phone
     lat = +lat
     lng = +lng
-    if (!id) {
-      // Add new company
-      await worker.createWorker({ phone, lat, lng, ...create }, companies)
-      snackbar.value = true
-      message.value = `¡Nuevo trabajador ${create.fullName} fue agregado con exito!`
-      color.value = 'orange-darken-2'
-      close()
-    } else {
+    if (id) {
       // Update company
       await worker.updateWorker(id, { ...create, phone, lat, lng })
       snackbar.value = true
@@ -320,7 +294,7 @@ const save = async () => {
 }
 
 // Cancela la suscripción al desmontar el componente
-onUnmounted(()=> {
+onUnmounted(() => {
   unsubscribe()
 })
 </script>

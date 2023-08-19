@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Field, WorkerFields, WorkerItem } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_WORKERS, CREATE_WORKER, SUBCRIBE_WORKER, UPDATE_WORKER } from '@/gql/workers'
+import { ALL_WORKERS, SUBCRIBE_WORKER, UPDATE_WORKER } from '@/gql/workers'
 import { ALL_COMPANIES_NAME } from '@/gql/company'
 import { ref } from 'vue'
 
@@ -34,10 +34,13 @@ export const useWorkerStore = defineStore({
   actions: {
     async allWorkers() {
       const { data } = await apolloClient.query({
-        query: ALL_WORKERS
+        query: ALL_WORKERS,
+        variables: {
+          roles: 'Trabajador'
+        }
       })
-
-      const newWorkers = data.workers.map((item: WorkerItem) => {
+      console.log(data.users[0].companies)
+      const newWorkers = data.users.map((item: WorkerItem) => {
         return {
           ...item
         }
@@ -61,31 +64,31 @@ export const useWorkerStore = defineStore({
       this.companies = [...company]
       return this.companies
     },
-    async createWorker(payload: WorkerItem, companies: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: CREATE_WORKER,
-        variables: {
-          createWorkerInput: payload,
-          idCompany: companies
-        }
-      })
-      const newWorkers = data.createWorker
+    // async createWorker(payload: WorkerItem, companies: string) {
+    //   const { data } = await apolloClient.mutate({
+    //     mutation: CREATE_WORKER,
+    //     variables: {
+    //       createWorkerInput: payload,
+    //       idCompany: companies
+    //     }
+    //   })
+    //   const newWorkers = data.createWorker
 
-      const existingItem = this.items.find((item: WorkerItem) => item.id === newWorkers.id)
-      if (!existingItem) {
-        this.items.push(newWorkers)
-      }
+    //   const existingItem = this.items.find((item: WorkerItem) => item.id === newWorkers.id)
+    //   if (!existingItem) {
+    //     this.items.push(newWorkers)
+    //   }
 
-      return this.items
-    },
+    //   return this.items
+    // },
     async updateWorker(id: string, payload: WorkerItem) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_WORKER,
         variables: {
-          updateWorkerInput: { id, ...payload }
+          updateUserInput: { id, ...payload }
         }
       })
-      this.items = this.items.map((item) => (item.id === id ? data.updatedWorker : item))
+      this.items = this.items.map((item) => (item.id === id ? data.updateUser : item))
       return this.items
     },
     subcribeToWorkers() {
@@ -95,7 +98,7 @@ export const useWorkerStore = defineStore({
 
       const subscription = observableQuery.subscribe({
         next: (result) => {
-          const newWorkers = result.data?.newWorker
+          const newWorkers = result.data?.newUser
           if (newWorkers) {
             this.updateItems([newWorkers])
           }

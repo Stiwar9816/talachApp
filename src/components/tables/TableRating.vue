@@ -62,19 +62,21 @@
 </template>
 
 <script lang="ts" setup>
+import type { DataTableHeader } from '@/interface';
 import { useRatingsStore } from '@/stores'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, type DeepReadonly } from 'vue'
 // Const
-const search = ref<String>('')
-const perPage = ref<Number>(5)
+const search = ref<string>('')
+const perPage = ref<number>(5)
 // Alerts
 const snackbar = ref(false)
 const color = ref('')
 const message = ref('')
+// Type
 
 const props = defineProps({
-  fields: Object,
-  items: Object
+  fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
+  items: Array
 })
 
 const ratingStore = useRatingsStore()

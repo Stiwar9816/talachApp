@@ -17,6 +17,9 @@ export const ALL_COMPANIES = gql`
       lat
       lng
       tax_regime
+      user {
+        fullName
+      }
     }
   }
 `
@@ -46,8 +49,8 @@ export const COMPANY_BY_ID = gql`
   }
 `
 export const CREATE_COMPANY = gql`
-  mutation CreateCompany($createCompanyInput: CreateCompanyInput!) {
-    createCompany(createCompanyInput: $createCompanyInput) {
+  mutation CreateCompany($createCompanyInput: CreateCompanyInput!, $idTalachero: String!) {
+    createCompany(createCompanyInput: $createCompanyInput, idTalachero: $idTalachero) {
       id
       name_company
       rfc
@@ -62,12 +65,16 @@ export const CREATE_COMPANY = gql`
       lat
       lng
       tax_regime
+      user {
+        id
+        fullName
+      }
     }
   }
 `
 export const UPDATE_COMPANY = gql`
-  mutation UpdateCompany($updateCompanyInput: UpdateCompanyInput!) {
-    updateCompany(updateCompanyInput: $updateCompanyInput) {
+  mutation UpdateCompany($updateCompanyInput: UpdateCompanyInput!, $idTalachero: String) {
+    updateCompany(updateCompanyInput: $updateCompanyInput, idTalachero: $idTalachero) {
       id
       name_company
       rfc
@@ -82,6 +89,10 @@ export const UPDATE_COMPANY = gql`
       lat
       lng
       tax_regime
+      user {
+        id
+        fullName
+      }
     }
   }
 `
@@ -109,6 +120,10 @@ export const SUBSCRIBE_COMPANY = gql`
       lat
       lng
       tax_regime
+      user {
+        id
+        fullName
+      }
     }
   }
 `

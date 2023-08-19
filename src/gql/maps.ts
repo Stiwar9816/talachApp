@@ -9,16 +9,16 @@ export const ALL_GEOFENCE = gql`
 `
 
 export const ALL_GEOFENCE_WORKER = gql`
-  query {
-    workers {
+  query Users {
+    users {
       geofence
     }
   }
 `
 
 export const ALL_LOCATION_WORKER = gql`
-  query {
-    workers {
+  query Users {
+    users {
       fullName
       lat
       lng
@@ -45,18 +45,22 @@ export const SUBSCRIBE_GEOFENCE = gql`
 `
 
 export const SUBSCRIBE_GEOFENCE_WORKER = gql`
-  subscription NewWorker {
-    newWorker {
-      geofence
+  subscription NewUser {
+    newUser {
+      user {
+        geofence
+      }
     }
   }
 `
 
 export const SUBSCRIBE_LOCATION_WORKER = gql`
-  subscription NewWorker {
-    newWorker {
-      lat
-      lng
+  subscription NewUser {
+    newUser {
+      user {
+        lat
+        lng
+      }
     }
   }
 `

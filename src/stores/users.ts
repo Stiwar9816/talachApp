@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, UserItem, UsersFields, } from '@/interface'
+import type { Field, UserItem, UsersFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_USERS, CREATE_USER, SUBSCRIBE_USER, UPDATE_USER } from '@/gql/user'
+import { CREATE_USER, SUBSCRIBE_USER, UPDATE_USER } from '@/gql/user'
+import { ALL_WORKERS } from '@/gql/workers'
 
 export const useUserStore = defineStore({
   id: 'users',
@@ -29,22 +30,26 @@ export const useUserStore = defineStore({
   }),
   actions: {
     async allUsers() {
+      const roles = ['Usuario', 'Administrador', 'superAdmin', 'Talachero']
       const { data } = await apolloClient.query({
-        query: ALL_USERS
+        query: ALL_WORKERS,
+        variables: {
+          roles
+        }
       })
 
       const newItems = data.users.map((item: UserItem) => {
         return {
           ...item
-        };
-      });
+        }
+      })
 
       newItems.forEach((newItem: UserItem) => {
-        const existingItem = this.items.find((item: UserItem) => item.id === newItem.id);
+        const existingItem = this.items.find((item: UserItem) => item.id === newItem.id)
         if (!existingItem) {
-          this.items.push(newItem);
+          this.items.push(newItem)
         }
-      });
+      })
 
       return this.items
     },
@@ -55,14 +60,14 @@ export const useUserStore = defineStore({
           signupInput: payload
         }
       })
-      const newUsers = data.signup.user;
+      const newUsers = data.signup.user
 
-      const existingItem = this.items.find((item: UserItem) => item.id === newUsers.id);
+      const existingItem = this.items.find((item: UserItem) => item.id === newUsers.id)
       if (!existingItem) {
-        this.items.push(newUsers);
+        this.items.push(newUsers)
       }
 
-      return this.items;
+      return this.items
     },
     async updateUser(id: string, payload: UserItem) {
       const { data } = await apolloClient.mutate({
@@ -71,35 +76,35 @@ export const useUserStore = defineStore({
           updateUserInput: { id, ...payload }
         }
       })
-      this.items = this.items.map(item => item.id === id ? data.updateUser : item)
-      return this.items;
+      this.items = this.items.map((item) => (item.id === id ? data.updateUser : item))
+      return this.items
     },
     subscribeToUsers() {
       const observableQuery = apolloClient.subscribe({
         query: SUBSCRIBE_USER
-      });
+      })
 
       const subscription = observableQuery.subscribe({
         next: (result) => {
-          const newUsers = result.data?.newUser.user;
+          const newUsers = result.data?.newUser.user
           if (newUsers) {
-            this.updateItems([newUsers]);
+            this.updateItems([newUsers])
           }
         },
         error(error: any) {
-          console.log(error.message);
+          console.log(error.message)
         }
-      });
-      return () => subscription.unsubscribe();
+      })
+      return () => subscription.unsubscribe()
     },
     updateItems(newUsers: UserItem[]) {
       const updatedItems = newUsers.map((newUser: UserItem) => {
         return {
           ...newUser
-        };
-      });
+        }
+      })
 
-      this.items = [...this.items, ...updatedItems];
+      this.items = [...this.items, ...updatedItems]
     }
   }
 })

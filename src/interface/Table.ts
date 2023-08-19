@@ -27,6 +27,7 @@ export interface UserItem {
   roles?: string
   isActive?: string
   rfc?: string
+  companies?: string | any
 }
 export interface ItemPrice {
   id?: string
@@ -70,6 +71,7 @@ export interface CompanyItem extends Coordinates {
   isActive?: string
   tax_regime: string
   workerCount?: number
+  idTalachero?: string
 }
 
 export interface WorkerItem extends Coordinates {
@@ -113,3 +115,22 @@ export interface WorkerFields {
   items: WorkerItem[]
   companies?: any
 }
+
+export type DataTableCompareFunction<T = any> = (a: T, b: T) => number;
+  
+export type SelectItemKey = boolean | string | (string | number)[] | ((item: Record<string, any>, fallback?: any) => any);
+
+export type DataTableHeader = {
+    key: string;
+    value?: SelectItemKey;
+    title: string;
+    colspan?: number;
+    rowspan?: number;
+    fixed?: boolean;
+    align?: 'start' | 'end' | 'center';
+    width?: number | string;
+    minWidth?: string;
+    maxWidth?: string;
+    sortable?: boolean;
+    sort?: DataTableCompareFunction;
+};

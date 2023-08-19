@@ -14,8 +14,8 @@
         ></v-text-field>
       </v-col>
       <v-data-table
-        :headers="fields"
-        :items="items"
+        :headers="props.fields"
+        :items="props.items"
         :search="search"
         :items-per-page="perPage"
         class="elevation-1 rounded-lg"
@@ -24,7 +24,7 @@
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <v-spacer></v-spacer>
             <!-- Add Modal -->
-            <v-dialog v-model="dialog" max-width="800px">
+            <v-dialog v-model="dialog" persistent max-width="800px">
               <template v-slot:activator="{ props }">
                 <v-btn
                   prepend-icon="mdi-plus"
@@ -177,7 +177,7 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="4" md="4">
                         <v-text-field
                           v-model="editedItem.city"
                           label="Ciudad"
@@ -189,7 +189,7 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="12" sm="4" md="4">
                         <v-text-field
                           v-model="editedItem.postal_code"
                           label="Codigo Postal"
@@ -201,6 +201,21 @@
                           clearable
                           required
                         ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="4" md="4">
+                        <v-select
+                          v-model="editedItem.idTalachero"
+                          label="Administrador"
+                          :rules="requiredValue"
+                          :items="users.items"
+                          item-title="fullName"
+                          item-value="id"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          clearable
+                        >
+                        </v-select>
                       </v-col>
                       <template v-if="editedItem.id">
                         <v-col cols="12" sm="12" md="12">
@@ -230,6 +245,7 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
+        <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
@@ -253,16 +269,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 // Interface
-import type { CompanyItem } from '@/interface'
-import { useCompanyStore } from '@/stores'
-interface Company {
-  fields: Record<string, string>
-  items: CompanyItem[]
-}
+import type { CompanyItem, DataTableHeader } from '@/interface'
+// Stores
+import { useCompanyStore, useUserStore } from '@/stores'
 // Props
-const props = defineProps<Company>()
+const props = defineProps({
+  fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
+  items: Array<CompanyItem[]>
+})
 // Const
 const dialog = ref<boolean>(false)
 const search = ref<string>('')
@@ -270,33 +286,36 @@ const perPage = ref<number>(5)
 const data = ref<CompanyItem[]>([])
 const editedIndex = ref<number>(-1)
 const editedItem = ref<CompanyItem>({
-  name_company: '',
-  rfc: '',
-  phone: 0,
-  bussiness_name: '',
   address: '',
-  department: '',
+  bussiness_name: '',
   city: '',
-  postal_code: 0,
+  department: '',
   geofence: '',
+  idTalachero: '',
   lat: 0,
   lng: 0,
+  name_company: '',
+  phone: 0,
+  postal_code: 0,
+  rfc: '',
   tax_regime: ''
 })
 const defaultItem = ref<CompanyItem>({
-  name_company: '',
-  rfc: '',
-  phone: 0,
-  bussiness_name: '',
   address: '',
-  department: '',
+  bussiness_name: '',
   city: '',
-  postal_code: 0,
+  department: '',
   geofence: '',
+  idTalachero: '',
   lat: 0,
   lng: 0,
+  name_company: '',
+  phone: 0,
+  postal_code: 0,
+  rfc: '',
   tax_regime: ''
 })
+
 // Alerts
 const snackbar = ref(false)
 const color = ref('')
@@ -306,13 +325,16 @@ const message = ref('')
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
 const company = useCompanyStore()
+const users = useUserStore()
+const select = users.items.map((item) => item.id)
 // Realiza la suscripción al iniciar el componente
-const unsubscribe = company.subscribeToCompanies()
+const unsubscribeUsers = users.subscribeToUsers()
+const unsubscribeCompany = company.subscribeToCompanies()
 
 const initialize = async () => {
   try {
-    const result = await company.allCompanies()
-    data.value = result
+    await users.allUsers()
+    await company.allCompanies()
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -331,7 +353,27 @@ const formTitle = computed(() => {
 
 const editItem = (item: CompanyItem) => {
   editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
+  editedItem.value = Object.assign(
+    {},
+    {
+      address: item.address,
+      bussiness_name: item.bussiness_name,
+      city: item.city,
+      department: item.department,
+      geofence: item.geofence,
+      id: item.id,
+      idTalachero: item.idTalachero,
+      isActive: item.isActive,
+      lat: item.lat,
+      lng: item.lng,
+      name_company: item.name_company,
+      phone: item.phone,
+      postal_code: item.postal_code,
+      rfc: item.rfc,
+      tax_regime: item.tax_regime,
+      workerCount: item.workerCount
+    }
+  )
   dialog.value = true
 }
 
@@ -343,33 +385,37 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, postal_code, lat, lng, workerCount, ...create } = editedItem.value
+    let { id, phone, postal_code, lat, lng, workerCount, idTalachero, ...create } = editedItem.value
     phone = +phone
     postal_code = +postal_code
     lat = +lat
     lng = +lng
     if (!id) {
       // Add new company
-      await company.createCompany({
-        ...create,
-        phone,
-        postal_code,
-        lat,
-        lng
-      })
+      await company.createCompany(
+        {
+          ...create,
+          phone,
+          postal_code,
+          lat,
+          lng
+        },
+        idTalachero!
+      )
       snackbar.value = true
       message.value = `¡Nuevo centro talachero ${create.name_company} fue agregado con exito!`
       color.value = 'orange-darken-2'
       close()
     } else {
       // Update company
-      await company.updateCompany(id, { ...create, phone, postal_code, lat, lng })
+      await company.updateCompany(id, { ...create, phone, postal_code, lat, lng }, idTalachero!)
       snackbar.value = true
       message.value = `¡Centro Talachero ${create.name_company} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error: any) {
+    console.log(error)
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
@@ -378,6 +424,7 @@ const save = async () => {
 
 // Cancela la suscripción al desmontar el componente
 onUnmounted(() => {
-  unsubscribe()
+  unsubscribeCompany()
+  unsubscribeUsers()
 })
 </script>
