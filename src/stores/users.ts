@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
+import apolloClient from '@/plugins/apollo'
+// Gql
+import { ALL_USERS, CREATE_USER, SUBSCRIBE_USER, UPDATE_USER } from '@/gql/user'
 // Interface
 import type { Field, UserItem, UsersFields } from '@/interface'
-import apolloClient from '@/plugins/apollo'
-import { CREATE_USER, SUBSCRIBE_USER, UPDATE_USER } from '@/gql/user'
-import { ALL_WORKERS } from '@/gql/workers'
 
 export const useUserStore = defineStore({
   id: 'users',
@@ -32,9 +32,9 @@ export const useUserStore = defineStore({
     async allUsers() {
       const roles = ['Usuario', 'Administrador', 'superAdmin', 'Talachero']
       const { data } = await apolloClient.query({
-        query: ALL_WORKERS,
+        query: ALL_USERS,
         variables: {
-          roles
+          roles: roles
         }
       })
 
@@ -53,11 +53,12 @@ export const useUserStore = defineStore({
 
       return this.items
     },
-    async createUser(payload: UserItem) {
+    async createUser(payload: UserItem, idCompany: string) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_USER,
         variables: {
-          signupInput: payload
+          signupInput: payload,
+          idCompany
         }
       })
       const newUsers = data.signup.user

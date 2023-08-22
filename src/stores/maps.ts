@@ -73,7 +73,6 @@ export const useMapsStore = defineStore({
         const { data: workersGeofenceData } = await apolloClient.query({
           query: ALL_GEOFENCE_WORKER
         })
-
         const companyGeofences = companiesGeofenceData.companies.map((company: any) => {
           const paths: LatLgn[] = []
           company.geofence[0].split(',').forEach((coordinate: string, index: number) => {
@@ -111,7 +110,6 @@ export const useMapsStore = defineStore({
 
         const allGeofences = [...companyGeofences, ...workerGeofences]
         this.myPolygons = allGeofences
-        console.log(this.myPolygons)
         return allGeofences
       } catch (error: any) {
         console.error('Error fetching geofences:', error.message)

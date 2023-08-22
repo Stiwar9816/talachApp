@@ -1,9 +1,9 @@
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Field, WorkerFields, WorkerItem } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_WORKERS, SUBCRIBE_WORKER, UPDATE_WORKER } from '@/gql/workers'
 import { ALL_COMPANIES_NAME } from '@/gql/company'
-import { ref } from 'vue'
+import type { Field, WorkerFields, WorkerItem } from '@/interface'
 
 export const useWorkerStore = defineStore({
   id: 'workers',
@@ -21,7 +21,7 @@ export const useWorkerStore = defineStore({
       },
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Correo electronico', sortable: false, key: 'email' },
-      { title: 'Empresa', sortable: true, key: 'companies' },
+      { title: 'Empresa', sortable: true, key: 'companiesWorker.name_company' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Longitud', sortable: false, key: 'lng' },
       { title: 'Geocerca', sortable: false, key: 'geofence' },
@@ -39,7 +39,6 @@ export const useWorkerStore = defineStore({
           roles: 'Trabajador'
         }
       })
-      console.log(data.users[0].companies)
       const newWorkers = data.users.map((item: WorkerItem) => {
         return {
           ...item
@@ -64,28 +63,12 @@ export const useWorkerStore = defineStore({
       this.companies = [...company]
       return this.companies
     },
-    // async createWorker(payload: WorkerItem, companies: string) {
-    //   const { data } = await apolloClient.mutate({
-    //     mutation: CREATE_WORKER,
-    //     variables: {
-    //       createWorkerInput: payload,
-    //       idCompany: companies
-    //     }
-    //   })
-    //   const newWorkers = data.createWorker
-
-    //   const existingItem = this.items.find((item: WorkerItem) => item.id === newWorkers.id)
-    //   if (!existingItem) {
-    //     this.items.push(newWorkers)
-    //   }
-
-    //   return this.items
-    // },
-    async updateWorker(id: string, payload: WorkerItem) {
+    async updateWorker(id: string, payload: WorkerItem, idCompany: string) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_WORKER,
         variables: {
-          updateUserInput: { id, ...payload }
+          updateUserInput: { id, ...payload },
+          idCompany
         }
       })
       this.items = this.items.map((item) => (item.id === id ? data.updateUser : item))

@@ -127,7 +127,6 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
-        <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
         <template v-slot:item.image="{ item }">
           <img
             class="rounded-lg mt-2"
@@ -190,13 +189,13 @@ const defaultFile: FileReader | null = null
 const editedItem = ref<PriceItem>({
   name: '',
   price: 0,
-  companies: null,
+  companies: ' ',
   file: defaultFile
 })
 const defaultItem = ref<PriceItem>({
   name: '',
   price: 0,
-  companies: null,
+  companies: '',
   file: defaultFile
 })
 // Alerts
@@ -312,7 +311,7 @@ const save = async () => {
         type = 'Producto'
         if (!id) {
           // Add new cost
-          await product.createProduct(companies, { price, type, ...payload }, file)
+          await product.createProduct(companies!, { price, type, ...payload }, file)
           snackbar.value = true
           message.value = `¡Nuevo producto ${payload.name} agregado con exito!`
           color.value = 'orange-darken-2'

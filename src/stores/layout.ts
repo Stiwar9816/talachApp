@@ -5,7 +5,7 @@ import { computed, ref } from 'vue'
 import { extractFullNameFromToken } from '@/utils'
 
 export const useLayoutStore = defineStore('layout', () => {
-  const token = ref<string | null>(localStorage.getItem('token'))
+  const token = ref<string | null>(sessionStorage.getItem('token'))
   const imageProfile: string = 'mdi-account-circle'
   const drawer: boolean = true
   const rail: boolean = false

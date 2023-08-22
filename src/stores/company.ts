@@ -32,8 +32,8 @@ export const useCompanyStore = defineStore({
       { title: 'Estado', sortable: false, key: 'department' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
-      { title: 'Administrador', sortable: false, key: 'user' },
-      { title: 'Trabajadores Activos', sortable: true, key: 'workerCount' },
+      { title: 'Administrador', sortable: false, key: 'user.fullName' },
+      { title: 'Trabajadores Activos', sortable: true, key: 'workerCountByCompany' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Logintud', sortable: false, key: 'lng' },
       { title: 'Geocerca', sortable: false, key: 'geofence' },
@@ -51,7 +51,7 @@ export const useCompanyStore = defineStore({
       const newItems = data.companies.map((item: CompanyItem) => {
         return {
           ...item,
-          workerCount: 0
+          workerCountByCompany: 0
         }
       })
 
@@ -65,7 +65,7 @@ export const useCompanyStore = defineStore({
           })
 
           const workerCount = data.workerCountByCompany
-          company.workerCount = workerCount
+          company.workerCountByCompany = workerCount
         })
       )
 

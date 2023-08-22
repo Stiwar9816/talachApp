@@ -9,7 +9,7 @@ export const ALL_GEOFENCE = gql`
 `
 
 export const ALL_GEOFENCE_WORKER = gql`
-  query Users {
+  query {
     users {
       geofence
     }
@@ -17,7 +17,7 @@ export const ALL_GEOFENCE_WORKER = gql`
 `
 
 export const ALL_LOCATION_WORKER = gql`
-  query Users {
+  query {
     users {
       fullName
       lat

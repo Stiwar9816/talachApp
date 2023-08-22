@@ -9,7 +9,7 @@ import { createClient } from 'graphql-ws'
 import { createUploadLink } from 'apollo-upload-client'
 
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('token')
+  const token = sessionStorage.getItem('token')
   return {
     headers: {
       ...headers,
@@ -25,7 +25,7 @@ const errorHandler = onError(({ graphQLErrors }) => {
     }
 })
 
-const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+const headers = { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
 
 // HTTP connection to the API
 const httpLinkUpload = ApolloLink.from([

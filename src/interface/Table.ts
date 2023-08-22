@@ -27,7 +27,7 @@ export interface UserItem {
   roles?: string
   isActive?: string
   rfc?: string
-  companies?: string | any
+  idCompany?: string
 }
 export interface ItemPrice {
   id?: string
@@ -43,7 +43,7 @@ export interface Count {
 export interface PriceItem extends ItemPrice {
   price: number
   stock?: number
-  companies?: number | any
+  companies?: string
   file?: File | null
 }
 
@@ -70,7 +70,7 @@ export interface CompanyItem extends Coordinates {
   postal_code: number
   isActive?: string
   tax_regime: string
-  workerCount?: number
+  workerCountByCompany?: number
   idTalachero?: string
 }
 
@@ -80,7 +80,7 @@ export interface WorkerItem extends Coordinates {
   email: string
   phone: number
   isActive?: string
-  companies?: number | any
+  idCompany?: string
 }
 
 export interface CompanyFields {
@@ -116,21 +116,25 @@ export interface WorkerFields {
   companies?: any
 }
 
-export type DataTableCompareFunction<T = any> = (a: T, b: T) => number;
-  
-export type SelectItemKey = boolean | string | (string | number)[] | ((item: Record<string, any>, fallback?: any) => any);
+export type DataTableCompareFunction<T = any> = (a: T, b: T) => number
+
+export type SelectItemKey =
+  | boolean
+  | string
+  | (string | number)[]
+  | ((item: Record<string, any>, fallback?: any) => any)
 
 export type DataTableHeader = {
-    key: string;
-    value?: SelectItemKey;
-    title: string;
-    colspan?: number;
-    rowspan?: number;
-    fixed?: boolean;
-    align?: 'start' | 'end' | 'center';
-    width?: number | string;
-    minWidth?: string;
-    maxWidth?: string;
-    sortable?: boolean;
-    sort?: DataTableCompareFunction;
-};
+  key: string
+  value?: SelectItemKey
+  title: string
+  colspan?: number
+  rowspan?: number
+  fixed?: boolean
+  align?: 'start' | 'end' | 'center'
+  width?: number | string
+  minWidth?: string
+  maxWidth?: string
+  sortable?: boolean
+  sort?: DataTableCompareFunction
+}

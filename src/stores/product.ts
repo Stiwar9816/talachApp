@@ -25,7 +25,7 @@ export const useProductStore = defineStore({
       {
         title: 'Creado por',
         sortable: false,
-        key: 'user'
+        key: 'user.fullName'
       },
       {
         title: 'Centro Talachero',

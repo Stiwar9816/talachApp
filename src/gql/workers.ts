@@ -1,23 +1,5 @@
 import gql from 'graphql-tag'
 
-export const CREATE_WORKER = gql`
-  mutation CreateWorker($createWorkerInput: CreateWorkerInput!, $idCompany: String) {
-    createWorker(createWorkerInput: $createWorkerInput, idCompany: $idCompany) {
-      id
-      fullName
-      email
-      phone
-      companies {
-        name_company
-      }
-      lat
-      lng
-      geofence
-      isActive
-    }
-  }
-`
-
 export const ALL_WORKERS = gql`
   query Users($roles: [UserRoles!]) {
     users(roles: $roles) {
@@ -29,7 +11,8 @@ export const ALL_WORKERS = gql`
       lng
       geofence
       isActive
-      companies {
+      roles
+      companiesWorker {
         name_company
       }
     }
@@ -37,8 +20,8 @@ export const ALL_WORKERS = gql`
 `
 
 export const UPDATE_WORKER = gql`
-  mutation UpdateUser($updateUserInput: UpdateUserInput!) {
-    updateUser(updateUserInput: $updateUserInput) {
+  mutation UpdateUser($updateUserInput: UpdateUserInput!, $idCompany: String) {
+    updateUser(updateUserInput: $updateUserInput, idCompany: $idCompany) {
       id
       fullName
       email
@@ -47,7 +30,7 @@ export const UPDATE_WORKER = gql`
       lng
       geofence
       isActive
-      companies {
+      companiesWorker {
         name_company
       }
     }
@@ -66,7 +49,7 @@ export const SUBCRIBE_WORKER = gql`
         lng
         geofence
         isActive
-        companies {
+        companiesWorker {
           name_company
         }
       }

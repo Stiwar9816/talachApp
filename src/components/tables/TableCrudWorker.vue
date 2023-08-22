@@ -116,8 +116,8 @@
                       <template v-if="editedItem.id">
                         <v-col cols="12">
                           <v-select
-                            v-model="editedItem.companies"
-                            label="Centro talachero"
+                            v-model="editedItem.idCompany"
+                            label="Centros talacheros"
                             :rules="requiredValue"
                             :items="worker.companies"
                             item-title="name_company"
@@ -158,9 +158,6 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
-        <template v-slot:item.companies="{ item }">
-          {{ item.columns.companies.name_company }}
-        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
@@ -187,6 +184,7 @@
 import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 // Interface
 import type { DataTableHeader, WorkerItem } from '@/interface'
+// Stores
 import { useWorkerStore } from '@/stores'
 // Props
 const props = defineProps({
@@ -205,7 +203,8 @@ const editedItem = ref<WorkerItem>({
   phone: 0,
   geofence: '',
   lat: 0,
-  lng: 0
+  lng: 0,
+  idCompany: ''
 })
 const defaultItem = ref<WorkerItem>({
   fullName: '',
@@ -213,7 +212,8 @@ const defaultItem = ref<WorkerItem>({
   phone: 0,
   geofence: '',
   lat: 0,
-  lng: 0
+  lng: 0,
+  idCompany: ''
 })
 // Alerts
 const snackbar = ref(false)
@@ -256,7 +256,7 @@ const editItem = (item: WorkerItem) => {
       fullName: item.fullName,
       email: item.email,
       phone: item.phone,
-      companies: item.companies,
+      idCompany: item.idCompany,
       lat: item.lat,
       lng: item.lng,
       geofence: item.geofence,
@@ -274,13 +274,13 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, companies, lat, lng, ...create } = editedItem.value
+    let { id, phone, lat, lng, idCompany, ...create } = editedItem.value
     phone = +phone
     lat = +lat
     lng = +lng
     if (id) {
       // Update company
-      await worker.updateWorker(id, { ...create, phone, lat, lng })
+      await worker.updateWorker(id, { ...create, phone, lat, lng }, idCompany!)
       snackbar.value = true
       message.value = `¡Trabajador ${create.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'

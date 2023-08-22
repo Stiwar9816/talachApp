@@ -109,10 +109,10 @@
                       <template v-if="editedItem.roles === 'Trabajador'">
                         <v-col cols="12" sm="12" md="12">
                           <v-select
-                            v-model="editedItem.companies"
+                            v-model="editedItem.idCompany"
                             label="Centro talachero"
                             :rules="requiredValue"
-                            :items="company.$state.items"
+                            :items="company.items"
                             item-title="name_company"
                             item-value="id"
                             variant="underlined"
@@ -190,6 +190,7 @@ import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 // Interface
 import type { DataTableHeader, UserItem } from '@/interface'
+// Stores
 import { useCompanyStore, useUserStore } from '@/stores'
 // Props
 const props = defineProps({
@@ -208,7 +209,8 @@ const editedItem = ref<UserItem>({
   email: '',
   roles: '',
   isActive: '',
-  rfc: ''
+  rfc: '',
+  idCompany: ' '
 })
 const defaultItem = ref<UserItem>({
   fullName: '',
@@ -216,7 +218,8 @@ const defaultItem = ref<UserItem>({
   email: '',
   roles: '',
   isActive: '',
-  rfc: ''
+  rfc: '',
+  idCompany: ' '
 })
 const roles: string[] = ['Administrador', 'Talachero', 'Trabajador', 'Usuario']
 // Alerts
@@ -261,7 +264,19 @@ const formTitle = computed(() => {
 
 const editItem = (item: UserItem) => {
   editedIndex.value = data.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
+  editedItem.value = Object.assign(
+    {},
+    {
+      id: item.id,
+      fullName: item.fullName,
+      phone: item.phone,
+      email: item.email,
+      roles: item.roles,
+      isActive: item.isActive,
+      rfc: item.rfc,
+      idCompany: item.idCompany
+    }
+  )
   dialog.value = true
 }
 
@@ -273,11 +288,11 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, isActive, ...rest } = editedItem.value
+    let { id, phone, isActive, idCompany, rfc, ...rest } = editedItem.value
     phone = +phone
     if (!id) {
       // Add new user
-      await user.createUser({ phone, ...rest })
+      await user.createUser({ phone, ...rest }, idCompany!)
       snackbar.value = true
       message.value = `¡Nuevo usuario ${rest.fullName} fue agregado con exito!`
       color.value = 'orange-darken-2'

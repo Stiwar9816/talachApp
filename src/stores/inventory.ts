@@ -18,7 +18,7 @@ export const useInventoryStore = defineStore({
       {
         title: 'Creado por',
         sortable: false,
-        key: 'user'
+        key: 'user.fullName'
       },
       {
         title: 'Empresa',
@@ -36,8 +36,8 @@ export const useInventoryStore = defineStore({
     async allInventory() {
       if (this.cache.allProduct) {
         // Devolver datos almacenados en caché si están disponibles
-        this.items = this.cache.allProduct;
-        return this.items;
+        this.items = this.cache.allProduct
+        return this.items
       }
       const { data } = await apolloClient.query({
         query: ALL_INVENTORY,
@@ -48,8 +48,8 @@ export const useInventoryStore = defineStore({
       const [...invetory] = data.priceByType
       this.items = [...invetory]
       // Guardar en caché los datos obtenidos
-      this.cache.allProduct = this.items;
-      return this.items;
+      this.cache.allProduct = this.items
+      return this.items
     },
     async updateInventory(id: string, payload: InventoryItem) {
       const { data } = await apolloClient.mutate({
@@ -58,27 +58,25 @@ export const useInventoryStore = defineStore({
           updatePriceInput: { id, ...payload }
         }
       })
-      this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
-      this.cache.allProduct = this.items; // Actualizar caché
-      return this.items;
+      this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
+      this.cache.allProduct = this.items // Actualizar caché
+      return this.items
     },
     async countLowInventory() {
       if (this.cacheCount) {
-        this.count = this.cacheCount;
-        return this.count;
+        this.count = this.cacheCount
+        return this.count
       }
       const { data } = await apolloClient.query({
         query: ALL_INVENTORY,
         variables: {
           priceType: 'Producto'
         }
-      });
-      const lowInventoryProducts = data.priceByType.filter(
-        (inventory: any) => inventory.stock < 5
-      );
-      this.count = lowInventoryProducts.length; // Asignar el valor de count a this.count
-      this.cacheCount = this.count;
-      return this.count;
+      })
+      const lowInventoryProducts = data.priceByType.filter((inventory: any) => inventory.stock < 5)
+      this.count = lowInventoryProducts.length // Asignar el valor de count a this.count
+      this.cacheCount = this.count
+      return this.count
     }
   }
 })

@@ -89,7 +89,7 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
-        <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
+        <!-- <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template> -->
         <template v-slot:item.stock="{ item }">
           <v-chip :color="getColor(item.columns.stock)">
             {{ item.columns.stock }}

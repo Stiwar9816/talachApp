@@ -245,7 +245,6 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
-        <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
@@ -371,7 +370,7 @@ const editItem = (item: CompanyItem) => {
       postal_code: item.postal_code,
       rfc: item.rfc,
       tax_regime: item.tax_regime,
-      workerCount: item.workerCount
+      workerCountByCompany: item.workerCountByCompany
     }
   )
   dialog.value = true
@@ -385,7 +384,7 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, postal_code, lat, lng, workerCount, idTalachero, ...create } = editedItem.value
+    let { id, phone, postal_code, lat, lng, workerCountByCompany, idTalachero, ...create } = editedItem.value
     phone = +phone
     postal_code = +postal_code
     lat = +lat

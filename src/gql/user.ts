@@ -15,8 +15,8 @@ export const ALL_USERS = gql`
 `
 
 export const CREATE_USER = gql`
-  mutation Signup($signupInput: SignupInput!) {
-    signup(signupInput: $signupInput) {
+  mutation Signup($signupInput: SignupInput!, $idCompany: String) {
+    signup(signupInput: $signupInput, idCompany: $idCompany) {
       user {
         id
         fullName

@@ -18,10 +18,10 @@
       <!-- Data Table -->
       <v-col cols="12">
         <v-data-table
-          :headers="fields"
-          :items="items"
+          :headers="props.fields"
+          :items="props.items"
           :search="search"
-          :items-per-page="perPage"
+          :items-per-page="5"
           item-value="id"
           class="elevation-1 rounded-lg"
         >
@@ -62,12 +62,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { DataTableHeader } from '@/interface';
-import { useRatingsStore } from '@/stores'
 import { onMounted, onUnmounted, ref, type DeepReadonly } from 'vue'
+// Stores
+import { useRatingsStore } from '@/stores'
+// Interfaces
+import type { DataTableHeader } from '@/interface'
 // Const
 const search = ref<string>('')
-const perPage = ref<number>(5)
 // Alerts
 const snackbar = ref(false)
 const color = ref('')
