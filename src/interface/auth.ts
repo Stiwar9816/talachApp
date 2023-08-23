@@ -1,8 +1,8 @@
 export interface User {
-    id?: string
-    fullName: string
+  id?: string
+  fullName: string
 }
 
-export interface AuthState {
-    token: string | null
+export type AuthState = {
+  token: string | null
 }

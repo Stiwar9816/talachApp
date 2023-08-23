@@ -25,30 +25,32 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="password"
-                  label="Nueva Contraseña"
-                  :rules="requiredValue"
-                  :type="show ? 'text' : 'password'"
-                  variant="underlined"
-                  density="comfortable"
-                  clearable
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="confPassword"
-                  label="Confirmar nueva contraseña"
-                  :rules="requiredValue"
-                  :type="show ? 'text' : 'password'"
-                  variant="underlined"
-                  density="comfortable"
-                  clearable
-                  required
-                ></v-text-field>
-              </v-col>
+              <form>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="password"
+                    label="Nueva Contraseña"
+                    :rules="requiredValue"
+                    :type="show ? 'text' : 'password'"
+                    variant="underlined"
+                    density="comfortable"
+                    clearable
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="confPassword"
+                    label="Confirmar nueva contraseña"
+                    :rules="requiredValue"
+                    :type="show ? 'text' : 'password'"
+                    variant="underlined"
+                    density="comfortable"
+                    clearable
+                    required
+                  ></v-text-field>
+                </v-col>
+              </form>
               <v-checkbox
                 v-model="show"
                 class="my-n5"
@@ -103,7 +105,7 @@ const close = () => {
 
 const save = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = sessionStorage.getItem('token')
     if (token) {
       const newPassword = password.value
       const confirmPassword = confPassword.value

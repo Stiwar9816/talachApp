@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, split } from '@apollo/client/core'
+import { ApolloClient, ApolloLink, InMemoryCache, split } from '@apollo/client/core'
 import { onError } from '@apollo/client/link/error'
 import { useErrorsStore } from '../stores/useErrors'
 import { setContext } from '@apollo/client/link/context'
@@ -35,13 +35,6 @@ const httpLinkUpload = ApolloLink.from([
     credentials: 'include'
   })
 ])
-
-// // HTTP connection to the API
-// const httpLink = new HttpLink({
-//   // You should use an absolute URL here
-//   uri: import.meta.env.VITE_GRAPHQL_URL,
-//   credentials: 'include'
-// })
 
 export const wsLink = new GraphQLWsLink(
   createClient({
