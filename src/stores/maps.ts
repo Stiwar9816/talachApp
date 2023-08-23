@@ -14,6 +14,8 @@ const colorHexRandom = (): string => {
   return color
 }
 
+const roles = ['Trabajador', 'Talachero']
+
 export const useMapsStore = defineStore({
   id: 'maps',
   state: () => ({
@@ -42,7 +44,10 @@ export const useMapsStore = defineStore({
         })
 
         const { data: workersData } = await apolloClient.query({
-          query: ALL_LOCATION_WORKER
+          query: ALL_LOCATION_WORKER,
+          variables: {
+            roles
+          }
         })
 
         const companyMarkers = companiesData.companies.map(({ lat, lng, name_company }: any) => ({
@@ -71,7 +76,10 @@ export const useMapsStore = defineStore({
         })
 
         const { data: workersGeofenceData } = await apolloClient.query({
-          query: ALL_GEOFENCE_WORKER
+          query: ALL_GEOFENCE_WORKER,
+          variables: {
+            roles
+          }
         })
         const companyGeofences = companiesGeofenceData.companies.map((company: any) => {
           const paths: LatLgn[] = []
@@ -94,7 +102,7 @@ export const useMapsStore = defineStore({
           // Check if workersGeofenceData and workers array exist
           workerGeofences = workersGeofenceData.users.map((worker: any) => {
             const paths: LatLgn[] = []
-            worker.geofence[0].split(',').forEach((coordinate: string, index: number) => {
+            worker.geofence?.[0].split(',').forEach((coordinate: string, index: number) => {
               const value = +coordinate.trim()
               const isLatitude = index % 2 === 0
               if (isLatitude) {
