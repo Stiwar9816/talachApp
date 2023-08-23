@@ -14,7 +14,11 @@ const colorHexRandom = (): string => {
   return color
 }
 
+<<<<<<< HEAD
 const roles = ['Trabajador']
+=======
+const roles = ['Trabajador', 'Talachero']
+>>>>>>> 756306690694bd08fce81c40374ea5042d8e09fe
 
 export const useMapsStore = defineStore({
   id: 'maps',
