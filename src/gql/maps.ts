@@ -9,16 +9,16 @@ export const ALL_GEOFENCE = gql`
 `
 
 export const ALL_GEOFENCE_WORKER = gql`
-  query {
-    users {
+  query Users($roles: [UserRoles!]) {
+    users(roles: $roles) {
       geofence
     }
   }
 `
 
 export const ALL_LOCATION_WORKER = gql`
-  query {
-    users {
+  query Users($roles: [UserRoles!]) {
+    users(roles: $roles) {
       fullName
       lat
       lng
