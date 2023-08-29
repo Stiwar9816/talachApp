@@ -27,7 +27,7 @@ export interface UserItem {
   roles?: string
   isActive?: string
   rfc?: string
-  idCompany?: string
+  idCompany?: string | null
 }
 export interface ItemPrice {
   id?: string
@@ -80,7 +80,7 @@ export interface WorkerItem extends Coordinates {
   email: string
   phone: number
   isActive?: string
-  idCompany?: string
+  idCompany?: string | null
 }
 
 export interface CompanyFields {

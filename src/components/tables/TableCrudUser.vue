@@ -210,7 +210,7 @@ const editedItem = ref<UserItem>({
   roles: '',
   isActive: '',
   rfc: '',
-  idCompany: ' '
+  idCompany: null
 })
 const defaultItem = ref<UserItem>({
   fullName: '',
@@ -219,7 +219,7 @@ const defaultItem = ref<UserItem>({
   roles: '',
   isActive: '',
   rfc: '',
-  idCompany: ' '
+  idCompany: null
 })
 const roles: string[] = ['Administrador', 'Talachero', 'Trabajador', 'Usuario']
 // Alerts
@@ -292,7 +292,7 @@ const save = async () => {
     phone = +phone
     if (!id) {
       // Add new user
-      await user.createUser({ phone, ...rest }, idCompany!)
+      await user.createUser({ phone, ...rest }, idCompany)
       snackbar.value = true
       message.value = `¡Nuevo usuario ${rest.fullName} fue agregado con exito!`
       color.value = 'orange-darken-2'
