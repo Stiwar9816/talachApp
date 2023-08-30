@@ -53,7 +53,7 @@ export const useUserStore = defineStore({
 
       return this.items
     },
-    async createUser(payload: UserItem, idCompany: string) {
+    async createUser(payload: UserItem, idCompany?: string|null) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_USER,
         variables: {
