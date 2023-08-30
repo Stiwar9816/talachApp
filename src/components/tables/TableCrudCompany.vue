@@ -204,7 +204,7 @@
                       </v-col>
                       <v-col cols="12" sm="4" md="4">
                         <v-select
-                          v-model="editedItem.idTalachero"
+                          v-model="editedItem.idCompany"
                           label="Administrador"
                           :rules="requiredValue"
                           :items="users.items"
@@ -217,7 +217,7 @@
                         >
                         </v-select>
                       </v-col>
-                      <template v-if="editedItem.id">
+                      <!-- <template v-if="editedItem.id">
                         <v-col cols="12" sm="12" md="12">
                           <v-select
                             v-model="editedItem.isActive"
@@ -230,7 +230,7 @@
                             clearable
                           ></v-select>
                         </v-col>
-                      </template>
+                      </template> -->
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -290,7 +290,7 @@ const editedItem = ref<CompanyItem>({
   city: '',
   department: '',
   geofence: '',
-  idTalachero: '',
+  idCompany: '',
   lat: 0,
   lng: 0,
   name_company: '',
@@ -305,7 +305,7 @@ const defaultItem = ref<CompanyItem>({
   city: '',
   department: '',
   geofence: '',
-  idTalachero: '',
+  idCompany: '',
   lat: 0,
   lng: 0,
   name_company: '',
@@ -361,12 +361,12 @@ const editItem = (item: CompanyItem) => {
       department: item.department,
       geofence: item.geofence,
       id: item.id,
-      idTalachero: item.idTalachero,
-      isActive: item.isActive,
+      idCompany: item.idCompany,
       lat: item.lat,
       lng: item.lng,
       name_company: item.name_company,
       phone: item.phone,
+      isActive: item.isActive,
       postal_code: item.postal_code,
       rfc: item.rfc,
       tax_regime: item.tax_regime,
@@ -384,7 +384,8 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, postal_code, lat, lng, workerCountByCompany, idTalachero, ...create } = editedItem.value
+    let { id, phone, postal_code, lat, lng, workerCountByCompany, idCompany, ...create } =
+      editedItem.value
     phone = +phone
     postal_code = +postal_code
     lat = +lat
@@ -399,7 +400,7 @@ const save = async () => {
           lat,
           lng
         },
-        idTalachero!
+        idCompany!
       )
       snackbar.value = true
       message.value = `¡Nuevo centro talachero ${create.name_company} fue agregado con exito!`
@@ -407,14 +408,13 @@ const save = async () => {
       close()
     } else {
       // Update company
-      await company.updateCompany(id, { ...create, phone, postal_code, lat, lng }, idTalachero!)
+      await company.updateCompany(id, { ...create, phone, postal_code, lat, lng }, idCompany!)
       snackbar.value = true
       message.value = `¡Centro Talachero ${create.name_company} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error: any) {
-    console.log(error)
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
