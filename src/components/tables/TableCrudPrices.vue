@@ -80,23 +80,21 @@
                         ></v-text-field>
                       </v-col>
                       <template v-if="route.name == 'products'">
-                        <template v-if="!editedItem.id">
-                          <v-col cols="12">
-                            <v-select
-                              v-model="editedItem.companies"
-                              label="Centro talachero"
-                              :rules="requiredValue"
-                              :items="product.companies"
-                              item-title="name_company"
-                              item-value="id"
-                              variant="underlined"
-                              density="comfortable"
-                              type="text"
-                              clearable
-                            >
-                            </v-select>
-                          </v-col>
-                        </template>
+                        <v-col cols="12">
+                          <v-select
+                            v-model="editedItem.companies"
+                            label="Centro talachero"
+                            :rules="requiredValue"
+                            :items="product.companies"
+                            item-title="name_company"
+                            item-value="id"
+                            variant="underlined"
+                            density="comfortable"
+                            type="text"
+                            clearable
+                          >
+                          </v-select>
+                        </v-col>
                         <v-col cols="12">
                           <v-file-input
                             v-model="editedItem.file"
@@ -319,7 +317,7 @@ const save = async () => {
         } else {
           // Update cost
           let fileUpdate = file || ''
-          await product.updateProduct(id, { ...payload, price, type }, fileUpdate)
+          await product.updateProduct(id, { ...payload, price, type }, fileUpdate, companies!)
           snackbar.value = true
           message.value = `¡Producto ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
