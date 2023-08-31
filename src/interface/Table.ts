@@ -78,7 +78,6 @@ export interface WorkerItem extends Coordinates {
   fullName: string
   email: string
   phone: number
-  isActive?: string
   idCompany?: string | null
 }
 
