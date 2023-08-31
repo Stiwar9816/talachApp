@@ -68,7 +68,6 @@ export interface CompanyItem extends Coordinates {
   department: string
   city: string
   postal_code: number
-  isActive?: string
   tax_regime: string
   workerCountByCompany?: number
   idCompany?: string

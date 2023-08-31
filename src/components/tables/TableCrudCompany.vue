@@ -217,20 +217,6 @@
                         >
                         </v-select>
                       </v-col>
-                      <!-- <template v-if="editedItem.id">
-                        <v-col cols="12" sm="12" md="12">
-                          <v-select
-                            v-model="editedItem.isActive"
-                            label="Estado"
-                            :rules="requiredValue"
-                            :items="['Activo', 'Inactivo']"
-                            variant="underlined"
-                            density="comfortable"
-                            type="text"
-                            clearable
-                          ></v-select>
-                        </v-col>
-                      </template> -->
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -325,7 +311,6 @@ const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerid
 
 const company = useCompanyStore()
 const users = useUserStore()
-const select = users.items.map((item) => item.id)
 // Realiza la suscripción al iniciar el componente
 const unsubscribeUsers = users.subscribeToUsers()
 const unsubscribeCompany = company.subscribeToCompanies()
@@ -366,7 +351,6 @@ const editItem = (item: CompanyItem) => {
       lng: item.lng,
       name_company: item.name_company,
       phone: item.phone,
-      isActive: item.isActive,
       postal_code: item.postal_code,
       rfc: item.rfc,
       tax_regime: item.tax_regime,

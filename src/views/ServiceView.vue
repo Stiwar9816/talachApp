@@ -20,7 +20,7 @@ import { onMounted } from 'vue';
 // Initialization Store
 const storeService = useServiceStore()
 
-const token = localStorage.getItem('token')
+const token = sessionStorage.getItem('token')
 
 onMounted(() => {
   extractRoleFromToken(token)
