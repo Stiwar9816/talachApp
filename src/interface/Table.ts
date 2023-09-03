@@ -75,7 +75,7 @@ export interface CompanyItem extends Coordinates {
   isActive?: string
   tax_regime: string
   workerCountByCompany?: number
-  idTalachero?: string 
+  idCompany?: string 
   user?: Person
 }
 export interface Company {
@@ -87,7 +87,6 @@ export interface WorkerItem extends Coordinates {
   fullName: string
   email: string
   phone: number
-  isActive?: string
   idCompany?: string | null
   companiesWorker?: Company
 }

@@ -113,37 +113,21 @@
                           required
                         ></v-textarea>
                       </v-col>
-                      <template v-if="editedItem.id">
-                        <v-col cols="12">
-                          <v-select
-                            v-model="editedItem.idCompany"
-                            label="Centros talacheros"
-                            :rules="requiredValue"
-                            :items="worker.companies"
-                            item-title="name_company"
-                            item-value="id"
-                            variant="underlined"
-                            density="comfortable"
-                            type="text"
-                            clearable
-                          >
-                          </v-select>
-                        </v-col>
-                      </template>
-                      <template v-if="editedItem.id">
-                        <v-col cols="12" sm="12" md="12">
-                          <v-select
-                            v-model="editedItem.isActive"
-                            label="Estado"
-                            :rules="requiredValue"
-                            :items="['Activo', 'Inactivo']"
-                            variant="underlined"
-                            density="comfortable"
-                            type="text"
-                            clearable
-                          ></v-select>
-                        </v-col>
-                      </template>
+                      <v-col cols="12">
+                        <v-select
+                          v-model="editedItem.idCompany"
+                          label="Centros talacheros"
+                          :rules="requiredValue"
+                          :items="worker.companies"
+                          item-title="name_company"
+                          item-value="id"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          clearable
+                        >
+                        </v-select>
+                      </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -259,8 +243,7 @@ const editItem = (item: WorkerItem) => {
       idCompany: item.companiesWorker?.id,
       lat: item.lat,
       lng: item.lng,
-      geofence: item.geofence,
-      isActive: item.isActive
+      geofence: item.geofence
     }
   )
   dialog.value = true

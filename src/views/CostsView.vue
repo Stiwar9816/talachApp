@@ -16,7 +16,7 @@ import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
 import { useCostsStore } from '@/stores'
 import { extractRoleFromToken } from '@/utils'
 const storeCosts = useCostsStore()
-const token = localStorage.getItem('token')
+const token = sessionStorage.getItem('token')
 
 onMounted(() => {
   extractRoleFromToken(token)

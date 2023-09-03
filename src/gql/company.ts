@@ -50,8 +50,8 @@ export const COMPANY_BY_ID = gql`
   }
 `
 export const CREATE_COMPANY = gql`
-  mutation CreateCompany($createCompanyInput: CreateCompanyInput!, $idTalachero: String!) {
-    createCompany(createCompanyInput: $createCompanyInput, idTalachero: $idTalachero) {
+  mutation CreateCompany($createCompanyInput: CreateCompanyInput!, $idCompany: String!) {
+    createCompany(createCompanyInput: $createCompanyInput, idCompany: $idCompany) {
       id
       name_company
       rfc
@@ -74,8 +74,8 @@ export const CREATE_COMPANY = gql`
   }
 `
 export const UPDATE_COMPANY = gql`
-  mutation UpdateCompany($updateCompanyInput: UpdateCompanyInput!, $idTalachero: String) {
-    updateCompany(updateCompanyInput: $updateCompanyInput, idTalachero: $idTalachero) {
+  mutation UpdateCompany($updateCompanyInput: UpdateCompanyInput!, $idCompany: String) {
+    updateCompany(updateCompanyInput: $updateCompanyInput, idCompany: $idCompany) {
       id
       name_company
       rfc

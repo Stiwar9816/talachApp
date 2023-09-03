@@ -24,8 +24,8 @@
         </v-toolbar>
         <v-card-text>
           <v-container>
-            <v-row>
-              <form>
+            <form>
+              <v-row>
                 <v-col cols="12">
                   <v-text-field
                     v-model="password"
@@ -50,14 +50,14 @@
                     required
                   ></v-text-field>
                 </v-col>
-              </form>
-              <v-checkbox
-                v-model="show"
-                class="my-n5"
-                label="Mostrar Contraseña"
-                @click:append="show = !show"
-              ></v-checkbox>
-            </v-row>
+                <v-checkbox
+                  v-model="show"
+                  class="my-n5"
+                  label="Mostrar Contraseña"
+                  @click:append="show = !show"
+                ></v-checkbox>
+              </v-row>
+            </form>
           </v-container>
         </v-card-text>
         <v-card-actions>

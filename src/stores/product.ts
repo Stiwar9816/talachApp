@@ -92,7 +92,7 @@ export const useProductStore = defineStore({
 
       return this.items
     },
-    async updateProduct(id: string, payload: PriceItem, file: any) {
+    async updateProduct(id: string, payload: PriceItem, file: any, idCompany: string) {
       const { data } = await apolloClient.mutate({
         mutation: UPDATE_PRICE,
         variables: {
@@ -100,7 +100,8 @@ export const useProductStore = defineStore({
             id,
             ...payload
           },
-          file: file[0]
+          file: file[0],
+          idCompany
         },
         context: {
           useMultipart: true
