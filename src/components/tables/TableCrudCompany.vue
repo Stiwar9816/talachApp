@@ -361,7 +361,7 @@ const editItem = (item: CompanyItem) => {
       department: item.department,
       geofence: item.geofence,
       id: item.id,
-      idTalachero: item.idTalachero,
+      idTalachero: item.user?.id,
       isActive: item.isActive,
       lat: item.lat,
       lng: item.lng,
@@ -391,15 +391,7 @@ const save = async () => {
     lng = +lng
     if (!id) {
       // Add new company
-      await company.createCompany(
-        {
-          ...create,
-          phone,
-          postal_code,
-          lat,
-          lng
-        },
-        idTalachero!
+      await company.createCompany({ ...create, phone, postal_code, lat, lng }, idTalachero!
       )
       snackbar.value = true
       message.value = `¡Nuevo centro talachero ${create.name_company} fue agregado con exito!`

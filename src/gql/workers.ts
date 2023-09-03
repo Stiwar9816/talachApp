@@ -13,6 +13,7 @@ export const ALL_WORKERS = gql`
       isActive
       roles
       companiesWorker {
+        id
         name_company
       }
     }
@@ -31,6 +32,7 @@ export const UPDATE_WORKER = gql`
       geofence
       isActive
       companiesWorker {
+        id
         name_company
       }
     }
@@ -50,6 +52,7 @@ export const SUBCRIBE_WORKER = gql`
         geofence
         isActive
         companiesWorker {
+          id
           name_company
         }
       }

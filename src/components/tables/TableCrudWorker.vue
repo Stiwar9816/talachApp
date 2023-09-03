@@ -256,7 +256,7 @@ const editItem = (item: WorkerItem) => {
       fullName: item.fullName,
       email: item.email,
       phone: item.phone,
-      idCompany: item.idCompany,
+      idCompany: item.companiesWorker?.id,
       lat: item.lat,
       lng: item.lng,
       geofence: item.geofence,

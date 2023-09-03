@@ -58,6 +58,10 @@ export interface Coordinates {
   lat: number
   lng: number
 }
+export interface Person {
+  id?: string;
+  fullName?: string;
+}
 export interface CompanyItem extends Coordinates {
   id?: string
   name_company: string
@@ -71,9 +75,13 @@ export interface CompanyItem extends Coordinates {
   isActive?: string
   tax_regime: string
   workerCountByCompany?: number
-  idTalachero?: string
+  idTalachero?: string 
+  user?: Person
 }
-
+export interface Company {
+  id?: string;
+  name_company?: string;
+}
 export interface WorkerItem extends Coordinates {
   id?: string
   fullName: string
@@ -81,6 +89,7 @@ export interface WorkerItem extends Coordinates {
   phone: number
   isActive?: string
   idCompany?: string | null
+  companiesWorker?: Company
 }
 
 export interface CompanyFields {

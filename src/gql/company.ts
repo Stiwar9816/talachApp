@@ -18,6 +18,7 @@ export const ALL_COMPANIES = gql`
       lng
       tax_regime
       user {
+        id
         fullName
       }
     }
