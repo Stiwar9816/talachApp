@@ -3,8 +3,9 @@ import apolloClient from '@/plugins/apollo'
 import type { AuthState } from '@/interface'
 import router from '@/router'
 import { defineStore } from 'pinia'
-import type { SigninInput } from '../interface/auth';
-import { supabase } from '@/utils/conexion-supabase'
+import type { SigninInput } from '../interface/auth'
+import { supabase } from '@/utils'
+import { ref } from 'vue'
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -17,27 +18,41 @@ export const useAuthStore = defineStore({
     }
   },
   actions: {
-    async login({ email, password}: SigninInput) {
-      const { data , error} = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
+    async login({ email, password }: SigninInput) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        })
+        const { user, session } = data
 
-      if (error) {
-        console.log(error);
-      }else{
-        console.log(data);
+        const tokenSupa = session?.access_token
+
+        if (error) {
+          throw new Error(error.message)
+        } else {
+          sessionStorage.setItem('token', tokenSupa!)
+          this.token = tokenSupa!
+          return user
+        }
+      } catch (error: any) {
+        throw new Error('Error desconocido al iniciar sesión', error.message)
       }
-      // const { user, token } = data.signin
-      // sessionStorage.setItem('token', token)
-      // this.token = token
-      // await apolloClient.resetStore()
-      // return user
     },
-    logout() {
-      sessionStorage.removeItem('token')
-      this.token = null
-      router.replace('/')
+    async logout() {
+      try {
+        const { error } = await supabase.auth.signOut()
+
+        if (error) {
+          console.error(error.message)
+        } else {
+          sessionStorage.removeItem('token')
+          this.token = null
+          router.replace('/')
+        }
+      } catch (error: any) {
+        console.error('Error desconocido al salir de la sesión', error.message)
+      }
     },
     async resetPassword(email: string) {
       const { data } = await apolloClient.mutate({

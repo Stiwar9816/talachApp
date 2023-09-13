@@ -4,6 +4,7 @@ import apolloClient from '@/plugins/apollo'
 import { ALL_WORKERS, SUBCRIBE_WORKER, UPDATE_WORKER } from '@/gql/workers'
 import { ALL_COMPANIES_NAME } from '@/gql/company'
 import type { Field, WorkerFields, WorkerItem } from '@/interface'
+import { supabase } from '@/utils'
 
 export const useWorkerStore = defineStore({
   id: 'workers',
@@ -21,7 +22,7 @@ export const useWorkerStore = defineStore({
       },
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Correo electronico', sortable: false, key: 'email' },
-      { title: 'Empresa', sortable: true, key: 'companiesWorker.name_company' },
+      { title: 'Empresa', sortable: true, key: 'companyWorker.name_company' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Longitud', sortable: false, key: 'lng' },
       { title: 'Geocerca', sortable: false, key: 'geofence' },
@@ -33,26 +34,25 @@ export const useWorkerStore = defineStore({
   }),
   actions: {
     async allWorkers() {
-      const { data } = await apolloClient.query({
-        query: ALL_WORKERS,
-        variables: {
-          roles: 'Trabajador'
-        }
-      })
-      const newWorkers = data.users.map((item: WorkerItem) => {
-        return {
-          ...item
-        }
-      })
+      try {
+        const ROLES = ['Trabajador']
+        // Obtén la lista completa de usuarios registrados
+        let { data: users, error } = await supabase
+          .from('users')
+          .select(
+            `id, fullName, rfc, phone, email, lat, lng, geofence, isActive, companyWorker(name_company)`
+          )
+          .in('roles', ROLES) // Utiliza la función 'in' para verificar si 'roles' está en el conjunto ROLES
 
-      newWorkers.forEach((newItem: WorkerItem) => {
-        const existingItem = this.items.find((item: WorkerItem) => item.id === newItem.id)
-        if (!existingItem) {
-          this.items.push(newItem)
+        if (error) {
+          console.error('Error al obtener la lista de trabajadores:', error.message)
+          return []
         }
-      })
-
-      return this.items
+        return this.items = users as WorkerItem[]
+      } catch (error: any) {
+        console.error('Error desconocido al obtener la lista de trabajadores:', error.message)
+        return []
+      }
     },
     async allCompanies() {
       const { data } = await apolloClient.query({

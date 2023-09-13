@@ -9,6 +9,7 @@ import {
   UPDATE_COMPANY,
   WORKER_COUNT_BY_COMPANY
 } from '@/gql/company'
+import { supabase } from '@/utils'
 
 export const useCompanyStore = defineStore({
   id: 'company',
@@ -29,11 +30,11 @@ export const useCompanyStore = defineStore({
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Nombre Comercial', sortable: false, key: 'bussiness_name' },
       { title: 'Dirección', sortable: false, key: 'address' },
-      { title: 'Estado', sortable: false, key: 'department' },
+      { title: 'Estado', sortable: false, key: 'departament' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
-      { title: 'Administrador', sortable: false, key: 'user.fullName' },
-      { title: 'Trabajadores Activos', sortable: true, key: 'workerCountByCompany' },
+      { title: 'Administrador', sortable: false, key: 'user_name.fullName' },
+      { title: 'Trabajadores Activos', sortable: true, key: 'user_count.count' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Logintud', sortable: false, key: 'lng' },
       { title: 'Geocerca', sortable: false, key: 'geofence' },
@@ -44,39 +45,21 @@ export const useCompanyStore = defineStore({
   }),
   actions: {
     async allCompanies() {
-      const { data } = await apolloClient.query({
-        query: ALL_COMPANIES
-      })
-
-      const newItems = data.companies.map((item: CompanyItem) => {
-        return {
-          ...item,
-          workerCountByCompany: 0
+      try {
+        // Obtén la lista completa de usuarios registrados
+        let { data: companies, error } = await supabase
+          .from('companies')
+          .select('*,user_count:user_id(count),user_name:user_id(fullName)')
+        if (error) {
+          console.error('Error al obtener la lista de trabajadores:', error.message)
+          return []
         }
-      })
-
-      await Promise.all(
-        newItems.map(async (company: any) => {
-          const { data } = await apolloClient.query({
-            query: WORKER_COUNT_BY_COMPANY,
-            variables: {
-              companyId: company.id
-            }
-          })
-
-          const workerCount = data.workerCountByCompany
-          company.workerCountByCompany = workerCount
-        })
-      )
-
-      newItems.forEach((newItem: CompanyItem) => {
-        const existingItem = this.items.find((item: CompanyItem) => item.id === newItem.id)
-        if (!existingItem) {
-          this.items.push(newItem)
-        }
-      })
-
-      return this.items
+        this.items = companies as CompanyItem[]
+        return this.items
+      } catch (error: any) {
+        console.error('Error desconocido al obtener la lista de trabajadores:', error.message)
+        return []
+      }
     },
     async createCompany(formInput: CompanyItem, idCompany: string) {
       const { data } = await apolloClient.mutate({

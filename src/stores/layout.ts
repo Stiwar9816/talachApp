@@ -65,6 +65,7 @@ export const useLayoutStore = defineStore('layout', () => {
       route: '/users'
     }
   ]
+
   const nameProfile = computed(() => extractFullNameFromToken(token.value) || '')
 
   return { drawer, rail, routes, prices, companies, nameProfile, imageProfile }

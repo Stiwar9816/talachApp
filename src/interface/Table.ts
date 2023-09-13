@@ -69,7 +69,7 @@ export interface CompanyItem extends Coordinates {
   phone: number
   bussiness_name: string
   address: string
-  department: string
+  departament: string
   city: string
   postal_code: number
   isActive?: string
@@ -88,7 +88,7 @@ export interface WorkerItem extends Coordinates {
   email: string
   phone: number
   idCompany?: string
-  companiesWorker?: Company
+  companiesWorker?: string
 }
 
 export interface CompanyFields {

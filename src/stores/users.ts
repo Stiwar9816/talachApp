@@ -4,6 +4,7 @@ import apolloClient from '@/plugins/apollo'
 import { ALL_USERS, CREATE_USER, SUBSCRIBE_USER, UPDATE_USER } from '@/gql/user'
 // Interface
 import type { Field, UserItem, UsersFields } from '@/interface'
+import { supabase } from '@/utils'
 
 export const useUserStore = defineStore({
   id: 'users',
@@ -30,30 +31,25 @@ export const useUserStore = defineStore({
   }),
   actions: {
     async allUsers() {
-      const roles = ['Usuario', 'Administrador', 'superAdmin', 'Talachero']
-      const { data } = await apolloClient.query({
-        query: ALL_USERS,
-        variables: {
-          roles: roles
-        }
-      })
+      try {
+        const ROLES = ['superAdmin', 'Administrador', 'Talachero', 'Usuario']
+        // Obtén la lista completa de usuarios registrados
+        let { data: users, error } = await supabase
+          .from('users')
+          .select('id, fullName, rfc, phone, email, roles, isActive')
+          .in('roles', ROLES) // Utiliza la función 'in' para verificar si 'roles' está en el conjunto ROLES
 
-      const newItems = data.users.map((item: UserItem) => {
-        return {
-          ...item
+        if (error) {
+          console.error('Error al obtener la lista de usuarios:', error.message)
+          return []
         }
-      })
-
-      newItems.forEach((newItem: UserItem) => {
-        const existingItem = this.items.find((item: UserItem) => item.id === newItem.id)
-        if (!existingItem) {
-          this.items.push(newItem)
-        }
-      })
-
-      return this.items
+        return this.items = users as UserItem[]      
+      } catch (error: any) {
+        console.error('Error desconocido al obtener la lista de usuarios:', error.message)
+        return []
+      }
     },
-    async createUser(payload: UserItem, idCompany?: string|null) {
+    async createUser(payload: UserItem, idCompany?: string | null) {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_USER,
         variables: {
