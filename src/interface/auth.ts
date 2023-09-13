@@ -6,3 +6,8 @@ export interface User {
 export type AuthState = {
   token: string | null
 }
+
+export interface SigninInput {
+  email: string
+  password: string
+}

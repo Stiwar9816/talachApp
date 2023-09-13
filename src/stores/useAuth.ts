@@ -3,6 +3,8 @@ import apolloClient from '@/plugins/apollo'
 import type { AuthState } from '@/interface'
 import router from '@/router'
 import { defineStore } from 'pinia'
+import type { SigninInput } from '../interface/auth';
+import { supabase } from '@/utils/conexion-supabase'
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -15,18 +17,22 @@ export const useAuthStore = defineStore({
     }
   },
   actions: {
-    async login(credentials: AuthState) {
-      const { data } = await apolloClient.mutate({
-        mutation: LOGIN_MUTATION,
-        variables: {
-          signinInput: credentials
-        }
+    async login({ email, password}: SigninInput) {
+      const { data , error} = await supabase.auth.signInWithPassword({
+        email,
+        password
       })
-      const { user, token } = data.signin
-      sessionStorage.setItem('token', token)
-      this.token = token
-      await apolloClient.resetStore()
-      return user
+
+      if (error) {
+        console.log(error);
+      }else{
+        console.log(data);
+      }
+      // const { user, token } = data.signin
+      // sessionStorage.setItem('token', token)
+      // this.token = token
+      // await apolloClient.resetStore()
+      // return user
     },
     logout() {
       sessionStorage.removeItem('token')
