@@ -33,8 +33,8 @@ export const useCompanyStore = defineStore({
       { title: 'Estado', sortable: false, key: 'departament' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
-      { title: 'Administrador', sortable: false, key: 'user_name.fullName' },
-      { title: 'Trabajadores Activos', sortable: true, key: 'user_count.count' },
+      { title: 'Administrador', sortable: false, key: 'useradmin' },
+      { title: 'Trabajadores Activos', sortable: true, key: 'userworker' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Logintud', sortable: false, key: 'lng' },
       { title: 'Geocerca', sortable: false, key: 'geofence' },
@@ -47,9 +47,7 @@ export const useCompanyStore = defineStore({
     async allCompanies() {
       try {
         // Obtén la lista completa de usuarios registrados
-        let { data: companies, error } = await supabase
-          .from('companies')
-          .select('*,user_count:user_id(count),user_name:user_id(fullName)')
+        let { data: companies, error } = await supabase.rpc('list_company_workers')
         if (error) {
           console.error('Error al obtener la lista de trabajadores:', error.message)
           return []
