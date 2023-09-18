@@ -28,7 +28,7 @@
           <template v-slot:item="{ item }">
             <tr>
               <td>{{ item.columns.id }}</td>
-              <td>{{ item.columns.user.fullName }}</td>
+              <td>{{ item.columns.client }}</td>
               <td>{{ item.columns.quality }}</td>
               <td>
                 <v-rating
@@ -39,7 +39,16 @@
                   half-increments
                 ></v-rating>
               </td>
-              <td>{{ item.columns.createdAt }}</td>
+              <td>
+                <v-rating
+                  v-model="item.columns.rankTalachero"
+                  color="amber"
+                  density="comfortable"
+                  readonly
+                  half-increments
+                ></v-rating>
+              </td>
+              <td>{{ new Date(item.columns.created_at).toLocaleString() }}</td>
             </tr>
           </template>
           <template v-slot:no-data>

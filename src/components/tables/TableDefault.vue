@@ -43,10 +43,11 @@
           <template v-slot:item="{ item }">
             <tr>
               <td>{{ item.columns.id }}</td>
-              <td>{{ item.columns.user?.fullName }}</td>
-              <td>{{ new Date(item.columns.createdAt).toLocaleString() }}</td>
-              <td>{{ item.columns.companies?.name_company }}</td>
+              <td>{{ item.columns.client }}</td>
+              <td>{{ item.columns.company }}</td>
+              <td>{{ new Date(item.columns.created_at).toLocaleString() }}</td>
               <td>{{ currencyFormatter('MXN', item.columns.total) }} MXN</td>
+              <td>{{ item.columns.status }}</td>
             </tr>
           </template>
           <template v-slot:no-data>
@@ -115,7 +116,7 @@ const exportData = () => {
     const data = props.items.map((item: any) =>
       Object.values(item).flatMap((value: any) => {
         if (typeof value === 'object') {
-          return [value.fullName, value.name_company].filter((val) => val !== undefined)
+          return [value.client, value.company].filter((val) => val !== undefined)
         }
         return value
       })

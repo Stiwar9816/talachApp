@@ -2,8 +2,7 @@ import moment from 'moment'
 import { defineStore } from 'pinia'
 // Interface
 import type { Field, RatingFields, RatingItem } from '@/interface'
-import { ALL_RATINGS, SUBSCRIBE_SCORE } from '@/gql/rating'
-import apolloClient from '@/plugins/apollo'
+import { supabase, updateItems } from '@/utils'
 
 export const useRatingsStore = defineStore({
   id: 'ratings',
@@ -15,62 +14,40 @@ export const useRatingsStore = defineStore({
         sortable: false,
         key: 'id'
       },
-      { title: 'Usuario', sortable: false, key: 'user' },
-      { title: 'Calidad', sortable: false, key: 'quality' },
+      { title: 'Usuario', sortable: false, key: 'client' },
+      { title: 'Calidad del servicio', sortable: false, key: 'quality' },
       { title: 'Calificación usuario', key: 'rankClient' },
       { title: 'Calificación talachero', key: 'rankTalachero' },
-      { title: 'Fecha de calificación', sortable: false, key: 'createdAt' }
+      { title: 'Fecha de calificación', sortable: false, key: 'created_at' }
     ] as Field[],
     items: [] as RatingItem[]
   }),
   actions: {
     async allRatings() {
-      const { data } = await apolloClient.query({
-        query: ALL_RATINGS
+      let { data: scores, error } = await supabase.rpc('LIST_SCORES')
+      
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+      // Iterar sobre los objetos de scores y formatear la fecha
+      const ScoreFormatted = scores.map((score: RatingItem) => {
+        return {
+          ...score,
+          created_at: moment(score.created_at).format('LLL')
+        }
       })
 
-      const newItems = data.scores.map((item: RatingItem) => {
-        return {
-          ...item,
-          createdAt: moment(item.createdAt).format('LLL')
-        };
-      });
+      this.items = ScoreFormatted as RatingItem[]
 
-      newItems.forEach((newItem: RatingItem) => {
-        const existingItem = this.items.find((item: RatingItem) => item.id === newItem.id);
-        if (!existingItem) {
-          this.items.push(newItem);
-        }
-      });
       return this.items
     },
     subscribeToRatings() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBSCRIBE_SCORE
-      });
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newRating = result.data?.newScore;
-          if (newRating) {
-            this.updateItems([newRating]);
-          }
-        },
-        error(error: any) {
-          console.log(error.message);
-        }
-      });
-      return () => subscription.unsubscribe();
-    },
-    updateItems(newRatings: RatingItem[]) {
-      const updatedItems = newRatings.map((newRating: RatingItem) => {
-        return {
-          ...newRating,
-          createdAt: moment(newRating.createdAt).format('LLL')
-        };
-      });
-
-      this.items = [...this.items, ...updatedItems];
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'scores' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

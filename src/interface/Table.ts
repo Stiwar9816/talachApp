@@ -8,16 +8,18 @@ export interface Field {
 export interface RatingItem {
   id?: string
   quality: string
-  rank: number
-  fullName: string
-  createdAt: string
+  rankClient: number
+  rankTalachero: number
+  client: string
+  created_at: string
 }
 export interface OrdersItem {
   id?: string
-  fullName: string
-  createdAt: string
-  name_company: string
+  client: string
+  created_at: string
+  company: string
   total: number
+  status: string
 }
 export interface UserItem {
   id?: string
@@ -59,8 +61,8 @@ export interface Coordinates {
   lng: number
 }
 export interface Person {
-  id?: string;
-  fullName?: string;
+  id?: string
+  fullName?: string
 }
 export interface CompanyItem extends Coordinates {
   id?: string
@@ -79,8 +81,8 @@ export interface CompanyItem extends Coordinates {
   user?: Person
 }
 export interface Company {
-  id?: string;
-  name_company?: string;
+  id?: string
+  name_company?: string
 }
 export interface WorkerItem extends Coordinates {
   id?: string

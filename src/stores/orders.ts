@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 import type { Field, OrdersFields, OrdersItem } from '@/interface'
 import moment from 'moment'
 import apolloClient from '@/plugins/apollo'
-import { ALL_ORDERS, SUBSCRIBE_ORDER } from '@/gql/order'
+import { ALL_ORDERS } from '@/gql/order'
+import { supabase, updateItems } from '@/utils'
 
 export const useOrdersStore = defineStore({
   id: 'orders',
@@ -14,10 +15,11 @@ export const useOrdersStore = defineStore({
         sortable: false,
         title: 'ID'
       },
-      { key: 'user', sortable: false, title: 'Usuario' },
-      { key: 'createdAt', sortable: true, title: 'Fecha de servicio' },
-      { key: 'companies', sortable: false, title: 'Empresa' },
+      { key: 'client', sortable: false, title: 'Usuario' },
+      { key: 'company', sortable: false, title: 'Empresa' },
+      { key: 'created_at', sortable: true, title: 'Fecha de servicio' },
       { key: 'total', sortable: false, title: 'Total' },
+      { key: 'status', sortable: false, title: 'Estado' }
     ] as Field[],
     items: [] as OrdersItem[],
     count: 0 as number,
@@ -25,23 +27,21 @@ export const useOrdersStore = defineStore({
   }),
   actions: {
     async allOrders() {
-      const { data } = await apolloClient.query({
-        query: ALL_ORDERS
+      let { data: orders, error } = await supabase.rpc('LIST_ORDERS')
+   
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+
+      // Iterar sobre los objetos de scores y formatear la fecha
+      const OrderFormatted = orders.map((order: OrdersItem) => {
+        return {
+          ...order,
+          created_at: moment(order.created_at).format('LLL')
+        }
       })
 
-      const newItems = data.orders.map((item: OrdersItem) => {
-        return {
-          ...item,
-          createdAt: moment(item.createdAt).format('LLL')
-        };
-      });
-
-      newItems.forEach((newItem: OrdersItem) => {
-        const existingItem = this.items.find((item: OrdersItem) => item.id === newItem.id);
-        if (!existingItem) {
-          this.items.push(newItem);
-        }
-      });
+      this.items = OrderFormatted as OrdersItem[]
 
       return this.items
     },
@@ -62,32 +62,12 @@ export const useOrdersStore = defineStore({
       return this.count
     },
     subscribeToOrders() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBSCRIBE_ORDER
-      });
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newOrders = result.data?.newOrder;
-          if (newOrders) {
-            this.updateItems([newOrders]);
-          }
-        },
-        error(error: any) {
-          console.log(error.message);
-        }
-      });
-      return () => subscription.unsubscribe();
-    },
-    updateItems(newOrders: OrdersItem[]) {
-      const updatedItems = newOrders.map((newOrder: OrdersItem) => {
-        return {
-          ...newOrder,
-          createdAt: moment(newOrder.createdAt).format('LLL')
-        };
-      });
-
-      this.items = [...this.items, ...updatedItems];
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })
