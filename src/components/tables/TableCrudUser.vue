@@ -238,14 +238,15 @@ const emailRules = ref([
 
 const user = useUserStore()
 const company = useCompanyStore()
-// Realiza la suscripción al iniciar el componente
-const unsubscribeUsers = user.subscribeToUsers()
-const unsubscribeCompany = company.subscribeToCompanies()
 
 const initialize = async () => {
   try {
-    await user.allUsers()
-    await company.allCompanies()
+    await Promise.all([
+      company.allCompanies(),
+      company.subscribeToCompanies(),
+      user.allUsers(),
+      user.subscribeToUsers(),
+    ])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -311,10 +312,4 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
-
-// Cancela la suscripción al desmontar el componente
-onUnmounted(() => {
-  unsubscribeUsers()
-  unsubscribeCompany()
-})
 </script>

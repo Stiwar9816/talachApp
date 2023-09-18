@@ -2,7 +2,14 @@ import { defineStore } from 'pinia'
 // Interface
 import type { Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_PRICES_BY_TYPE, CREATE_PRICE, REMOVE_PRICE, SUBSCRIBE_PRICE, UPDATE_PRICE } from '@/gql/price'
+import {
+  ALL_PRICES_BY_TYPE,
+  CREATE_PRICE,
+  REMOVE_PRICE,
+  SUBSCRIBE_PRICE,
+  UPDATE_PRICE
+} from '@/gql/price'
+import { supabase, updateItems } from '@/utils'
 
 export const useServiceStore = defineStore({
   id: 'service',
@@ -18,28 +25,16 @@ export const useServiceStore = defineStore({
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],
     items: [] as PriceItem[]
-  }), actions: {
+  }),
+  actions: {
     async allService() {
-      const { data } = await apolloClient.query({
-        query: ALL_PRICES_BY_TYPE,
-        variables: {
-          priceType: 'Servicio'
-        }
+      let { data: services, error } = await supabase.rpc('LIST_PRICES_BY_TYPE', {
+        typeprice: 'Servicio'
       })
-
-      const newItems = data.priceByType.map((item: PriceItem) => {
-        return {
-          ...item
-        };
-      });
-
-      newItems.forEach((newItem: PriceItem) => {
-        const existingItem = this.items.find((item: PriceItem) => item.id === newItem.id);
-        if (!existingItem) {
-          this.items.push(newItem);
-        }
-      });
-
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+      this.items = services as PriceItem[]
       return this.items
     },
     async createService(payload: PriceItem) {
@@ -50,11 +45,11 @@ export const useServiceStore = defineStore({
         }
       })
 
-      const newServices = data.createPrice;
+      const newServices = data.createPrice
 
-      const existingItem = this.items.find((item: PriceItem) => item.id === newServices.id);
+      const existingItem = this.items.find((item: PriceItem) => item.id === newServices.id)
       if (!existingItem) {
-        this.items.push(newServices);
+        this.items.push(newServices)
       }
 
       return this.items
@@ -66,35 +61,16 @@ export const useServiceStore = defineStore({
           updatePriceInput: { id, ...payload }
         }
       })
-      this.items = this.items.map(item => item.id === id ? data.updatePrice : item)
-      return this.items;
+      this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
+      return this.items
     },
     subscribeToServices() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBSCRIBE_PRICE
-      });
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newServices = result.data?.newServices;
-          if (newServices) {
-            this.updateItems([newServices]);
-          }
-        },
-        error(error: any) {
-          console.log(error.message);
-        }
-      });
-      return () => subscription.unsubscribe();
-    },
-    updateItems(newServices: PriceItem[]) {
-      const updatedItems = newServices.map((newService: PriceItem) => {
-        return {
-          ...newService
-        };
-      });
-
-      this.items = [...this.items, ...updatedItems];
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

@@ -1,15 +1,7 @@
 import { defineStore } from 'pinia'
 // Interface
 import type { CompanyItem, CompanyFields } from '@/interface'
-import apolloClient from '@/plugins/apollo'
-import {
-  ALL_COMPANIES,
-  CREATE_COMPANY,
-  SUBSCRIBE_COMPANY,
-  UPDATE_COMPANY,
-  WORKER_COUNT_BY_COMPANY
-} from '@/gql/company'
-import { supabase } from '@/utils'
+import { supabase, updateItems } from '@/utils'
 
 export const useCompanyStore = defineStore({
   id: 'company',
@@ -30,7 +22,7 @@ export const useCompanyStore = defineStore({
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Nombre Comercial', sortable: false, key: 'bussiness_name' },
       { title: 'Dirección', sortable: false, key: 'address' },
-      { title: 'Estado', sortable: false, key: 'departament' },
+      { title: 'Estado', sortable: false, key: 'department' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
       { title: 'Administrador', sortable: false, key: 'useradmin' },
@@ -45,75 +37,82 @@ export const useCompanyStore = defineStore({
   }),
   actions: {
     async allCompanies() {
-      try {
-        // Obtén la lista completa de usuarios registrados
-        let { data: companies, error } = await supabase.rpc('list_company_workers')
-        if (error) {
-          console.error('Error al obtener la lista de trabajadores:', error.message)
-          return []
-        }
-        this.items = companies as CompanyItem[]
-        return this.items
-      } catch (error: any) {
-        console.error('Error desconocido al obtener la lista de trabajadores:', error.message)
-        return []
+      // Obtén la lista completa de usuarios registrados
+      let { data: companies, error } = await supabase.rpc('LIST_COMPANY_WORKERS')
+      if (error) {
+        throw new Error(`${error.message}`)
       }
-    },
-    async createCompany(formInput: CompanyItem, idCompany: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: CREATE_COMPANY,
-        variables: {
-          createCompanyInput: formInput,
-          idCompany
-        }
-      })
-
-      const newCompany = data.createCompany
-
-      const existingItem = this.items.find((item: CompanyItem) => item.id === newCompany.id)
-      if (!existingItem) {
-        this.items.push(newCompany)
-      }
-
+      this.items = companies as CompanyItem[]
       return this.items
     },
-    async updateCompany(id: string, payload: CompanyItem, idCompany: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: UPDATE_COMPANY,
-        variables: {
-          updateCompanyInput: { id, ...payload },
-          idCompany
-        }
+    async createCompany(formInput: CompanyItem, userID: string) {
+      const data_company = {
+        name_company: formInput.name_company,
+        bussiness_name: formInput.bussiness_name,
+        phone: formInput.phone,
+        rfc: formInput.rfc,
+        tax_regime: formInput.tax_regime,
+        address: formInput.address,
+        department: formInput.department,
+        city: formInput.city,
+        postal_code: formInput.postal_code,
+        geofence: formInput.geofence,
+        lat: formInput.lat,
+        lng: formInput.lng,
+        isActive: (formInput.isActive = 'Inactivo')
+      }
+      const data_userid = userID
+
+      let { data, error } = await supabase.rpc('INSERT_COMPANY', {
+        data_company,
+        data_userid
       })
-      this.items = this.items.map((item) => (item.id === id ? data.updateCompany : item))
+
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+
+      this.items = data as any
+      return this.items
+    },
+    async updateCompany(id: string, formInput: CompanyItem, userID: any) {
+      const data_company = {
+        id,
+        name_company: formInput.name_company,
+        bussiness_name: formInput.bussiness_name,
+        phone: formInput.phone,
+        rfc: formInput.rfc,
+        tax_regime: formInput.tax_regime,
+        address: formInput.address,
+        department: formInput.department,
+        city: formInput.city,
+        postal_code: formInput.postal_code,
+        geofence: formInput.geofence,
+        lat: formInput.lat,
+        lng: formInput.lng,
+        isActive: formInput.isActive
+      }
+      const data_userid = userID
+
+      let { data, error } = await supabase.rpc('UPDATE_COMPANY', {
+        data_company,
+        data_userid
+      })
+
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+
+      this.items = data as any
       return this.items
     },
     subscribeToCompanies() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBSCRIBE_COMPANY
-      })
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newCompany = result.data?.newCompany
-          if (newCompany) {
-            this.updateItems([newCompany])
-          }
-        },
-        error(error: any) {
-          console.log(error.message)
-        }
-      })
-      return () => subscription.unsubscribe()
-    },
-    updateItems(newCompanies: CompanyItem[]) {
-      const updatedItems = newCompanies.map((newCompany: CompanyItem) => {
-        return {
-          ...newCompany
-        }
-      })
-
-      this.items = [...this.items, ...updatedItems]
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'companies' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

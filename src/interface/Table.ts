@@ -69,7 +69,7 @@ export interface CompanyItem extends Coordinates {
   phone: number
   bussiness_name: string
   address: string
-  departament: string
+  department: string
   city: string
   postal_code: number
   isActive?: string

@@ -9,6 +9,7 @@ import {
   SUBSCRIBE_PRICE,
   UPDATE_PRICE
 } from '@/gql/price'
+import { supabase, updateItems } from '@/utils'
 
 export const useCostsStore = defineStore({
   id: 'costs',
@@ -27,26 +28,11 @@ export const useCostsStore = defineStore({
   }),
   actions: {
     async allCost() {
-      const { data } = await apolloClient.query({
-        query: ALL_PRICES_BY_TYPE,
-        variables: {
-          priceType: 'Costo'
-        }
-      })
-
-      const newItems = data.priceByType.map((item: PriceItem) => {
-        return {
-          ...item
-        }
-      })
-
-      newItems.forEach((newItem: PriceItem) => {
-        const existingItem = this.items.find((item: PriceItem) => item.id === newItem.id)
-        if (!existingItem) {
-          this.items.push(newItem)
-        }
-      })
-
+      let { data: costs, error } = await supabase.rpc('LIST_PRICES_BY_TYPE', { typeprice: 'Costo' })
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+      this.items = costs as PriceItem[]
       return this.items
     },
     async createCost(payload: PriceItem) {
@@ -77,31 +63,12 @@ export const useCostsStore = defineStore({
       return this.items
     },
     subscribeToCosts() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBSCRIBE_PRICE
-      })
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newCosts = result.data?.newCosts
-          if (newCosts) {
-            this.updateItems([newCosts])
-          }
-        },
-        error(error: any) {
-          console.log(error.message)
-        }
-      })
-      return () => subscription.unsubscribe()
-    },
-    updateItems(newCosts: PriceItem[]) {
-      const updatedItems = newCosts.map((newCost: PriceItem) => {
-        return {
-          ...newCost
-        }
-      })
-
-      this.items = [...this.items, ...updatedItems]
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

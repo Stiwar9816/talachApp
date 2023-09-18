@@ -93,14 +93,12 @@ const props = defineProps({
     default: () => []
   }
 })
-const ordersStore = useOrdersStore()
-// Realiza la suscripción al iniciar el componente
-const unsubscribeOrders = ordersStore.subscribeToOrders()
+
+const order = useOrdersStore()
 
 const initialize = async () => {
   try {
-    const result = await ordersStore.allOrders()
-    return result
+    await Promise.all([order.allOrders(), order.subscribeToOrders()])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -114,10 +112,10 @@ onMounted(() => {
 const exportData = () => {
   try {
     if (!tableRef.value || props.items.length === 0) return
-    const data = props.items.map((item:any) =>
-      Object.values(item).flatMap((value:any) => {
+    const data = props.items.map((item: any) =>
+      Object.values(item).flatMap((value: any) => {
         if (typeof value === 'object') {
-          return [value.fullName, value.name_company].filter((val) => val !== undefined);
+          return [value.fullName, value.name_company].filter((val) => val !== undefined)
         }
         return value
       })
@@ -142,9 +140,4 @@ const exportData = () => {
     color.value = 'red-darken-3'
   }
 }
-
-// Cancela la suscripción al desmontar el componente
-onUnmounted(() => {
-  unsubscribeOrders()
-})
 </script>

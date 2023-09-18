@@ -267,7 +267,7 @@ const props = defineProps({
 // Const
 const dialog = ref<boolean>(false)
 const search = ref<string>('')
-const perPage = ref<number>(5)
+const perPage = ref<number>(3)
 const data = ref<CompanyItem[]>([])
 const editedIndex = ref<number>(-1)
 const editedItem = ref<CompanyItem>({
@@ -311,14 +311,15 @@ const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerid
 
 const company = useCompanyStore()
 const users = useUserStore()
-// Realiza la suscripción al iniciar el componente
-const unsubscribeUsers = users.subscribeToUsers()
-const unsubscribeCompany = company.subscribeToCompanies()
 
 const initialize = async () => {
   try {
-    await users.allUsers()
-    await company.allCompanies()
+    await Promise.all([
+      users.allUsers(),
+      company.allCompanies(),
+      company.subscribeToCompanies(),
+      users.subscribeToUsers(),
+    ])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -405,10 +406,4 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
-
-// Cancela la suscripción al desmontar el componente
-onUnmounted(() => {
-  unsubscribeCompany()
-  unsubscribeUsers()
-})
 </script>

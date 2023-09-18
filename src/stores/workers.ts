@@ -4,7 +4,7 @@ import apolloClient from '@/plugins/apollo'
 import { ALL_WORKERS, SUBCRIBE_WORKER, UPDATE_WORKER } from '@/gql/workers'
 import { ALL_COMPANIES_NAME } from '@/gql/company'
 import type { Field, WorkerFields, WorkerItem } from '@/interface'
-import { supabase } from '@/utils'
+import { supabase, updateItems } from '@/utils'
 
 export const useWorkerStore = defineStore({
   id: 'workers',
@@ -22,7 +22,7 @@ export const useWorkerStore = defineStore({
       },
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Correo electronico', sortable: false, key: 'email' },
-      { title: 'Empresa', sortable: true, key: 'companyWorker.name_company' },
+      { title: 'Empresa', sortable: true, key: 'company' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Longitud', sortable: false, key: 'lng' },
       { title: 'Geocerca', sortable: false, key: 'geofence' },
@@ -34,25 +34,15 @@ export const useWorkerStore = defineStore({
   }),
   actions: {
     async allWorkers() {
-      try {
-        const ROLES = ['Trabajador']
-        // Obtén la lista completa de usuarios registrados
-        let { data: users, error } = await supabase
-          .from('users')
-          .select(
-            `id, fullName, rfc, phone, email, lat, lng, geofence, isActive, companyWorker(name_company)`
-          )
-          .in('roles', ROLES) // Utiliza la función 'in' para verificar si 'roles' está en el conjunto ROLES
+      const ROLES = ['Trabajador']
+      // Obtén la lista completa de usuarios registrados
+      let { data: users, error } = await supabase.rpc('LIST_USERS', { role: ROLES })
 
-        if (error) {
-          console.error('Error al obtener la lista de trabajadores:', error.message)
-          return []
-        }
-        return this.items = users as WorkerItem[]
-      } catch (error: any) {
-        console.error('Error desconocido al obtener la lista de trabajadores:', error.message)
-        return []
+      if (error) {
+        throw new Error(`${error.message}`)
       }
+
+      return (this.items = users as WorkerItem[])
     },
     async allCompanies() {
       const { data } = await apolloClient.query({
@@ -75,31 +65,12 @@ export const useWorkerStore = defineStore({
       return this.items
     },
     subcribeToWorkers() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBCRIBE_WORKER
-      })
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newWorkers = result.data?.newUser
-          if (newWorkers) {
-            this.updateItems([newWorkers])
-          }
-        },
-        error(error: any) {
-          console.log(error.message)
-        }
-      })
-      return () => subscription.unsubscribe()
-    },
-    updateItems(newWorkers: WorkerItem[]) {
-      const updatedItems = newWorkers.map((newWorker: WorkerItem) => {
-        return {
-          ...newWorker
-        }
-      })
-
-      this.items = [...this.items, ...updatedItems]
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

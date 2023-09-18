@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { Field, InventoryFields, InventoryItem } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_INVENTORY, UPDATE_INVENTORY } from '@/gql/inventory'
+import { supabase, updateItems } from '@/utils'
 
 export const useInventoryStore = defineStore({
   id: 'inventory',
@@ -18,12 +19,12 @@ export const useInventoryStore = defineStore({
       {
         title: 'Creado por',
         sortable: false,
-        key: 'user.fullName'
+        key: 'createby'
       },
       {
         title: 'Empresa',
         sortable: false,
-        key: 'companies'
+        key: 'company'
       },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
@@ -34,21 +35,15 @@ export const useInventoryStore = defineStore({
   }),
   actions: {
     async allInventory() {
-      if (this.cache.allProduct) {
-        // Devolver datos almacenados en caché si están disponibles
-        this.items = this.cache.allProduct
-        return this.items
-      }
-      const { data } = await apolloClient.query({
-        query: ALL_INVENTORY,
-        variables: {
-          priceType: 'Producto'
-        }
+      // Obtén la lista completa de usuarios registrados
+      let { data: inventory, error } = await supabase.rpc('LIST_PRICE_BY_TYPE', {
+        typeprice: 'Producto'
       })
-      const [...invetory] = data.priceByType
-      this.items = [...invetory]
-      // Guardar en caché los datos obtenidos
-      this.cache.allProduct = this.items
+
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+      this.items = inventory as InventoryItem[]
       return this.items
     },
     async updateInventory(id: string, payload: InventoryItem) {
@@ -77,6 +72,14 @@ export const useInventoryStore = defineStore({
       this.count = lowInventoryProducts.length // Asignar el valor de count a this.count
       this.cacheCount = this.count
       return this.count
+    },
+    subscribeToInventory() {
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

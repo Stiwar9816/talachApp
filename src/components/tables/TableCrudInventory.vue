@@ -158,8 +158,7 @@ const inventory = useInventoryStore()
 
 const initialize = async () => {
   try {
-    const result = await inventory.allInventory()
-    data.value = result
+    await Promise.all([inventory.allInventory(), inventory.subscribeToInventory()])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`

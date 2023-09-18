@@ -169,6 +169,7 @@ import { currencyFormatter } from '@/utils'
 import { useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
 import type { DataTableHeader, PriceItem } from '@/interface'
+import { useCompanyStore } from '../../stores/company'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -210,20 +211,24 @@ const currentPage = reactive({
   pageTitle: ref<string>('')
 })
 
+const company = useCompanyStore()
 const cost = useCostsStore()
-const service = useServiceStore()
 const product = useProductStore()
-// Realiza la suscripción al iniciar el componente
-const unsubscribeCosts = cost.subscribeToCosts()
-const unsubscribeProducts = product.subscribeToProducts()
-const unsubscribeServices = service.subscribeToServices()
+const service = useServiceStore()
 
 const initialize = async () => {
   try {
-    await cost.allCost()
-    await product.allProduct()
-    await product.allCompanies()
-    await service.allService()
+    // Ejecuta las funciones en paralelo usando Promise.all
+    await Promise.all([
+      company.subscribeToCompanies(),
+      cost.allCost(),
+      cost.subscribeToCosts(),
+      product.allCompanies(),
+      product.allProduct(),
+      product.subscribeToProducts(),
+      service.allService(),
+      service.subscribeToServices()
+    ])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -340,11 +345,4 @@ const imageUrlBase = import.meta.env.VITE_URL_IMAGE // Reemplaza con la URL base
 const getImageUrl = (imageName: string) => {
   return imageUrlBase + imageName
 }
-
-// Cancela la suscripción al desmontar el componente
-onUnmounted(() => {
-  unsubscribeCosts()
-  unsubscribeProducts()
-  unsubscribeServices()
-})
 </script>

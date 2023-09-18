@@ -1,4 +1,4 @@
-export { supabase } from './supabase'
+export { supabase, updateItems } from './supabase'
 export { fetchGeofences, fetchLocations, createPolygon } from './maps'
 export { extractFullNameFromToken } from './extractFullNameToken'
 export { extractRoleFromToken } from './extractRoleToken'

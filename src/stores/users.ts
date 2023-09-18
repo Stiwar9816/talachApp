@@ -4,7 +4,7 @@ import apolloClient from '@/plugins/apollo'
 import { ALL_USERS, CREATE_USER, SUBSCRIBE_USER, UPDATE_USER } from '@/gql/user'
 // Interface
 import type { Field, UserItem, UsersFields } from '@/interface'
-import { supabase } from '@/utils'
+import { supabase, updateItems } from '@/utils'
 
 export const useUserStore = defineStore({
   id: 'users',
@@ -31,23 +31,13 @@ export const useUserStore = defineStore({
   }),
   actions: {
     async allUsers() {
-      try {
-        const ROLES = ['superAdmin', 'Administrador', 'Talachero', 'Usuario']
-        // Obtén la lista completa de usuarios registrados
-        let { data: users, error } = await supabase
-          .from('users')
-          .select('id, fullName, rfc, phone, email, roles, isActive')
-          .in('roles', ROLES) // Utiliza la función 'in' para verificar si 'roles' está en el conjunto ROLES
-
-        if (error) {
-          console.error('Error al obtener la lista de usuarios:', error.message)
-          return []
-        }
-        return this.items = users as UserItem[]      
-      } catch (error: any) {
-        console.error('Error desconocido al obtener la lista de usuarios:', error.message)
-        return []
+      const ROLES = ['Administrador', 'Talachero', 'Usuario']
+      // Obtén la lista completa de usuarios registrados
+      let { data: users, error } = await supabase.rpc('LIST_USERS', { role: ROLES })
+      if (error) {
+        throw new Error(`${error.message}`)
       }
+      return (this.items = users as UserItem[])
     },
     async createUser(payload: UserItem, idCompany?: string | null) {
       const { data } = await apolloClient.mutate({
@@ -77,31 +67,12 @@ export const useUserStore = defineStore({
       return this.items
     },
     subscribeToUsers() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBSCRIBE_USER
-      })
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newUsers = result.data?.newUser.user
-          if (newUsers) {
-            this.updateItems([newUsers])
-          }
-        },
-        error(error: any) {
-          console.log(error.message)
-        }
-      })
-      return () => subscription.unsubscribe()
-    },
-    updateItems(newUsers: UserItem[]) {
-      const updatedItems = newUsers.map((newUser: UserItem) => {
-        return {
-          ...newUser
-        }
-      })
-
-      this.items = [...this.items, ...updatedItems]
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

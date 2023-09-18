@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 // Interface
-import type { Field, PriceItem, PricesFields } from '@/interface'
+import type { CompanyItem, Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
 import { ALL_PRICES_BY_TYPE, CREATE_PRICE, SUBSCRIBE_PRICE, UPDATE_PRICE } from '@/gql/price'
-import { ALL_COMPANIES_NAME } from '@/gql/company'
 import { ref } from 'vue'
+import { supabase, updateItems } from '@/utils'
 
 export const useProductStore = defineStore({
   id: 'product',
@@ -25,12 +25,12 @@ export const useProductStore = defineStore({
       {
         title: 'Creado por',
         sortable: false,
-        key: 'user.fullName'
+        key: 'createby'
       },
       {
         title: 'Centro Talachero',
         sortable: false,
-        key: 'companies'
+        key: 'company'
       },
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],
@@ -39,35 +39,23 @@ export const useProductStore = defineStore({
   }),
   actions: {
     async allProduct() {
-      const { data } = await apolloClient.query({
-        query: ALL_PRICES_BY_TYPE,
-        variables: {
-          priceType: 'Producto'
-        }
+      let { data: products, error } = await supabase.rpc('LIST_PRICES_BY_TYPE', {
+        typeprice: 'Producto'
       })
-
-      const newItems = data.priceByType.map((item: PriceItem) => {
-        return {
-          ...item
-        }
-      })
-
-      newItems.forEach((newItem: PriceItem) => {
-        const existingItem = this.items.find((item: PriceItem) => item.id === newItem.id)
-        if (!existingItem) {
-          this.items.push(newItem)
-        }
-      })
-
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+      this.items = products as PriceItem[]
       return this.items
     },
     async allCompanies() {
-      const { data } = await apolloClient.query({
-        query: ALL_COMPANIES_NAME
-      })
+      // Obtén la lista completa de usuarios registrados
+      let { data: company, error } = await supabase.rpc('LIST_COMPANY')
 
-      const company = data.companies.filter((item: any) => item.isActive !== 'Inactivo')
-      this.companies = [...company]
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+      this.companies = company as CompanyItem[]
       return this.companies
     },
     async createProduct(companies: string, payload: PriceItem, file: any) {
@@ -111,31 +99,12 @@ export const useProductStore = defineStore({
       return this.items
     },
     subscribeToProducts() {
-      const observableQuery = apolloClient.subscribe({
-        query: SUBSCRIBE_PRICE
-      })
-
-      const subscription = observableQuery.subscribe({
-        next: (result) => {
-          const newProducts = result.data?.newProducts
-          if (newProducts) {
-            this.updateItems([newProducts])
-          }
-        },
-        error(error: any) {
-          console.log(error.message)
-        }
-      })
-      return () => subscription.unsubscribe()
-    },
-    updateItems(newProducts: PriceItem[]) {
-      const updatedItems = newProducts.map((newProduct: PriceItem) => {
-        return {
-          ...newProduct
-        }
-      })
-
-      this.items = [...this.items, ...updatedItems]
+      return supabase
+        .channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, (payload) => {
+          updateItems([payload.new], this.items)
+        })
+        .subscribe()
     }
   }
 })

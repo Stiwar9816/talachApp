@@ -208,13 +208,10 @@ const message = ref('')
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
 const worker = useWorkerStore()
-// Realiza la suscripción al iniciar el componente
-const unsubscribe = worker.subcribeToWorkers()
 
 const initialize = async () => {
   try {
-    await worker.allWorkers()
-    await worker.allCompanies()
+    await Promise.all([worker.allWorkers(), worker.subcribeToWorkers()])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -275,9 +272,4 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
-
-// Cancela la suscripción al desmontar el componente
-onUnmounted(() => {
-  unsubscribe()
-})
 </script>

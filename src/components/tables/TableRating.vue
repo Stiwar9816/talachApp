@@ -80,14 +80,11 @@ const props = defineProps({
   items: Array
 })
 
-const ratingStore = useRatingsStore()
-// Realiza la suscripción al iniciar el componente
-const unsubscribe = ratingStore.subscribeToRatings()
+const rating = useRatingsStore()
 
 const initialize = async () => {
   try {
-    const result = await ratingStore.allRatings()
-    return result
+    await Promise.all([rating.allRatings(), rating.subscribeToRatings()])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -96,10 +93,5 @@ const initialize = async () => {
 }
 onMounted(() => {
   initialize()
-})
-
-// Cancela la suscripción al desmontar el componente
-onUnmounted(() => {
-  unsubscribe()
 })
 </script>
