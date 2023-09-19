@@ -36,7 +36,7 @@ export const useInventoryStore = defineStore({
   actions: {
     async allInventory() {
       // Obtén la lista completa de usuarios registrados
-      let { data: inventory, error } = await supabase.rpc('LIST_PRICES_BY_TYPE', {
+      let { data: inventory, error } = await supabase.rpc('list_price_by_type', {
         typeprice: 'Producto'
       })
 

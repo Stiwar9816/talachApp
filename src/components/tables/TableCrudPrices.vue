@@ -165,7 +165,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, toRefs, reactive, onUnmounted, type DeepReadonly } from 'vue'
 import { useRoute } from 'vue-router'
-import { currencyFormatter } from '@/utils'
+import { currencyFormatter, getImageUrl } from '@/utils'
 import { useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
 import type { DataTableHeader, PriceItem } from '@/interface'
@@ -324,7 +324,7 @@ const save = async () => {
           let fileUpdate = file || ''
           await product.updateProduct(id, { ...payload, price, type }, fileUpdate, companies!)
           snackbar.value = true
-          message.value = `¡Producto ${payload.name} fue actualizado con exito!`
+          message.value = `¡Producto ${payload.name}  fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
         }
@@ -337,12 +337,5 @@ const save = async () => {
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }
-}
-
-const imageUrlBase = import.meta.env.VITE_URL_IMAGE // Reemplaza con la URL base de tu API
-
-// Método para obtener la URL completa de la imagen
-const getImageUrl = (imageName: string) => {
-  return imageUrlBase + imageName
 }
 </script>

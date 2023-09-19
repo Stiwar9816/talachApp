@@ -33,7 +33,7 @@ export const useUserStore = defineStore({
     async allUsers() {
       const ROLES = ['Administrador', 'Talachero', 'Usuario']
       // Obtén la lista completa de usuarios registrados
-      let { data: users, error } = await supabase.rpc('LIST_USERS', { role: ROLES })
+      let { data: users, error } = await supabase.rpc('list_users', { role: ROLES })
       if (error) {
         throw new Error(`${error.message}`)
       }

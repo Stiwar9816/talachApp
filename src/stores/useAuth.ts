@@ -25,7 +25,7 @@ export const useAuthStore = defineStore({
           password
         })
         const { user, session } = data
-
+        
         const tokenSupa = session?.access_token
 
         if (error) {

@@ -28,7 +28,7 @@ export const useServiceStore = defineStore({
   }),
   actions: {
     async allService() {
-      let { data: services, error } = await supabase.rpc('LIST_PRICES_BY_TYPE', {
+      let { data: services, error } = await supabase.rpc('list_price_by_type', {
         typeprice: 'Servicio'
       })
       if (error) {
