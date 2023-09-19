@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import apolloClient from '@/plugins/apollo'
 import { ALL_WORKERS, SUBCRIBE_WORKER, UPDATE_WORKER } from '@/gql/workers'
 import { ALL_COMPANIES_NAME } from '@/gql/company'
-import type { Field, WorkerFields, WorkerItem } from '@/interface'
+import type { CompanyItem, Field, WorkerFields, WorkerItem } from '@/interface'
 import { supabase, updateItems } from '@/utils'
 
 export const useWorkerStore = defineStore({
@@ -36,7 +36,7 @@ export const useWorkerStore = defineStore({
     async allWorkers() {
       const ROLES = ['Trabajador']
       // Obtén la lista completa de usuarios registrados
-      let { data: users, error } = await supabase.rpc('LIST_USERS', { role: ROLES })
+      let { data: users, error } = await supabase.rpc('list_users', { role: ROLES })
 
       if (error) {
         throw new Error(`${error.message}`)
@@ -45,12 +45,13 @@ export const useWorkerStore = defineStore({
       return (this.items = users as WorkerItem[])
     },
     async allCompanies() {
-      const { data } = await apolloClient.query({
-        query: ALL_COMPANIES_NAME
-      })
+      // Obtén la lista completa de usuarios registrados
+      let { data: company, error } = await supabase.rpc('list_companies_selects')
 
-      const company = data.companies.filter((item: any) => item.isActive !== 'Inactivo')
-      this.companies = [...company]
+      if (error) {
+        throw new Error(`${error.message}`)
+      }
+      this.companies = company as CompanyItem[]
       return this.companies
     },
     async updateWorker(id: string, payload: WorkerItem, idCompany: string) {

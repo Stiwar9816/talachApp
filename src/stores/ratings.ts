@@ -24,7 +24,7 @@ export const useRatingsStore = defineStore({
   }),
   actions: {
     async allRatings() {
-      let { data: scores, error } = await supabase.rpc('LIST_SCORES')
+      let { data: scores, error } = await supabase.rpc('list_scores')
       
       if (error) {
         throw new Error(`${error.message}`)

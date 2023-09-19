@@ -38,7 +38,7 @@ export const useCompanyStore = defineStore({
   actions: {
     async allCompanies() {
       // Obtén la lista completa de usuarios registrados
-      let { data: companies, error } = await supabase.rpc('LIST_COMPANY_WORKERS')
+      let { data: companies, error } = await supabase.rpc('list_company_workers')
       if (error) {
         throw new Error(`${error.message}`)
       }
@@ -63,7 +63,7 @@ export const useCompanyStore = defineStore({
       }
       const data_userid = userID
 
-      let { data, error } = await supabase.rpc('INSERT_COMPANY', {
+      let { data, error } = await supabase.rpc('insert_company', {
         data_company,
         data_userid
       })
@@ -94,7 +94,7 @@ export const useCompanyStore = defineStore({
       }
       const data_userid = userID
 
-      let { data, error } = await supabase.rpc('UPDATE_COMPANY', {
+      let { data, error } = await supabase.rpc('update_company', {
         data_company,
         data_userid
       })

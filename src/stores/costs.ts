@@ -28,7 +28,7 @@ export const useCostsStore = defineStore({
   }),
   actions: {
     async allCost() {
-      let { data: costs, error } = await supabase.rpc('LIST_PRICES_BY_TYPE', { typeprice: 'Costo' })
+      let { data: costs, error } = await supabase.rpc('list_price_by_type', { typeprice: 'Costo' })
       if (error) {
         throw new Error(`${error.message}`)
       }

@@ -27,7 +27,7 @@ export const useOrdersStore = defineStore({
   }),
   actions: {
     async allOrders() {
-      let { data: orders, error } = await supabase.rpc('LIST_ORDERS')
+      let { data: orders, error } = await supabase.rpc('list_orders')
    
       if (error) {
         throw new Error(`${error.message}`)
