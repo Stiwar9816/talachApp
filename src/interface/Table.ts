@@ -60,10 +60,6 @@ export interface Coordinates {
   lat: number
   lng: number
 }
-export interface Person {
-  id?: string
-  fullName?: string
-}
 export interface CompanyItem extends Coordinates {
   id?: string
   name_company: string
@@ -76,9 +72,9 @@ export interface CompanyItem extends Coordinates {
   postal_code: number
   isActive?: string
   tax_regime: string
-  workerCountByCompany?: number
+  userworker?: number
   idCompany?: string
-  user?: Person
+  user_id?: string
 }
 export interface Company {
   id?: string

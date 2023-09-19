@@ -347,7 +347,7 @@ const editItem = (item: CompanyItem) => {
       department: item.department,
       geofence: item.geofence,
       id: item.id,
-      idCompany: item.user?.id,
+      idCompany: item.user_id,
       isActive: item.isActive,
       lat: item.lat,
       lng: item.lng,
@@ -356,7 +356,7 @@ const editItem = (item: CompanyItem) => {
       postal_code: item.postal_code,
       rfc: item.rfc,
       tax_regime: item.tax_regime,
-      workerCountByCompany: item.workerCountByCompany
+      workerCountByCompany: item.userworker
     }
   )
   dialog.value = true
@@ -370,7 +370,7 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, postal_code, lat, lng, workerCountByCompany, idCompany, ...create } =
+    let { id, phone, postal_code, lat, lng, userworker, idCompany, ...create } =
       editedItem.value
     phone = +phone
     postal_code = +postal_code
