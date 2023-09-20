@@ -47,7 +47,14 @@ export const useProductStore = defineStore({
       if (error) {
         throw new Error(`${error.message}`)
       }
-      this.items = products as PriceItem[]
+      const transformProducts = await Promise.all(
+        products.map(async (path: any) => {
+          const newImageUrl = await getImageUrl(path.image)
+          path.image = newImageUrl
+          return path
+        })
+      )
+      this.items = transformProducts as PriceItem[]
       return this.items
     },
     async allCompanies() {
@@ -57,7 +64,7 @@ export const useProductStore = defineStore({
       if (error) {
         throw new Error(`${error.message}`)
       }
-     
+
       this.companies = company as CompanyItem[]
       return this.companies
     },
@@ -71,22 +78,21 @@ export const useProductStore = defineStore({
       }
 
       const company_id = companies
-      const imageProduct = image[0]
 
-      const imageUrl = await uploadImage(imageProduct)
-      
+      const imageUrl = await uploadImage(image[0])
+
       let { data, error } = await supabase.rpc('insert_prices', {
         company_id,
         data_price,
-        file: imageUrl
+        file: imageUrl?.path
       })
-     
+
       if (error) {
         throw new Error(`${error.message}`)
       }
 
-      this.items = data as any
-      return this.items
+      // this.items = data as any
+      // return this.items
     },
     async updateProduct(id: string, payload: PriceItem, file: any, idCompany: string) {
       const { data } = await apolloClient.mutate({

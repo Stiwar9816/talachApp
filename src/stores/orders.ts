@@ -28,7 +28,7 @@ export const useOrdersStore = defineStore({
   actions: {
     async allOrders() {
       let { data: orders, error } = await supabase.rpc('list_orders')
-   
+
       if (error) {
         throw new Error(`${error.message}`)
       }
@@ -46,19 +46,15 @@ export const useOrdersStore = defineStore({
       return this.items
     },
     async countPayment() {
-      if (this.cacheCount) {
-        this.count = this.cacheCount
-        return this.count
-      }
-      const { data } = await apolloClient.query({
-        query: ALL_ORDERS
-      })
+      let { data, error } = await supabase.rpc('count_payment')
+
+      if (error) throw new Error(`${error.message}`)
+
       let count = 0
-      for (const price of data.orders) {
+      for (const price of data) {
         count += price.total
       }
       this.count = +count.toFixed(2)
-      this.cacheCount = this.count
       return this.count
     },
     subscribeToOrders() {

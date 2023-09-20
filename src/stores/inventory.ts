@@ -58,19 +58,9 @@ export const useInventoryStore = defineStore({
       return this.items
     },
     async countLowInventory() {
-      if (this.cacheCount) {
-        this.count = this.cacheCount
-        return this.count
-      }
-      const { data } = await apolloClient.query({
-        query: ALL_INVENTORY,
-        variables: {
-          priceType: 'Producto'
-        }
-      })
-      const lowInventoryProducts = data.priceByType.filter((inventory: any) => inventory.stock < 5)
-      this.count = lowInventoryProducts.length // Asignar el valor de count a this.count
-      this.cacheCount = this.count
+      let { data: count, error } = await supabase.rpc('low_inventory_products')
+      if (error) throw new Error(`${error.message}`)
+      this.count = count
       return this.count
     },
     subscribeToInventory() {

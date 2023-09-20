@@ -28,11 +28,11 @@ export const uploadImage = async (file: any) => {
       upsert: false
     })
 
-  console.log(data?.path)
+  // console.log(data?.path)
   if (error) {
     throw new Error(`${error.message}`)
   }
-  console.log(data)
+  // console.log(data)
   // Devuelve la URL del objeto cargado
   return data
 }
@@ -40,26 +40,8 @@ export const uploadImage = async (file: any) => {
 export const getImageUrl = async (file: any) => {
   const { data, error } = await supabase.storage.from('talachapp').createSignedUrl(`${file}`, 60)
 
-  console.log(data?.signedUrl)
   if (error) {
     throw new Error(`${error.message}`)
   }
   return data?.signedUrl
 }
-
-export const listFilesBucket = async () => {
-  const { data, error } = await supabase.storage.from('talachapp').list('')
-  
-  if (error) {
-    throw new Error(`${error.message}`)
-  }
-  // Mapea los nombres de los objetos en una variable
-  const fileNames = data?.map((object) => object.name) || []
-
-  // Imprime los nombres de los archivos
-  console.log(fileNames)
-
-  return fileNames
-}
-
-listFilesBucket()

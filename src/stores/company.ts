@@ -72,8 +72,8 @@ export const useCompanyStore = defineStore({
         throw new Error(`${error.message}`)
       }
 
-      this.items = data as any
-      return this.items
+      // this.items = data as any
+      // return this.items
     },
     async updateCompany(id: string, formInput: CompanyItem, userID: any) {
       const data_company = {

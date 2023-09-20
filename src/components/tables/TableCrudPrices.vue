@@ -20,14 +20,13 @@
         :items-per-page="perPage"
         class="elevation-1 rounded-lg"
       >
-        <template v-if="showButton" v-slot:top>
+        <template  v-slot:top>
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <v-spacer></v-spacer>
             <!-- Add Modal -->
             <v-dialog v-model="dialog" persistent max-width="500px">
               <template v-slot:activator="{ props }">
                 <v-btn
-                  v-show="showButton"
                   prepend-icon="mdi-plus"
                   variant="flat"
                   color="grey-lighten-2"
@@ -128,7 +127,7 @@
         <template v-slot:item.image="{ item }">
           <img
             class="rounded-lg mt-2"
-            :src="getImageUrl(item.columns.image)"
+            :src="item.columns.image"
             alt="image_product"
             width="120"
             cover

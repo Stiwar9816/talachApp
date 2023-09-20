@@ -37,22 +37,19 @@ export const useServiceStore = defineStore({
       this.items = services as PriceItem[]
       return this.items
     },
-    async createService(payload: PriceItem) {
-      const { data } = await apolloClient.mutate({
-        mutation: CREATE_PRICE,
-        variables: {
-          createPriceInput: payload
-        }
-      })
-
-      const newServices = data.createPrice
-
-      const existingItem = this.items.find((item: PriceItem) => item.id === newServices.id)
-      if (!existingItem) {
-        this.items.push(newServices)
+    async createService({ name, price, type }: PriceItem) {
+      const data_service = {
+        name,
+        price,
+        type
       }
 
-      return this.items
+      let { data, error } = await supabase.rpc('insert_service', {
+        data_service
+      })
+
+      if (error) throw new Error (`${error.message}`)
+
     },
     async updateService(id: string, payload: PriceItem) {
       const { data } = await apolloClient.mutate({
