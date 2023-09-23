@@ -20,7 +20,7 @@
         :items-per-page="perPage"
         class="elevation-1 rounded-lg"
       >
-        <template  v-slot:top>
+        <template v-slot:top>
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <v-spacer></v-spacer>
             <!-- Add Modal -->
@@ -164,11 +164,12 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, toRefs, reactive, onUnmounted, type DeepReadonly } from 'vue'
 import { useRoute } from 'vue-router'
-import { currencyFormatter, getImageUrl } from '@/utils'
-import { useCostsStore, useProductStore, useServiceStore } from '@/stores'
+// Utils
+import { currencyFormatter } from '@/utils'
+// Stores
+import { useCompanyStore, useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
 import type { DataTableHeader, PriceItem } from '@/interface'
-import { useCompanyStore } from '../../stores/company'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -215,19 +216,23 @@ const cost = useCostsStore()
 const product = useProductStore()
 const service = useServiceStore()
 
-const initialize = async () => {
+const handlePageEvents = async (pageName: string) => {
   try {
-    // Ejecuta las funciones en paralelo usando Promise.all
-    await Promise.all([
-      company.subscribeToCompanies(),
-      cost.allCost(),
-      cost.subscribeToCosts(),
-      product.allCompanies(),
-      product.allProduct(),
-      product.subscribeToProducts(),
-      service.allService(),
-      service.subscribeToServices()
-    ])
+    const pageFunctions: any = {
+      costs: [product.subscribeToPrices('Costo'), cost.allCost()],
+      services: [service.allService(), product.subscribeToPrices('Servicio')],
+      products: [
+        company.subscribeToCompanies(),
+        product.allCompanies(),
+        product.allProduct(),
+        product.subscribeToPrices('Producto')
+      ]
+    }
+
+    const pageFunction = pageFunctions[pageName]
+
+    if (pageFunction) await Promise.all(pageFunction)
+    
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -235,9 +240,14 @@ const initialize = async () => {
   }
 }
 
+const initialize = async () => {
+  const { pageTitle } = toRefs(currentPage)
+  handlePageEvents(pageTitle.value)
+}
+
 onMounted(() => {
-  initialize()
   currentPage.pageTitle = route.name?.toString() || ''
+  initialize()
 })
 
 // Methods / Actions
@@ -337,4 +347,9 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+onUnmounted(async () => {
+  const { pageTitle } = toRefs(currentPage)
+  handlePageEvents(pageTitle.value)
+})
 </script>

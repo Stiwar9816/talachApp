@@ -1,11 +1,11 @@
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 // Interface
 import type { CompanyItem, Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import { ALL_PRICES_BY_TYPE, CREATE_PRICE, SUBSCRIBE_PRICE, UPDATE_PRICE } from '@/gql/price'
-import { ref } from 'vue'
-import { supabase, updateItems, uploadImage } from '@/utils'
-import { getImageUrl } from '@/utils/supabase'
+import { UPDATE_PRICE } from '@/gql/price'
+// Utils
+import { getImageUrl, supabase, updateItems, uploadImage } from '@/utils'
 
 export const useProductStore = defineStore({
   id: 'product',
@@ -81,7 +81,7 @@ export const useProductStore = defineStore({
 
       const imageUrl = await uploadImage(image[0])
 
-      let { data, error } = await supabase.rpc('insert_prices', {
+      let { data, error } = await supabase.rpc('insert_product', {
         company_id,
         data_price,
         file: imageUrl?.path
@@ -112,12 +112,16 @@ export const useProductStore = defineStore({
       this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
       return this.items
     },
-    subscribeToProducts() {
+    subscribeToPrices(type: string) {
       return supabase
         .channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, (payload) => {
-          updateItems([payload.new], this.items)
-        })
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'prices', filter: `type=eq.${type}` },
+          (payload) => {
+            updateItems([payload.new], this.items)
+          }
+        )
         .subscribe()
     }
   }

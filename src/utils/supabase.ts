@@ -5,16 +5,25 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-export const updateItems = (newData: any[], data: any) => {
-  // Itera sobre los nuevos datos y actualiza o agrega cada registro
+export const updateItems = (newData: any, data: any) => {
+  const idSet = new Set()
+  const idMap = new Map()
+
+  for (const item of data) {
+    idSet.add(item.id)
+    idMap.set(item.id, item)
+  }
+
   for (const newCompany of newData) {
-    const index = data.findIndex((item: any) => item.id === newCompany.id)
-    if (index !== -1) {
-      // Si se encuentra el registro, actualízalo
-      data[index] = newCompany
+    const { id } = newCompany
+    if (idSet.has(id)) {
+      // Si el registro existe, actualízalo
+      Object.assign(idMap.get(id), newCompany)
     } else {
-      // Si no se encuentra, agrégalo al array
+      // Si el registro no existe, agrégalo al array
       data.push(newCompany)
+      idSet.add(id)
+      idMap.set(id, newCompany)
     }
   }
 }
@@ -25,14 +34,12 @@ export const uploadImage = async (file: any) => {
     .from('talachapp')
     .upload(`${file.name.toLowerCase()}`, file, {
       cacheControl: '3600',
-      upsert: false
+      upsert: true
     })
 
-  // console.log(data?.path)
   if (error) {
     throw new Error(`${error.message}`)
   }
-  // console.log(data)
   // Devuelve la URL del objeto cargado
   return data
 }

@@ -2,14 +2,9 @@ import { defineStore } from 'pinia'
 // Interface
 import type { Field, PriceItem, PricesFields } from '@/interface'
 import apolloClient from '@/plugins/apollo'
-import {
-  ALL_PRICES_BY_TYPE,
-  CREATE_PRICE,
-  REMOVE_PRICE,
-  SUBSCRIBE_PRICE,
-  UPDATE_PRICE
-} from '@/gql/price'
-import { supabase, updateItems } from '@/utils'
+import { UPDATE_PRICE } from '@/gql/price'
+// Utils
+import { supabase } from '@/utils'
 
 export const useCostsStore = defineStore({
   id: 'costs',
@@ -44,11 +39,11 @@ export const useCostsStore = defineStore({
 
       let { data, error } = await supabase.rpc('insert_prices', {
         data_service
-      }) 
-      if (error) throw new Error (`${error.message}`)
+      })
+      if (error) throw new Error(`${error.message}`)
 
-      this.items = data as PriceItem []
-      
+      this.items = data as PriceItem[]
+
       return this.items
     },
     async updateCost(id: string, payload: PriceItem) {
@@ -60,14 +55,6 @@ export const useCostsStore = defineStore({
       })
       this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
       return this.items
-    },
-    subscribeToCosts() {
-      return supabase
-        .channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices',filter:'type=eq.Costo' }, (payload) => {
-          updateItems([payload.new], this.items)
-        })
-        .subscribe()
     }
   }
 })
