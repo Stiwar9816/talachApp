@@ -32,7 +32,7 @@ export const useServiceStore = defineStore({
         typeprice: 'Servicio'
       })
       if (error) throw new Error(`${error.message}`)
-      
+
       this.items = services as PriceItem[]
       return this.items
     },
@@ -45,30 +45,32 @@ export const useServiceStore = defineStore({
 
       let { data, error } = await supabase.rpc('insert_prices', {
         data_service
-      }) 
-      if (error) throw new Error (`${error.message}`)
-
-      this.items = data as PriceItem []
+      })
       
+      if (error) throw new Error(`${error.message}`)
+      this.items = data as PriceItem[]
       return this.items
-
     },
     async updateService(id: string, payload: PriceItem) {
-      const { data } = await apolloClient.mutate({
-        mutation: UPDATE_PRICE,
-        variables: {
-          updatePriceInput: { id, ...payload }
-        }
+      let { data, error } = await supabase.rpc('update_prices', {
+        data_price: payload,
+        price_id: id
       })
-      this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
+
+      if (error) throw new Error(`${error.message}`)
+      this.items = data as PriceItem[]
       return this.items
     },
     subscribeToServices() {
       return supabase
         .channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices',filter:'type=eq.Servicio' }, (payload) => {
-          updateItems([payload.new], this.items)
-        })
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'prices', filter: 'type=eq.Servicio' },
+          (payload) => {
+            updateItems([payload.new], this.items)
+          }
+        )
         .subscribe()
     }
   }
