@@ -35,21 +35,20 @@ export const useCostsStore = defineStore({
       this.items = costs as PriceItem[]
       return this.items
     },
-    async createCost(payload: PriceItem) {
-      const { data } = await apolloClient.mutate({
-        mutation: CREATE_PRICE,
-        variables: {
-          createPriceInput: payload
-        }
-      })
-
-      const newCosts = data.createPrice
-
-      const existingItem = this.items.find((item: PriceItem) => item.id === newCosts.id)
-      if (!existingItem) {
-        this.items.push(newCosts)
+    async createCost({ name, price, type }: PriceItem) {
+      const data_service = {
+        name,
+        price,
+        type
       }
 
+      let { data, error } = await supabase.rpc('insert_prices', {
+        data_service
+      }) 
+      if (error) throw new Error (`${error.message}`)
+
+      this.items = data as PriceItem []
+      
       return this.items
     },
     async updateCost(id: string, payload: PriceItem) {
@@ -65,7 +64,7 @@ export const useCostsStore = defineStore({
     subscribeToCosts() {
       return supabase
         .channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, (payload) => {
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices',filter:'type=eq.Costo' }, (payload) => {
           updateItems([payload.new], this.items)
         })
         .subscribe()
