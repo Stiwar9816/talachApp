@@ -98,7 +98,7 @@
                           <v-file-input
                             v-model="editedItem.file"
                             :rules="requiredValue"
-                            accept="image/*"
+                            accept="image/png,image/jpg,image/jpeg"
                             label="Imagen de producto"
                             variant="underlined"
                             density="comfortable"
@@ -187,7 +187,7 @@ const defaultFile: FileReader | null = null
 const editedItem = ref<PriceItem>({
   name: '',
   price: 0,
-  companies: ' ',
+  companies: '',
   file: defaultFile
 })
 const defaultItem = ref<PriceItem>({
