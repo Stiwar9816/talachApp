@@ -45,3 +45,19 @@ export const getImageUrl = async (file: any) => {
   }
   return data?.signedUrl
 }
+
+// export const getUser = async () => {
+//   const storage = localStorage.getItem('sb-qcjjqopkavhufubvcqom-auth-token') || ''
+//   const parse = JSON.parse(storage)
+//   return parse.user.id
+// }
+
+export const transformProducts = async (data: any) =>{
+  return await Promise.all(
+    data.map(async (path: any) => {
+      const newImageUrl = await getImageUrl(path?.image)
+      path.image = newImageUrl
+      return path
+    })
+  )
+}
