@@ -5,7 +5,7 @@ import apolloClient from '@/plugins/apollo'
 import { ALL_PRICES_BY_TYPE, CREATE_PRICE, SUBSCRIBE_PRICE, UPDATE_PRICE } from '@/gql/price'
 import { ref } from 'vue'
 import { supabase, updateItems, uploadImage } from '@/utils'
-import { getImageUrl } from '@/utils/supabase'
+import { getImageUrl, transformProducts } from '@/utils/supabase'
 
 export const useProductStore = defineStore({
   id: 'product',
@@ -44,21 +44,14 @@ export const useProductStore = defineStore({
         typeprice: 'Producto'
       })
 
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
-      const transformProducts = await Promise.all(
-        products.map(async (path: any) => {
-          const newImageUrl = await getImageUrl(path.image)
-          path.image = newImageUrl
-          return path
-        })
-      )
-      this.items = transformProducts as PriceItem[]
+      if (error) throw new Error(`${error.message}`)
+
+      const dataTransform = await transformProducts(products)
+      this.items = dataTransform as PriceItem[]
       return this.items
     },
     async allCompanies() {
-      // Obtén la lista completa de usuarios registrados
+      // Get the complete list of registered users
       let { data: company, error } = await supabase.rpc('list_companies_selects')
 
       if (error) {
@@ -69,47 +62,42 @@ export const useProductStore = defineStore({
       return this.companies
     },
     async createProduct(companies: string, payload: PriceItem, image: any) {
-      const data_price = {
-        name: payload.name,
-        price: payload.price,
-        stock: payload.stock,
-        type: payload.type,
-        companies: payload.companies
-      }
+      //! TODO:  Get id of the logged in user with the realation of the auth schema of the user table and the public schema of the user table.
+      // const storage = localStorage.getItem('sb-qcjjqopkavhufubvcqom-auth-token') || ''
+      // const parse = JSON.parse(storage)
+      const user_id = 'd9854699-9702-4914-921b-f4ae58fb081d'
 
-      const company_id = companies
+      const data_price = { ...payload, user_id }
 
-      const imageUrl = await uploadImage(image[0])
-
-      let { data, error } = await supabase.rpc('insert_prices', {
-        company_id,
+      let { data, error } = await supabase.rpc('insert_product', {
+        company_id: companies,
         data_price,
-        file: imageUrl?.path
+        file: `${image[0].name.toLowerCase()}`
       })
 
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+      if (error) throw new Error(`${error.message}`)
+      else await uploadImage(image[0])
+      // Get items with reassigned image field with url belonging to the storage image
+      const dataTransform = await transformProducts(data)
 
-      // this.items = data as any
-      // return this.items
+      this.items = dataTransform as any
+      return this.items
     },
     async updateProduct(id: string, payload: PriceItem, file: any, idCompany: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: UPDATE_PRICE,
-        variables: {
-          updatePriceInput: {
-            id,
-            ...payload
-          },
-          file: file[0],
-          idCompany
-        },
-        context: {
-          useMultipart: true
-        }
+      const image = file[0]?.name.toLowerCase() || null
+
+      let { data, error } = await supabase.rpc('update_product', {
+        company_id: idCompany,
+        data_price: payload,
+        file: image,
+        price_id: id
       })
-      this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
+
+      if (error) throw new Error (`${error.message}`)
+      if (file[0]) await uploadImage(file[0])
+
+      const dataTransform = await transformProducts(data)
+      this.items = dataTransform 
       return this.items
     },
     subscribeToProducts() {
