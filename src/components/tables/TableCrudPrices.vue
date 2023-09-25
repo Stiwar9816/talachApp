@@ -98,7 +98,7 @@
                           <v-file-input
                             v-model="editedItem.file"
                             :rules="requiredValue"
-                            accept="image/*"
+                            accept="image/png"
                             label="Imagen de producto"
                             variant="underlined"
                             density="comfortable"
@@ -165,7 +165,7 @@
 import { ref, computed, onMounted, toRefs, reactive, onUnmounted, type DeepReadonly } from 'vue'
 import { useRoute } from 'vue-router'
 // Utils
-import { currencyFormatter } from '@/utils'
+import { currencyFormatter, subscribeToPrices } from '@/utils'
 // Stores
 import { useCompanyStore, useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
@@ -219,20 +219,19 @@ const service = useServiceStore()
 const handlePageEvents = async (pageName: string) => {
   try {
     const pageFunctions: any = {
-      costs: [product.subscribeToPrices('Costo'), cost.allCost()],
-      services: [service.allService(), product.subscribeToPrices('Servicio')],
+      costs: [subscribeToPrices('Costo', cost.$state.items), cost.allCost()],
+      services: [service.allService(), subscribeToPrices('Servicio', service.$state.items)],
       products: [
         company.subscribeToCompanies(),
         product.allCompanies(),
         product.allProduct(),
-        product.subscribeToPrices('Producto')
+        subscribeToPrices('Producto', product.$state.items)
       ]
     }
 
     const pageFunction = pageFunctions[pageName]
 
     if (pageFunction) await Promise.all(pageFunction)
-    
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`

@@ -38,7 +38,7 @@ export const useServiceStore = defineStore({
       let { data, error } = await supabase.rpc('insert_prices', {
         data_service
       })
-      
+
       if (error) throw new Error(`${error.message}`)
       this.items = data as PriceItem[]
       return this.items

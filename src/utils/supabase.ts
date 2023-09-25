@@ -52,3 +52,16 @@ export const getImageUrl = async (file: any) => {
   }
   return data?.signedUrl
 }
+
+export const subscribeToPrices = (type: string, data: any) => {
+  return supabase
+    .channel('custom-all-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'prices', filter: `type=eq.${type}` },
+      (payload) => {
+        updateItems([payload.new], data)
+      }
+    )
+    .subscribe()
+}

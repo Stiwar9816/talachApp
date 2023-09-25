@@ -1,4 +1,4 @@
-export { supabase, updateItems, uploadImage, getImageUrl } from './supabase'
+export { supabase, updateItems, uploadImage, getImageUrl, subscribeToPrices } from './supabase'
 export { fetchGeofences, fetchLocations, createPolygon } from './maps'
 export { extractFullNameFromToken } from './extractFullNameToken'
 export { extractRoleFromToken } from './extractRoleToken'
