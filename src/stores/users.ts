@@ -10,16 +10,7 @@ export const useUserStore = defineStore({
   id: 'users',
   state: (): UsersFields => ({
     fields: [
-      {
-        title: 'ID',
-        sortable: false,
-        key: 'id'
-      },
-      {
-        title: 'Nombre',
-        sortable: false,
-        key: 'fullName'
-      },
+      { title: 'Nombre', sortable: false, key: 'fullName' },
       { title: 'RFC', sortable: false, key: 'rfc' },
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Correo electronico', sortable: false, key: 'email' },

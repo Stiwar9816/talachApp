@@ -42,8 +42,7 @@
         >
           <template v-slot:item="{ item }">
             <tr>
-              <td>{{ item.columns.id }}</td>
-              <td>{{ item.columns.client }}</td>
+              <td>{{ item.columns.userclient }}</td>
               <td>{{ item.columns.company }}</td>
               <td>{{ new Date(item.columns.created_at).toLocaleString() }}</td>
               <td>{{ currencyFormatter('MXN', item.columns.total) }} MXN</td>
@@ -113,14 +112,17 @@ onMounted(() => {
 const exportData = () => {
   try {
     if (!tableRef.value || props.items.length === 0) return
-    const data = props.items.map((item: any) =>
-      Object.values(item).flatMap((value: any) => {
-        if (typeof value === 'object') {
-          return [value.client, value.company].filter((val) => val !== undefined)
-        }
-        return value
+
+    // Obtener una lista de los campos que deseas exportar
+    const fieldsToExport = Object.values(props.fields).filter((field) => field)
+
+    const data = props.items.map((item: any) => {
+      const rowData = fieldsToExport.map((field: any) => {
+        const value = item[field.key]
+        return value !== null && typeof value !== 'object' ? value : ''
       })
-    )
+      return rowData
+    })
     // Obtener los encabezados personalizados
     const headers = Object.values(props.fields).map((field: any) => field.title)
     const worksheet = XLSX.utils.json_to_sheet([headers, ...data])

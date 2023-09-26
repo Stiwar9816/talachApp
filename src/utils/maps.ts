@@ -1,6 +1,4 @@
-import apolloClient from '@/plugins/apollo'
-// Gql
-import { ALL_GEOFENCE, ALL_GEOFENCE_WORKER, ALL_LOCATION, ALL_LOCATION_WORKER } from '@/gql/maps'
+import { supabase } from './supabase'
 // Interface
 import type { LatLgn, Marker, PolygonProperties, Polygons } from '@/interface'
 
@@ -19,8 +17,6 @@ const colorHexRandom = (): string => {
   return color
 }
 
-const roles = ['Trabajador']
-
 const createMarker = (position: LatLgn, label: string, title: string): Marker => ({
   position,
   label,
@@ -35,73 +31,55 @@ export const createPolygon = (paths: LatLgn[], properties: PolygonProperties): P
 })
 
 export const fetchLocations = async () => {
-  try {
-    const { data: companiesData } = await apolloClient.query({
-      query: ALL_LOCATION
-    })
+  let { data: companiesData, error: errorCompanies } = await supabase.rpc('all_location_companies')
 
-    const { data: workersData } = await apolloClient.query({
-      query: ALL_LOCATION_WORKER,
-      variables: {
-        roles
-      }
-    })
+  let { data: workersData, error: errorWorkers } = await supabase.rpc('all_location_workers')
 
-    const companyMarkers = companiesData.companies.map(({ lat, lng, name_company }: any) =>
-      createMarker({ lat: +lat, lng: +lng }, 'CT', name_company)
-    )
+  if (errorCompanies) throw new Error(`${errorCompanies.message}`)
 
-    const workerMarkers = workersData.users.map(({ lat, lng, fullName }: any) =>
-      createMarker({ lat: +lat, lng: +lng }, 'T', fullName)
-    )
+  if (errorWorkers) throw new Error(`${errorWorkers.message}`)
 
-    return [...companyMarkers, ...workerMarkers]
-  } catch (error: any) {
-    console.error('Error fetching locations:', error.message)
-    return []
-  }
+  const companyMarkers = companiesData.map(({ lat, lng, name_company }: any) =>
+    createMarker({ lat: +lat, lng: +lng }, 'CT', name_company)
+  )
+
+  const workerMarkers = workersData.map(({ lat, lng, fullName }: any) =>
+    createMarker({ lat: +lat, lng: +lng }, 'T', fullName)
+  )
+
+  return [...companyMarkers, ...workerMarkers]
 }
 
 export const fetchGeofences = async () => {
-  try {
-    const { data: companiesGeofenceData } = await apolloClient.query({
-      query: ALL_GEOFENCE
-    })
+  let { data: companiesGeofenceData, error: errorCompanies } = await supabase.rpc(
+    'all_geofence_companies'
+  )
 
-    const { data: workersGeofenceData } = await apolloClient.query({
-      query: ALL_GEOFENCE_WORKER,
-      variables: {
-        roles
+  let { data: workersGeofenceData, error: errorWorkers } = await supabase.rpc(
+    'all_geofence_workers'
+  )
+
+  if (errorCompanies) throw new Error(`${errorCompanies.message}`)
+
+  if (errorWorkers) throw new Error(`${errorWorkers.message}`)
+
+  const createGeofencesFromData = (geofenceData: any) =>
+    geofenceData.map(({ geofence }: any) => {
+      const coordinates = geofence.map((coordinate: string) => +coordinate.trim())
+      const paths: LatLgn[] = []
+
+      for (let i = 0; i < coordinates.length; i += 2) {
+        const lat = coordinates[i]
+        const lng = coordinates[i + 1]
+        paths.push({ lat, lng })
       }
+
+      return createPolygon(paths, propertiesPolygon)
     })
 
-    const createGeofencesFromData = (geofenceData: any) =>
-      geofenceData.map(({ geofence }: any) => {
-        const paths: LatLgn[] = []
-        geofence?.[0].split(',').forEach((coordinate: string, index: number) => {
-          const value = +coordinate.trim()
-          const isLatitude = index % 2 === 0
-          if (isLatitude) {
-            paths.push({ lat: value, lng: 0 })
-          } else {
-            const [lastPath] = paths.slice(-1)
-            lastPath.lng = value
-          }
-        })
-        return createPolygon(paths, propertiesPolygon)
-      })
+  const companyGeofences = createGeofencesFromData(companiesGeofenceData)
 
-    const companyGeofences = createGeofencesFromData(companiesGeofenceData.companies)
+  const workerGeofences = createGeofencesFromData(workersGeofenceData)
 
-    let workerGeofences = []
-
-    if (workersGeofenceData && workersGeofenceData.users) {
-      workerGeofences = createGeofencesFromData(workersGeofenceData.users)
-    }
-
-    return [...companyGeofences, ...workerGeofences]
-  } catch (error: any) {
-    console.error('Error fetching geofences:', error.message)
-    return []
-  }
+  return [...companyGeofences, ...workerGeofences]
 }

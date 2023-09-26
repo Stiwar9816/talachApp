@@ -7,16 +7,7 @@ export const useWorkerStore = defineStore({
   id: 'workers',
   state: (): WorkerFields => ({
     fields: [
-      {
-        title: 'ID',
-        sortable: false,
-        key: 'id'
-      },
-      {
-        title: 'Nombre completo',
-        sortable: false,
-        key: 'fullName'
-      },
+      { title: 'Nombre completo', sortable: false, key: 'fullName' },
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Correo electronico', sortable: false, key: 'email' },
       { title: 'Empresa', sortable: true, key: 'company' },

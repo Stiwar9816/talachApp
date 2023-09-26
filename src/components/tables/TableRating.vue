@@ -27,8 +27,7 @@
         >
           <template v-slot:item="{ item }">
             <tr>
-              <td>{{ item.columns.id }}</td>
-              <td>{{ item.columns.client }}</td>
+              <td>{{ item.columns.userclient }}</td>
               <td>{{ item.columns.quality }}</td>
               <td>
                 <v-rating

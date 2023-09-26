@@ -7,16 +7,7 @@ export const useCompanyStore = defineStore({
   id: 'company',
   state: (): CompanyFields => ({
     fields: [
-      {
-        title: 'ID',
-        sortable: false,
-        key: 'id'
-      },
-      {
-        title: 'Nombre',
-        sortable: false,
-        key: 'name_company'
-      },
+      { title: 'Nombre', sortable: false, key: 'name_company' },
       { title: 'RFC', sortable: false, key: 'rfc' },
       { title: 'Régimen Físcal', sortable: true, key: 'tax_regime' },
       { title: 'Teléfono', sortable: false, key: 'phone' },

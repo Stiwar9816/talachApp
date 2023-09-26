@@ -8,12 +8,7 @@ export const useCostsStore = defineStore({
   id: 'costs',
   state: (): PricesFields => ({
     fields: [
-      { title: 'ID', sortable: false, key: 'id' },
-      {
-        title: 'Nombre',
-        sortable: false,
-        key: 'name'
-      },
+      { title: 'Nombre', sortable: false, key: 'name' },
       { title: 'Precio', align: 'center', key: 'price' },
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],

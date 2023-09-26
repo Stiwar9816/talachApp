@@ -1,12 +1,10 @@
-import { LOGIN_MUTATION, RESET_PASSWORD, RESET_PASSWORD_AUTH } from '@/gql/login'
+import { RESET_PASSWORD, RESET_PASSWORD_AUTH } from '@/gql/login'
 import apolloClient from '@/plugins/apollo'
 import type { AuthState } from '@/interface'
 import router from '@/router'
 import { defineStore } from 'pinia'
 import type { SigninInput } from '../interface/auth'
 import { supabase } from '@/utils'
-import { ref } from 'vue'
-
 export const useAuthStore = defineStore({
   id: 'auth',
   state: (): AuthState => ({
@@ -25,7 +23,7 @@ export const useAuthStore = defineStore({
           password
         })
         const { user, session } = data
-        
+
         const tokenSupa = session?.access_token
 
         if (error) {

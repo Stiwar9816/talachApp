@@ -8,13 +8,7 @@ export const useRatingsStore = defineStore({
   id: 'ratings',
   state: (): RatingFields => ({
     fields: [
-      {
-        title: 'ID',
-        align: 'start',
-        sortable: false,
-        key: 'id'
-      },
-      { title: 'Usuario', sortable: false, key: 'client' },
+      { title: 'Usuario', sortable: false, key: 'userclient' },
       { title: 'Calidad del servicio', sortable: false, key: 'quality' },
       { title: 'Calificación usuario', key: 'rankClient' },
       { title: 'Calificación talachero', key: 'rankTalachero' },
@@ -25,10 +19,8 @@ export const useRatingsStore = defineStore({
   actions: {
     async allRatings() {
       let { data: scores, error } = await supabase.rpc('list_scores')
-      
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+
+      if (error) throw new Error(`${error.message}`)
       // Iterar sobre los objetos de scores y formatear la fecha
       const ScoreFormatted = scores.map((score: RatingItem) => {
         return {
@@ -38,7 +30,6 @@ export const useRatingsStore = defineStore({
       })
 
       this.items = ScoreFormatted as RatingItem[]
-
       return this.items
     },
     subscribeToRatings() {

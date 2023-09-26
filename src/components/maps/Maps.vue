@@ -28,10 +28,10 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted, ref } from 'vue'
 import { GoogleMap, Polygon, Marker, MarkerCluster } from 'vue3-google-map'
 // Store
 import { useMapsStore } from '@/stores'
-import { onMounted, ref } from 'vue'
 // Initialization Store
 const storeMaps = useMapsStore()
 // Alerts
@@ -41,8 +41,7 @@ const message = ref('')
 
 const initialize = async () => {
   try {
-    await storeMaps.allLocations()
-    await storeMaps.allGeofences()
+    Promise.all([storeMaps.allLocations(), storeMaps.allGeofences()])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`

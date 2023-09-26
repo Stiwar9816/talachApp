@@ -2,20 +2,13 @@ import { defineStore } from 'pinia'
 // Interface
 import type { Field, OrdersFields, OrdersItem } from '@/interface'
 import moment from 'moment'
-import apolloClient from '@/plugins/apollo'
-import { ALL_ORDERS } from '@/gql/order'
 import { supabase, updateItems } from '@/utils'
 
 export const useOrdersStore = defineStore({
   id: 'orders',
   state: (): OrdersFields => ({
     fields: [
-      {
-        key: 'id',
-        sortable: false,
-        title: 'ID'
-      },
-      { key: 'client', sortable: false, title: 'Usuario' },
+      { key: 'userclient', sortable: false, title: 'Usuario' },
       { key: 'company', sortable: false, title: 'Empresa' },
       { key: 'created_at', sortable: true, title: 'Fecha de servicio' },
       { key: 'total', sortable: false, title: 'Total' },
