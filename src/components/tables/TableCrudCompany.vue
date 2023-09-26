@@ -204,7 +204,7 @@
                       </v-col>
                       <v-col cols="12" sm="4" md="4">
                         <v-select
-                          v-model="editedItem.idCompany"
+                          v-model="editedItem.user_id"
                           label="Administrador"
                           :rules="requiredValue"
                           :items="users.items"
@@ -259,6 +259,7 @@ import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 import type { CompanyItem, DataTableHeader } from '@/interface'
 // Stores
 import { useCompanyStore, useUserStore } from '@/stores'
+import { subscribeToUsers, supabase } from '@/utils'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -276,7 +277,7 @@ const editedItem = ref<CompanyItem>({
   city: '',
   department: '',
   geofence: '',
-  idCompany: '',
+  user_id: '',
   lat: 0,
   lng: 0,
   name_company: '',
@@ -291,7 +292,7 @@ const defaultItem = ref<CompanyItem>({
   city: '',
   department: '',
   geofence: '',
-  idCompany: '',
+  user_id: '',
   lat: 0,
   lng: 0,
   name_company: '',
@@ -318,7 +319,7 @@ const initialize = async () => {
       users.allUsers(),
       company.allCompanies(),
       company.subscribeToCompanies(),
-      users.subscribeToUsers(),
+      subscribeToUsers(users.items)
     ])
   } catch (error: any) {
     snackbar.value = true
@@ -347,7 +348,7 @@ const editItem = (item: CompanyItem) => {
       department: item.department,
       geofence: item.geofence,
       id: item.id,
-      idCompany: item.user_id,
+      user_id: item.user_id,
       isActive: item.isActive,
       lat: item.lat,
       lng: item.lng,
@@ -370,8 +371,7 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, postal_code, lat, lng, userworker, idCompany, ...create } =
-      editedItem.value
+    let { id, phone, postal_code, lat, lng, userworker, user_id, ...create } = editedItem.value
     phone = +phone
     postal_code = +postal_code
     lat = +lat
@@ -386,7 +386,7 @@ const save = async () => {
           lat,
           lng
         },
-        idCompany!
+        user_id!
       )
       snackbar.value = true
       message.value = `¡Nuevo centro talachero ${create.name_company} fue agregado con exito!`
@@ -394,7 +394,7 @@ const save = async () => {
       close()
     } else {
       // Update company
-      await company.updateCompany(id, { ...create, phone, postal_code, lat, lng }, idCompany!)
+      await company.updateCompany(id, { ...create, phone, postal_code, lat, lng }, user_id!)
       snackbar.value = true
       message.value = `¡Centro Talachero ${create.name_company} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
@@ -406,4 +406,8 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+onUnmounted(() => {
+  supabase.removeAllChannels()
+})
 </script>

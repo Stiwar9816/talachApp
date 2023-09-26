@@ -4,7 +4,9 @@ export {
   uploadImage,
   getImageUrl,
   subscribeToPrices,
-  transformProducts
+  subscribeToUsers,
+  transformProducts,
+  getUser
 } from './supabase'
 export { fetchGeofences, fetchLocations, createPolygon } from './maps'
 export { extractFullNameFromToken } from './extractFullNameToken'

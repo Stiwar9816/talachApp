@@ -37,9 +37,8 @@ export const uploadImage = async (file: any) => {
       upsert: true
     })
 
-  if (error) {
-    throw new Error(`${error.message}`)
-  }
+  if (error) throw new Error(`${error.message}`)
+
   // Devuelve la URL del objeto cargado
   return data
 }
@@ -47,9 +46,8 @@ export const uploadImage = async (file: any) => {
 export const getImageUrl = async (file: any) => {
   const { data, error } = await supabase.storage.from('talachapp').createSignedUrl(`${file}`, 60)
 
-  if (error) {
-    throw new Error(`${error.message}`)
-  }
+  if (error) throw new Error(`${error.message}`)
+
   return data?.signedUrl
 }
 
@@ -65,13 +63,23 @@ export const subscribeToPrices = (type: string, data: any) => {
     )
     .subscribe()
 }
-// export const getUser = async () => {
-//   const storage = localStorage.getItem('sb-qcjjqopkavhufubvcqom-auth-token') || ''
-//   const parse = JSON.parse(storage)
-//   return parse.user.id
-// }
 
-export const transformProducts = async (data: any) =>{
+export const subscribeToUsers = (data: any) => {
+  return supabase
+    .channel('custom-all-channel')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
+      updateItems([payload.new], data)
+    })
+    .subscribe()
+}
+export const getUser = async () => {
+  const { data, error } = await supabase.auth.getSession()
+  const { session } = data
+  if (error) throw new Error(`${error.message}`)
+  return session?.user.id
+}
+
+export const transformProducts = async (data: any) => {
   return await Promise.all(
     data.map(async (path: any) => {
       const newImageUrl = await getImageUrl(path?.image)

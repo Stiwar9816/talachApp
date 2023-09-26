@@ -1,10 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import apolloClient from '@/plugins/apollo'
-import { ALL_WORKERS, SUBCRIBE_WORKER, UPDATE_WORKER } from '@/gql/workers'
-import { ALL_COMPANIES_NAME } from '@/gql/company'
 import type { CompanyItem, Field, WorkerFields, WorkerItem } from '@/interface'
-import { supabase, updateItems } from '@/utils'
+import { supabase } from '@/utils'
 
 export const useWorkerStore = defineStore({
   id: 'workers',
@@ -38,40 +35,33 @@ export const useWorkerStore = defineStore({
       // Obtén la lista completa de usuarios registrados
       let { data: users, error } = await supabase.rpc('list_users', { role: ROLES })
 
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+      if (error) throw new Error(`${error.message}`)
 
       return (this.items = users as WorkerItem[])
     },
     async allCompanies() {
       // Obtén la lista completa de usuarios registrados
       let { data: company, error } = await supabase.rpc('list_companies_selects')
-
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+      if (error) throw new Error(`${error.message}`)
       this.companies = company as CompanyItem[]
       return this.companies
     },
     async updateWorker(id: string, payload: WorkerItem, idCompany: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: UPDATE_WORKER,
-        variables: {
-          updateUserInput: { id, ...payload },
-          idCompany
-        }
+      const data_worker = {
+        ...payload,
+        geofence:
+          typeof payload.geofence === 'object' ? payload.geofence.join(',') : payload.geofence
+      }
+      let { data, error } = await supabase.rpc('update_worker', {
+        company_id: idCompany,
+        data_worker,
+        worker_id: id
       })
-      this.items = this.items.map((item) => (item.id === id ? data.updateUser : item))
+
+      if (error) throw new Error(`${error.message}`)
+
+      this.items = data as WorkerItem[]
       return this.items
-    },
-    subcribeToWorkers() {
-      return supabase
-        .channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
-          updateItems([payload.new], this.items)
-        })
-        .subscribe()
     }
   }
 })

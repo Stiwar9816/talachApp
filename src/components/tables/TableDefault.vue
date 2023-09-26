@@ -73,7 +73,7 @@
 import { ref, type PropType, onMounted, onUnmounted } from 'vue'
 import * as XLSX from 'xlsx'
 import FileSaver from 'file-saver'
-import { currencyFormatter } from '@/utils'
+import { currencyFormatter, supabase } from '@/utils'
 import { useOrdersStore } from '@/stores'
 const tableRef = ref<HTMLElement | null>(null)
 // Const
@@ -141,4 +141,7 @@ const exportData = () => {
     color.value = 'red-darken-3'
   }
 }
+onUnmounted(() => {
+  supabase.removeAllChannels()
+})
 </script>

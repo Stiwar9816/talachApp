@@ -126,6 +126,8 @@ import { ref, computed, onMounted, type DeepReadonly } from 'vue'
 import type { DataTableHeader, InventoryItem } from '@/interface'
 // Strore
 import { useInventoryStore } from '@/stores'
+import { subscribeToPrices, supabase } from '@/utils'
+import { onUnmounted } from 'vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -158,7 +160,10 @@ const inventory = useInventoryStore()
 
 const initialize = async () => {
   try {
-    await Promise.all([inventory.allInventory(), inventory.subscribeToInventory()])
+    await Promise.all([
+      inventory.allInventory(),
+      subscribeToPrices('Producto', inventory.$state.items)
+    ])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -182,7 +187,6 @@ const editItem = (item: InventoryItem) => {
     {
       id: item.id,
       name: item.name,
-      price: item.price,
       stock: item.stock,
       description: item.description
     }
@@ -218,4 +222,8 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+onUnmounted(() => {
+  supabase.removeAllChannels()
+})
 </script>

@@ -39,71 +39,35 @@ export const useCompanyStore = defineStore({
     async allCompanies() {
       // Obtén la lista completa de usuarios registrados
       let { data: companies, error } = await supabase.rpc('list_company_workers')
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+      if (error) throw new Error(`${error.message}`)
       this.items = companies as CompanyItem[]
       return this.items
     },
     async createCompany(formInput: CompanyItem, userID: string) {
-      const data_company = {
-        name_company: formInput.name_company,
-        bussiness_name: formInput.bussiness_name,
-        phone: formInput.phone,
-        rfc: formInput.rfc,
-        tax_regime: formInput.tax_regime,
-        address: formInput.address,
-        department: formInput.department,
-        city: formInput.city,
-        postal_code: formInput.postal_code,
-        geofence: formInput.geofence,
-        lat: formInput.lat,
-        lng: formInput.lng,
-        isActive: (formInput.isActive = 'Inactivo')
-      }
-      const data_userid = userID
-
       let { data, error } = await supabase.rpc('insert_company', {
-        data_company,
-        data_userid
+        data_company: formInput,
+        data_userid: userID
       })
 
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
-
-      // this.items = data as any
-      // return this.items
+      if (error) throw new Error(`${error.message}`)
+      this.items = data as CompanyItem[]
+      return this.items
     },
-    async updateCompany(id: string, formInput: CompanyItem, userID: any) {
+    async updateCompany(id: string, payload: CompanyItem, userID: any) {
       const data_company = {
-        id,
-        name_company: formInput.name_company,
-        bussiness_name: formInput.bussiness_name,
-        phone: formInput.phone,
-        rfc: formInput.rfc,
-        tax_regime: formInput.tax_regime,
-        address: formInput.address,
-        department: formInput.department,
-        city: formInput.city,
-        postal_code: formInput.postal_code,
-        geofence: formInput.geofence,
-        lat: formInput.lat,
-        lng: formInput.lng,
-        isActive: formInput.isActive
+        ...payload,
+        geofence:
+          typeof payload.geofence === 'object' ? payload.geofence.join(',') : payload.geofence
       }
-      const data_userid = userID
 
       let { data, error } = await supabase.rpc('update_company', {
-        data_company,
-        data_userid
+        company_id: id,
+        data_company: data_company,
+        data_userid: userID
       })
 
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
-
-      this.items = data as any
+      if (error) throw new Error(`${error.message}`)
+      this.items = data as CompanyItem[]
       return this.items
     },
     subscribeToCompanies() {

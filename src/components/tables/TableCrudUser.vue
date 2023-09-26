@@ -192,6 +192,7 @@ import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 import type { DataTableHeader, UserItem } from '@/interface'
 // Stores
 import { useCompanyStore, useUserStore } from '@/stores'
+import { subscribeToUsers, supabase } from '@/utils'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -245,7 +246,7 @@ const initialize = async () => {
       company.allCompanies(),
       company.subscribeToCompanies(),
       user.allUsers(),
-      user.subscribeToUsers(),
+      subscribeToUsers(user.$state.items)
     ])
   } catch (error: any) {
     snackbar.value = true
@@ -312,4 +313,8 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+onUnmounted(() => {
+  supabase.removeAllChannels()
+})
 </script>

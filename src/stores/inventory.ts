@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia'
 // Interface
 import type { Field, InventoryFields, InventoryItem } from '@/interface'
-import apolloClient from '@/plugins/apollo'
-import { ALL_INVENTORY, UPDATE_INVENTORY } from '@/gql/inventory'
-import { supabase, updateItems } from '@/utils'
+// Utils
+import { supabase } from '@/utils'
 
 export const useInventoryStore = defineStore({
   id: 'inventory',
@@ -40,21 +39,18 @@ export const useInventoryStore = defineStore({
         typeprice: 'Producto'
       })
 
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+      if (error) throw new Error(`${error.message}`)
       this.items = inventory as InventoryItem[]
       return this.items
     },
     async updateInventory(id: string, payload: InventoryItem) {
-      const { data } = await apolloClient.mutate({
-        mutation: UPDATE_INVENTORY,
-        variables: {
-          updatePriceInput: { id, ...payload }
-        }
+      let { data, error } = await supabase.rpc('update_inventory', {
+        data_inventory: payload,
+        price_id: id
       })
-      this.items = this.items.map((item) => (item.id === id ? data.updatePrice : item))
-      this.cache.allProduct = this.items // Actualizar caché
+
+      if (error) throw new Error(`${error.message}`)
+      this.items = data as InventoryItem[]
       return this.items
     },
     async countLowInventory() {
@@ -62,14 +58,6 @@ export const useInventoryStore = defineStore({
       if (error) throw new Error(`${error.message}`)
       this.count = count
       return this.count
-    },
-    subscribeToInventory() {
-      return supabase
-        .channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, (payload) => {
-          updateItems([payload.new], this.items)
-        })
-        .subscribe()
     }
   }
 })

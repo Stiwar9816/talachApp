@@ -115,10 +115,10 @@
                       </v-col>
                       <v-col cols="12">
                         <v-select
-                          v-model="editedItem.idCompany"
+                          v-model="editedItem.company_worker"
                           label="Centros talacheros"
                           :rules="requiredValue"
-                          :items="worker.companies"
+                          :items="company.items"
                           item-title="name_company"
                           item-value="id"
                           variant="underlined"
@@ -169,7 +169,8 @@ import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 // Interface
 import type { DataTableHeader, WorkerItem } from '@/interface'
 // Stores
-import { useWorkerStore } from '@/stores'
+import { useCompanyStore, useWorkerStore } from '@/stores'
+import { subscribeToUsers, supabase } from '@/utils'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -188,7 +189,7 @@ const editedItem = ref<WorkerItem>({
   geofence: '',
   lat: 0,
   lng: 0,
-  idCompany: ''
+  company_worker: null
 })
 const defaultItem = ref<WorkerItem>({
   fullName: '',
@@ -197,7 +198,7 @@ const defaultItem = ref<WorkerItem>({
   geofence: '',
   lat: 0,
   lng: 0,
-  idCompany: ''
+  company_worker: null
 })
 // Alerts
 const snackbar = ref(false)
@@ -208,10 +209,16 @@ const message = ref('')
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 
 const worker = useWorkerStore()
+const company = useCompanyStore()
 
 const initialize = async () => {
   try {
-    await Promise.all([worker.allWorkers(), worker.subcribeToWorkers()])
+    await Promise.all([
+      worker.allWorkers(),
+      subscribeToUsers(worker.items),
+      company.allCompanies(),
+      company.subscribeToCompanies()
+    ])
   } catch (error: any) {
     snackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
@@ -237,7 +244,7 @@ const editItem = (item: WorkerItem) => {
       fullName: item.fullName,
       email: item.email,
       phone: item.phone,
-      idCompany: item.companiesWorker?.id,
+      company_worker: item.company_worker,
       lat: item.lat,
       lng: item.lng,
       geofence: item.geofence
@@ -254,13 +261,13 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, lat, lng, idCompany, ...create } = editedItem.value
+    let { id, phone, lat, lng, company_worker, ...create } = editedItem.value
     phone = +phone
     lat = +lat
     lng = +lng
     if (id) {
       // Update company
-      await worker.updateWorker(id, { ...create, phone, lat, lng }, idCompany!)
+      await worker.updateWorker(id, { ...create, phone, lat, lng }, company_worker!)
       snackbar.value = true
       message.value = `¡Trabajador ${create.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
@@ -272,4 +279,8 @@ const save = async () => {
     color.value = 'red-darken-3'
   }
 }
+
+onUnmounted(() => {
+  supabase.removeAllChannels()
+})
 </script>

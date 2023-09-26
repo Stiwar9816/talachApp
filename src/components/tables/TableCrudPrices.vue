@@ -136,9 +136,9 @@
         <template v-slot:item.companies="{ item }">
           {{ item.columns.companies.name_company }}
         </template>
-        <template v-slot:item.price="{ item }"
-          >{{ currencyFormatter('MXN', item.columns.price) }} MXN</template
-        >
+        <template v-slot:item.price="{ item }">
+          {{ currencyFormatter('MXN', item.columns.price) }} MXN
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon size="large" class="my-1" color="blue-accent-3" @click="editItem(item.raw)">
             mdi-pencil
@@ -165,7 +165,7 @@
 import { ref, computed, onMounted, toRefs, reactive, onUnmounted, type DeepReadonly } from 'vue'
 import { useRoute } from 'vue-router'
 // Utils
-import { currencyFormatter, subscribeToPrices } from '@/utils'
+import { currencyFormatter, subscribeToPrices, supabase } from '@/utils'
 // Stores
 import { useCompanyStore, useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
@@ -347,8 +347,7 @@ const save = async () => {
   }
 }
 
-onUnmounted(async () => {
-  const { pageTitle } = toRefs(currentPage)
-  handlePageEvents(pageTitle.value)
+onUnmounted(() => {
+  supabase.removeAllChannels()
 })
 </script>

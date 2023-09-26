@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import apolloClient from '@/plugins/apollo'
 // Gql
-import { ALL_USERS, CREATE_USER, SUBSCRIBE_USER, UPDATE_USER } from '@/gql/user'
+import { CREATE_USER, UPDATE_USER } from '@/gql/user'
 // Interface
 import type { Field, UserItem, UsersFields } from '@/interface'
-import { supabase, updateItems } from '@/utils'
+import { supabase } from '@/utils'
 
 export const useUserStore = defineStore({
   id: 'users',
@@ -65,14 +65,6 @@ export const useUserStore = defineStore({
       })
       this.items = this.items.map((item) => (item.id === id ? data.updateUser : item))
       return this.items
-    },
-    subscribeToUsers() {
-      return supabase
-        .channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
-          updateItems([payload.new], this.items)
-        })
-        .subscribe()
     }
   }
 })

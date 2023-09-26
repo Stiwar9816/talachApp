@@ -42,7 +42,6 @@ export const useProductStore = defineStore({
       })
 
       if (error) throw new Error(`${error.message}`)
-
       const dataTransform = await transformProducts(products)
       this.items = dataTransform as PriceItem[]
       return this.items
@@ -63,17 +62,18 @@ export const useProductStore = defineStore({
       // const storage = localStorage.getItem('sb-qcjjqopkavhufubvcqom-auth-token') || ''
       // const parse = JSON.parse(storage)
       const user_id = 'd9854699-9702-4914-921b-f4ae58fb081d'
-
+      // Comprobar si se proporcionó una imagen
+      const file = image ? image[0].name.toLowerCase() : 'no-results.png'
       const data_price = { ...payload, user_id }
 
       let { data, error } = await supabase.rpc('insert_product', {
         company_id: companies,
         data_price,
-        file: `${image[0].name.toLowerCase()}`
+        file
       })
 
       if (error) throw new Error(`${error.message}`)
-      else await uploadImage(image[0])
+      else if (image) await uploadImage(image[0])
       // Get items with reassigned image field with url belonging to the storage image
       const dataTransform = await transformProducts(data)
 

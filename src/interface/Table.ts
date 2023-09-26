@@ -51,12 +51,11 @@ export interface PriceItem extends ItemPrice {
 
 export interface InventoryItem extends ItemPrice {
   stock: number
-  price?: number
   description: string
 }
 
 export interface Coordinates {
-  geofence: string | number
+  geofence: string | string[]
   lat: number
   lng: number
 }
@@ -73,7 +72,6 @@ export interface CompanyItem extends Coordinates {
   isActive?: string
   tax_regime: string
   userworker?: number
-  idCompany?: string
   user_id?: string
 }
 export interface Company {
@@ -85,8 +83,7 @@ export interface WorkerItem extends Coordinates {
   fullName: string
   email: string
   phone: number
-  idCompany?: string
-  companiesWorker?: string
+  company_worker?: string | null
 }
 
 export interface CompanyFields {

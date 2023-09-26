@@ -76,6 +76,7 @@ import { onMounted, onUnmounted, ref, type DeepReadonly } from 'vue'
 import { useRatingsStore } from '@/stores'
 // Interfaces
 import type { DataTableHeader } from '@/interface'
+import { supabase } from '@/utils'
 // Const
 const search = ref<string>('')
 // Alerts
@@ -102,5 +103,9 @@ const initialize = async () => {
 }
 onMounted(() => {
   initialize()
+})
+
+onUnmounted(() => {
+  supabase.removeAllChannels()
 })
 </script>
