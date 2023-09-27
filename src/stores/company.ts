@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 // Interface
 import type { CompanyItem, CompanyFields } from '@/interface'
-import { supabase, updateItems } from '@/utils'
+import { geofenceIsActive, supabase, updateItems } from '@/utils'
 
 export const useCompanyStore = defineStore({
   id: 'company',
@@ -50,10 +50,12 @@ export const useCompanyStore = defineStore({
         geofence:
           typeof payload.geofence === 'object' ? payload.geofence.join(',') : payload.geofence
       }
+      
+      geofenceIsActive(data_company)
 
       let { data, error } = await supabase.rpc('update_company', {
         company_id: id,
-        data_company: data_company,
+        data_company,
         data_userid: userID
       })
 

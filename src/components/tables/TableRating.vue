@@ -57,15 +57,7 @@
       </v-col>
       <!-- Data Table -->
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
   </div>
 </template>
 
@@ -75,11 +67,14 @@ import { onMounted, onUnmounted, ref, type DeepReadonly } from 'vue'
 import { useRatingsStore } from '@/stores'
 // Interfaces
 import type { DataTableHeader } from '@/interface'
+// Utils
 import { supabase } from '@/utils'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Const
 const search = ref<string>('')
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
 // Type
@@ -95,7 +90,7 @@ const initialize = async () => {
   try {
     await Promise.all([rating.allRatings(), rating.subscribeToRatings()])
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

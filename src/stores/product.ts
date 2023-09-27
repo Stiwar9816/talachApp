@@ -8,8 +8,8 @@ export const useProductStore = defineStore({
   id: 'product',
   state: (): PricesFields => ({
     fields: [
-      { title: 'Imagen', sortable: false, key: 'image' },
       { title: 'Nombre', sortable: false, key: 'name' },
+      { title: 'Imagen', align: 'center', sortable: false, key: 'image' },
       { title: 'Precio', align: 'center', key: 'price' },
       { title: 'Creado por', sortable: false, key: 'createby' },
       { title: 'Centro Talachero', sortable: false, key: 'company' },

@@ -56,30 +56,27 @@
       </v-col>
       <!-- DataTable -->
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, type PropType, onMounted, onUnmounted } from 'vue'
+// Xlsx
 import * as XLSX from 'xlsx'
 import FileSaver from 'file-saver'
+// Utils
 import { currencyFormatter, supabase } from '@/utils'
+// Stores
 import { useOrdersStore } from '@/stores'
-const tableRef = ref<HTMLElement | null>(null)
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Const
+const tableRef = ref<HTMLElement | null>(null)
 const search = ref<string>('')
 const perPage = ref<number>(5)
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
 // Props
@@ -100,7 +97,7 @@ const initialize = async () => {
   try {
     await Promise.all([order.allOrders(), order.subscribeToOrders()])
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }
@@ -138,7 +135,7 @@ const exportData = () => {
     const file = new Blob([wbout], { type: 'application/octet-stream' })
     FileSaver.saveAs(file, fileName)
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

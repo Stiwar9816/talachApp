@@ -173,15 +173,7 @@
         </template>
       </v-data-table>
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
   </div>
 </template>
 
@@ -192,7 +184,10 @@ import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 import type { DataTableHeader, UserItem } from '@/interface'
 // Stores
 import { useCompanyStore, useUserStore } from '@/stores'
+// Utils
 import { subscribeToUsers, supabase } from '@/utils'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -224,7 +219,7 @@ const defaultItem = ref<UserItem>({
 })
 const roles: string[] = ['Administrador', 'Talachero', 'Trabajador', 'Usuario']
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
 // Validations
@@ -249,7 +244,7 @@ const initialize = async () => {
       subscribeToUsers(user.$state.items)
     ])
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }
@@ -295,20 +290,20 @@ const save = async () => {
     if (!id) {
       // Add new user
       await user.createUser({ phone, ...rest }, idCompany)
-      snackbar.value = true
+      showSnackbar.value = true
       message.value = `¡Nuevo usuario ${rest.fullName} fue agregado con exito!`
       color.value = 'orange-darken-2'
       close()
     } else {
       //Update user
       await user.updateUser(id, { phone, isActive, ...rest })
-      snackbar.value = true
+      showSnackbar.value = true
       message.value = `¡Usuario ${rest.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

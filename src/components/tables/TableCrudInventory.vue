@@ -108,26 +108,20 @@
         </template>
       </v-data-table>
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, type DeepReadonly } from 'vue'
+import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 // Interface
 import type { DataTableHeader, InventoryItem } from '@/interface'
 // Strore
 import { useInventoryStore } from '@/stores'
+// Utils
 import { subscribeToPrices, supabase } from '@/utils'
-import { onUnmounted } from 'vue'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -150,7 +144,7 @@ const defaultItem = ref<InventoryItem>({
   description: ''
 })
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
 // Validations
@@ -165,7 +159,7 @@ const initialize = async () => {
       subscribeToPrices('Producto', inventory.$state.items)
     ])
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }
@@ -211,13 +205,13 @@ const save = async () => {
   try {
     if (id) {
       await inventory.updateInventory(id, { ...inevntory, stock })
-      snackbar.value = true
+      showSnackbar.value = true
       message.value = `¡Producto ${inevntory.name} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

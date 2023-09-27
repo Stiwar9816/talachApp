@@ -1,15 +1,16 @@
 export {
-  supabase,
-  updateItems,
-  uploadImage,
   getImageUrl,
+  getUser,
   subscribeToPrices,
   subscribeToUsers,
+  supabase,
   transformProducts,
-  getUser
+  updateItems,
+  uploadImage
 } from './supabase'
-export { fetchGeofences, fetchLocations, createPolygon } from './maps'
+export { currencyFormatter } from './currencyFormatter'
 export { extractFullNameFromToken } from './extractFullNameToken'
 export { extractRoleFromToken } from './extractRoleToken'
-export { currencyFormatter } from './currencyFormatter'
+export { fetchGeofences, fetchLocations, createPolygon } from './maps'
+export { geofenceIsActive } from './geofenceIsActive'
 export { rules } from './validations'

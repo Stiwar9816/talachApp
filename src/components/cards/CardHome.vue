@@ -28,15 +28,8 @@
         >
       </v-card-actions>
     </v-card>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+
+    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
   </div>
 </template>
 
@@ -44,11 +37,13 @@
 import { onMounted, ref } from 'vue'
 import { useOrdersStore, useInventoryStore } from '@/stores'
 import { currencyFormatter } from '../../utils/currencyFormatter'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Stores Initialization
 const ordersStore = useOrdersStore()
 const invetoryStore = useInventoryStore()
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
 
@@ -58,7 +53,7 @@ const initialize = async () => {
     const orders = await ordersStore.countPayment()
     return { inventory, orders }
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

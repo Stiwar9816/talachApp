@@ -149,15 +149,7 @@
         </template>
       </v-data-table>
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
   </div>
 </template>
 
@@ -170,6 +162,8 @@ import { currencyFormatter, subscribeToPrices, supabase } from '@/utils'
 import { useCompanyStore, useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
 import type { DataTableHeader, PriceItem } from '@/interface'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -198,7 +192,7 @@ const defaultItem = ref<PriceItem>({
   file: defaultFile
 })
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
 
@@ -233,7 +227,7 @@ const handlePageEvents = async (pageName: string) => {
 
     if (pageFunction) await Promise.all(pageFunction)
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }
@@ -287,14 +281,14 @@ const save = async () => {
         if (!id) {
           // Add new cost
           await cost.createCost({ price, type, ...payload })
-          snackbar.value = true
+          showSnackbar.value = true
           message.value = `¡Nuevo costo ${payload.name} fue agregado con exito!`
           color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await cost.updateCost(id, { ...payload, price, type })
-          snackbar.value = true
+          showSnackbar.value = true
           message.value = `¡Costo ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
@@ -305,14 +299,14 @@ const save = async () => {
         if (!id) {
           // Add new cost
           await service.createService({ price, type, ...payload })
-          snackbar.value = true
+          showSnackbar.value = true
           message.value = `¡Nuevo servicio ${payload.name} fue agregado con exito!`
           color.value = 'orange-darken-2'
           close()
         } else {
           // Update cost
           await service.updateService(id, { ...payload, price, type })
-          snackbar.value = true
+          showSnackbar.value = true
           message.value = `¡Servicio ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
@@ -323,7 +317,7 @@ const save = async () => {
         if (!id) {
           // Add new cost
           await product.createProduct(companies!, { price, type, ...payload }, file)
-          snackbar.value = true
+          showSnackbar.value = true
           message.value = `¡Nuevo producto ${payload.name} agregado con exito!`
           color.value = 'orange-darken-2'
           close()
@@ -331,7 +325,7 @@ const save = async () => {
           // Update cost
           let fileUpdate = file || ''
           await product.updateProduct(id, { ...payload, price, type }, fileUpdate, companies!)
-          snackbar.value = true
+          showSnackbar.value = true
           message.value = `¡Producto ${payload.name}  fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
@@ -341,7 +335,7 @@ const save = async () => {
         break
     }
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

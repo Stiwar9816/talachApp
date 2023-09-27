@@ -152,15 +152,7 @@
         </template>
       </v-data-table>
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
   </div>
 </template>
 
@@ -170,7 +162,10 @@ import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
 import type { DataTableHeader, WorkerItem } from '@/interface'
 // Stores
 import { useCompanyStore, useWorkerStore } from '@/stores'
+// Utils
 import { subscribeToUsers, supabase } from '@/utils'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -201,7 +196,7 @@ const defaultItem = ref<WorkerItem>({
   company_worker: null
 })
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
 
@@ -220,7 +215,7 @@ const initialize = async () => {
       company.subscribeToCompanies()
     ])
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }
@@ -268,13 +263,13 @@ const save = async () => {
     if (id) {
       // Update company
       await worker.updateWorker(id, { ...create, phone, lat, lng }, company_worker!)
-      snackbar.value = true
+      showSnackbar.value = true
       message.value = `¡Trabajador ${create.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'
       close()
     }
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

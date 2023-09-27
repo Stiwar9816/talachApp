@@ -15,23 +15,18 @@
         </template>
       </MarkerCluster>
     </GoogleMap>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
-      :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+    <Alert :snackbar="snackbar" :color="color" :message="message" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+// Google Maps
 import { GoogleMap, Polygon, Marker, MarkerCluster } from 'vue3-google-map'
 // Store
 import { useMapsStore } from '@/stores'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Initialization Store
 const storeMaps = useMapsStore()
 // Alerts
