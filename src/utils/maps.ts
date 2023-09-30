@@ -30,6 +30,12 @@ export const createPolygon = (paths: LatLgn[], properties: PolygonProperties): P
   ...properties
 })
 
+// Función para determinar el icono del marcador en función del label
+export const getMarkerIcon = (label: string) => {
+  if (label === 'CT') return '/images/offices.png'
+  if (label === 'T') return '/images/user.png'
+}
+
 export const fetchLocations = async () => {
   let { data: companiesData, error: errorCompanies } = await supabase.rpc('all_location_companies')
 

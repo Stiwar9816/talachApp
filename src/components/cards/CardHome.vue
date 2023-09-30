@@ -29,7 +29,12 @@
       </v-card-actions>
     </v-card>
 
-    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
+    <Alert
+      :snackbar-model="showSnackbar"
+      :color="color"
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
@@ -46,6 +51,9 @@ const invetoryStore = useInventoryStore()
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
+}
 
 const initialize = async () => {
   try {
