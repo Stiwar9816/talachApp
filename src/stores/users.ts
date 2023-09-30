@@ -31,19 +31,33 @@ export const useUserStore = defineStore({
       return (this.items = users as UserItem[])
     },
     async createUser(payload: UserItem, idCompany?: string | null) {
-      const { data } = await apolloClient.mutate({
-        mutation: CREATE_USER,
-        variables: {
-          signupInput: payload,
-          idCompany
-        }
-      })
-      const newUsers = data.signup.user
 
-      const existingItem = this.items.find((item: UserItem) => item.id === newUsers.id)
-      if (!existingItem) {
-        this.items.push(newUsers)
-      }
+      const { data, error } = await supabase.auth.signUp({
+        email: payload.email,
+        password: 'Je123456.',
+        phone: payload.phone,
+        options: {
+          data: {
+            fullName: payload.fullName,
+          },
+        },
+      })
+      if (error) console.log(error)
+      else console.log(data);
+      
+      // const { data } = await apolloClient.mutate({
+      //   mutation: CREATE_USER,
+      //   variables: {
+      //     signupInput: payload,
+      //     idCompany
+      //   }
+      // })
+      // const newUsers = data.signup.user
+
+      // const existingItem = this.items.find((item: UserItem) => item.id === newUsers.id)
+      // if (!existingItem) {
+      //   this.items.push(newUsers)
+      // }
 
       return this.items
     },

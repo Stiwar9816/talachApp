@@ -17,8 +17,8 @@
             @click.stop="storeLayout.rail = !storeLayout.rail"
           ></v-btn>
         </template>
-        {{ storeLayout.nameProfile }}
-        <v-tooltip activator="parent" location="end">{{ storeLayout.nameProfile }}</v-tooltip>
+        {{ nameProfile }}
+        <v-tooltip activator="parent" location="end">{{ nameProfile }}</v-tooltip>
       </v-list-item>
     </v-list>
 
@@ -97,11 +97,16 @@
 // Store
 import { useLayoutStore } from '@/stores/layout'
 import { useAuthStore } from '@/stores/useAuth'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 // Initialization
 const storeLayout = useLayoutStore()
 
 const authStore = useAuthStore()
+const nameProfile = ref('')
+const name = storeLayout.nameProfile.then((name) => {
+  nameProfile.value = name
+})
+
 const isAuthenticated = computed(() => !!authStore.token)
 
 const logout = () => {

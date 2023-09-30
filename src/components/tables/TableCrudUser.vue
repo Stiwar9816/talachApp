@@ -286,7 +286,7 @@ const close = () => {
 const save = async () => {
   try {
     let { id, phone, isActive, idCompany, rfc, ...rest } = editedItem.value
-    phone = +phone
+    // phone = +phone
     if (!id) {
       // Add new user
       await user.createUser({ phone, ...rest }, idCompany)

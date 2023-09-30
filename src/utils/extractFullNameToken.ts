@@ -1,13 +1,15 @@
 import { ref } from 'vue'
+import { supabase } from './supabase'
 
 const fullName = ref('')
 
-export const extractFullNameFromToken = (token: any) => {
-  const decodedToken = JSON.parse(atob(token.split('.')[1]))
-  const name = decodedToken.name
-  if (name && name.length > 0) {
-    fullName.value = name
+export const extractFullNameFromToken = async () => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    fullName.value = user?.user_metadata.fullName || ''
+  } catch (error) {
+    console.error(error)
   }
-
+  
   return fullName.value
 }

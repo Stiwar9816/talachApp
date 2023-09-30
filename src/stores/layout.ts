@@ -66,7 +66,7 @@ export const useLayoutStore = defineStore('layout', () => {
     }
   ]
 
-  const nameProfile = computed(() => extractFullNameFromToken(token.value) || '')
+  const nameProfile = computed(async () => await extractFullNameFromToken() || '')
 
   return { drawer, rail, routes, prices, companies, nameProfile, imageProfile }
 })

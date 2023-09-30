@@ -24,7 +24,7 @@ export interface OrdersItem {
 export interface UserItem {
   id?: string
   fullName: string
-  phone: number
+  phone: string
   email: string
   roles?: string
   isActive?: string
