@@ -1,6 +1,6 @@
 <template>
   <v-snackbar
-    v-model="props.snackbar"
+    v-model="snackbarVisible"
     :timeout="3000"
     :color="props.color"
     rounded="pill"
@@ -11,6 +11,8 @@
 </template>
 
 <script lang="ts" setup>
+import { defineProps, ref, watch } from 'vue';
+
 const props = defineProps({
   message: {
     type: String,
@@ -20,9 +22,20 @@ const props = defineProps({
     type: String,
     default: 'grey-darken-1'
   },
-  snackbar: {
-    type: Boolean,
-    default: false
+  snackbarModel: {
+    type: Boolean
   }
-})
+});
+
+const snackbarVisible = ref(props.snackbarModel);
+
+// Observa cambios en la prop snackbarModel
+watch(() => props.snackbarModel, (newVal) => {
+  snackbarVisible.value = newVal;
+});
+
+const emitCloseEvent = () => {
+  snackbarVisible.value = false;
+};
 </script>
+

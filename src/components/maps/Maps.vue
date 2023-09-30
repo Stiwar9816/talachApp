@@ -11,11 +11,22 @@
       </template>
       <MarkerCluster>
         <template v-for="(marker, i) in storeMaps.markers" :key="i">
-          <Marker :options="marker" />
+          <Marker
+            :options="{
+              position: marker.position,
+              icon: getMarkerIcon(marker.label),
+              title: marker.title
+            }"
+          />
         </template>
       </MarkerCluster>
     </GoogleMap>
-    <Alert :snackbar="snackbar" :color="color" :message="message" />
+    <Alert
+      :snackbar-model="showSnackbar"
+      :color="color"
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
@@ -23,6 +34,8 @@
 import { onMounted, ref } from 'vue'
 // Google Maps
 import { GoogleMap, Polygon, Marker, MarkerCluster } from 'vue3-google-map'
+// Utils
+import { getMarkerIcon } from '@/utils'
 // Store
 import { useMapsStore } from '@/stores'
 // Components
@@ -30,15 +43,18 @@ import Alert from '@/components/alerts/Alert.vue'
 // Initialization Store
 const storeMaps = useMapsStore()
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
+}
 
 const initialize = async () => {
   try {
     Promise.all([storeMaps.allLocations(), storeMaps.allGeofences()])
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

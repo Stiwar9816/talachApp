@@ -149,7 +149,12 @@
         </template>
       </v-data-table>
     </v-row>
-    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
+    <Alert
+      :snackbar-model="showSnackbar"
+      :color="color"
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
@@ -195,6 +200,9 @@ const defaultItem = ref<PriceItem>({
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
+}
 
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
@@ -341,7 +349,7 @@ const save = async () => {
   }
 }
 
-onUnmounted(() => {
-  supabase.removeAllChannels()
+onUnmounted(async () => {
+  await supabase.removeAllChannels()
 })
 </script>

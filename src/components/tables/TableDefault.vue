@@ -56,7 +56,12 @@
       </v-col>
       <!-- DataTable -->
     </v-row>
-    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
+    <Alert
+      :snackbar-model="showSnackbar"
+      :color="color"
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
@@ -79,6 +84,10 @@ const perPage = ref<number>(5)
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
+}
+
 // Props
 const props = defineProps({
   fields: {
@@ -140,7 +149,7 @@ const exportData = () => {
     color.value = 'red-darken-3'
   }
 }
-onUnmounted(() => {
-  supabase.removeAllChannels()
+onUnmounted(async () => {
+  await supabase.removeAllChannels()
 })
 </script>

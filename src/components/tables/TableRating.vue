@@ -57,7 +57,12 @@
       </v-col>
       <!-- Data Table -->
     </v-row>
-    <Alert :snackbar="showSnackbar" :color="color" :message="message" />
+    <Alert
+      :snackbar-model="showSnackbar"
+      :color="color"
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
@@ -77,8 +82,11 @@ const search = ref<string>('')
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-// Type
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
+}
 
+// Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
   items: Array
@@ -99,7 +107,7 @@ onMounted(() => {
   initialize()
 })
 
-onUnmounted(() => {
-  supabase.removeAllChannels()
+onUnmounted(async () => {
+  await supabase.removeAllChannels()
 })
 </script>
