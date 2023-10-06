@@ -5,8 +5,7 @@
         <v-sheet
           color="orange-accent-1"
           rounded="lg"
-          height="420"
-          width="350"
+          width="380"
           elevation="18"
           class="mx-auto pa-6"
         >
@@ -58,49 +57,53 @@
             >
               Iniciar Sesión
             </v-btn>
-            <router-link class="mt-3 reset" to="/reset-password"
+            <router-link class="reset" to="/reset-password"
               >¿Has olvidado la contraseña? - Click Aquí</router-link
             >
           </form>
         </v-sheet>
       </v-col>
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
+    <Alert
+      :snackbar-model="showSnackbar"
       :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, reactive, ref } from 'vue'
-import { useVuelidate } from '@vuelidate/core'
-import { email, required, helpers } from '@vuelidate/validators'
-import { useAuthStore, useErrorsStore } from '@/stores'
+// Router
 import router from '@/router'
+// Validators
+import { email, required, helpers } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
+// Stores
+import { useAuthStore, useErrorsStore } from '@/stores'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
+// Interface
+import type { SigninInput } from '@/interface'
 // Alerts
-const snackbar = ref(false)
+let show1 = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-
-let show1 = ref(false)
-interface SigninInput {
-  email: string
-  password: string
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
 }
 
 const initialState: SigninInput = {
   email: '',
   password: ''
 }
+
 const state = reactive({
   ...initialState
 })
+
 const rules = {
   email: {
     required: helpers.withMessage('El campo correo electronico es requerido', required),
@@ -114,6 +117,7 @@ const rules = {
 const v$ = useVuelidate(rules, state)
 const errors = useErrorsStore()
 const authStore = useAuthStore()
+
 const handleLogin = async () => {
   try {
     const signinInput: SigninInput = {
@@ -123,7 +127,7 @@ const handleLogin = async () => {
     await authStore.login(signinInput)
     router.push({ name: 'home' })
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
     errors.$reset()

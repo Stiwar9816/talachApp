@@ -1,6 +1,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+// Interfaces
 import type { CompanyItem, Field, WorkerFields, WorkerItem } from '@/interface'
+// utils
 import { geofenceIsActive, supabase } from '@/utils'
 
 export const useWorkerStore = defineStore({
@@ -31,7 +33,6 @@ export const useWorkerStore = defineStore({
       return (this.items = users as WorkerItem[])
     },
     async allCompanies() {
-      // Obtén la lista completa de usuarios registrados
       let { data: company, error } = await supabase.rpc('list_companies_selects')
       if (error) throw new Error(`${error.message}`)
       this.companies = company as CompanyItem[]
@@ -43,9 +44,9 @@ export const useWorkerStore = defineStore({
         geofence:
           typeof payload.geofence === 'object' ? payload.geofence.join(',') : payload.geofence
       }
-      
+
       geofenceIsActive(data_worker)
-      
+
       let { data, error } = await supabase.rpc('update_worker', {
         company_id: idCompany,
         data_worker,

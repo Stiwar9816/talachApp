@@ -16,7 +16,6 @@ export const useInventoryStore = defineStore({
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
     items: [] as InventoryItem[],
-    cache: {} as Record<string, InventoryItem[]>,
     count: 0 as number,
     cacheCount: 0 as number
   }),

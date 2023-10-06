@@ -23,7 +23,7 @@
         <template v-slot:top>
           <v-toolbar class="bg-grey-lighten-5" density="comfortable" flat>
             <!-- Modal Reset Password -->
-            <form-reset-password-auth class="mx-2" />
+            <FormUpdatePasswordAuth class="mx-2" />
             <!-- Modal Reset Password -->
             <v-spacer></v-spacer>
             <!-- Add Modal -->
@@ -184,7 +184,6 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted, type DeepReadonly } from 'vue'
-import FormResetPasswordAuth from '../forms/FormResetPasswordAuth.vue'
 // Interface
 import type { DataTableHeader, UserItem } from '@/interface'
 // Stores
@@ -193,6 +192,7 @@ import { useCompanyStore, useUserStore } from '@/stores'
 import { subscribeToUsers, supabase } from '@/utils'
 // Components
 import Alert from '@/components/alerts/Alert.vue'
+import FormUpdatePasswordAuth from '@/components/forms/FormUpdatePasswordAuth.vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,

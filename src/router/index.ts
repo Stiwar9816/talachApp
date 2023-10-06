@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import FormResetPassword from '@/components/forms/FormResetPassword.vue'
+import FormUpdatePassword from '@/components/forms/FormUpdatePassword.vue'
 import HomeView from '@/views/HomeView.vue'
 import InventoryView from '@/views/InventoryView.vue'
 import OrdersView from '@/views/OrdersView.vue'
@@ -29,6 +30,15 @@ const router = createRouter({
       path: '/reset-password',
       name: ' resetPassword',
       component: FormResetPassword,
+      meta: {
+        layout: 'Default'
+      },
+      beforeEnter: useGuard
+    },
+    {
+      path: '/update-password',
+      name: 'updatePassword',
+      component: FormUpdatePassword,
       meta: {
         layout: 'Default'
       },

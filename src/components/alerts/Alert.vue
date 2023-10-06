@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   message: {
@@ -25,17 +25,19 @@ const props = defineProps({
   snackbarModel: {
     type: Boolean
   }
-});
+})
 
-const snackbarVisible = ref(props.snackbarModel);
+const snackbarVisible = ref(props.snackbarModel)
 
 // Observa cambios en la prop snackbarModel
-watch(() => props.snackbarModel, (newVal) => {
-  snackbarVisible.value = newVal;
-});
+watch(
+  () => props.snackbarModel,
+  (newVal) => {
+    snackbarVisible.value = newVal
+  }
+)
 
 const emitCloseEvent = () => {
-  snackbarVisible.value = false;
-};
+  snackbarVisible.value = false
+}
 </script>
-

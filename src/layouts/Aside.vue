@@ -17,8 +17,8 @@
             @click.stop="storeLayout.rail = !storeLayout.rail"
           ></v-btn>
         </template>
-        {{ nameProfile }}
-        <v-tooltip activator="parent" location="end">{{ nameProfile }}</v-tooltip>
+        {{ name }}
+        <v-tooltip activator="parent" location="end">{{ name }}</v-tooltip>
       </v-list-item>
     </v-list>
 
@@ -36,11 +36,7 @@
       </v-list-item>
       <v-menu transition="slide-x-transition" location="end">
         <template v-slot:activator="{ props }">
-          <v-list-item
-            v-bind="props"
-            prepend-icon="mdi-domain"
-            append-icon="mdi-chevron-right"
-          >
+          <v-list-item v-bind="props" prepend-icon="mdi-domain" append-icon="mdi-chevron-right">
             Centros Talacheros
             <v-tooltip activator="parent" location="end">Centros Talacheros</v-tooltip>
           </v-list-item>
@@ -94,14 +90,13 @@
 </template>
 
 <script lang="ts" setup>
-// Store
-import { useLayoutStore } from '@/stores/layout'
-import { useAuthStore } from '@/stores/useAuth'
 import { computed, ref } from 'vue'
-// Initialization
+// Store
+import { useLayoutStore, useAuthStore } from '@/stores'
+// Initialization Store
 const storeLayout = useLayoutStore()
-
 const authStore = useAuthStore()
+
 const nameProfile = ref('')
 const name = storeLayout.nameProfile.then((name) => {
   nameProfile.value = name

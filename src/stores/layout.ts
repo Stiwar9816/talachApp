@@ -1,11 +1,11 @@
+import { computed } from 'vue'
 import { defineStore } from 'pinia'
 // Interface
 import type { Routes } from '@/interface'
-import { computed, ref } from 'vue'
-import { extractFullNameFromToken } from '@/utils'
+// Utils
+import { extractFullNameFromSession } from '@/utils'
 
 export const useLayoutStore = defineStore('layout', () => {
-  const token = ref<string | null>(sessionStorage.getItem('token'))
   const imageProfile: string = 'mdi-account-circle'
   const drawer: boolean = true
   const rail: boolean = false
@@ -66,7 +66,7 @@ export const useLayoutStore = defineStore('layout', () => {
     }
   ]
 
-  const nameProfile = computed(async () => await extractFullNameFromToken() || '')
+  const nameProfile = computed(async () => (await extractFullNameFromSession()) || '')
 
   return { drawer, rail, routes, prices, companies, nameProfile, imageProfile }
 })

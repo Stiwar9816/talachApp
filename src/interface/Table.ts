@@ -24,7 +24,7 @@ export interface OrdersItem {
 export interface UserItem {
   id?: string
   fullName: string
-  phone: string
+  phone: number
   email: string
   roles?: string
   isActive?: string
@@ -98,7 +98,6 @@ export interface PricesFields {
 export interface InventoryFields extends Count {
   fields: Record<string, any>
   items: InventoryItem[]
-  cache: Record<string, InventoryItem[]>
 }
 export interface UsersFields {
   fields: Record<string, any>

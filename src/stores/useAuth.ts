@@ -1,10 +1,8 @@
-import { RESET_PASSWORD, RESET_PASSWORD_AUTH } from '@/gql/login'
-import apolloClient from '@/plugins/apollo'
-import type { AuthState } from '@/interface'
 import router from '@/router'
 import { defineStore } from 'pinia'
-import type { SigninInput } from '../interface/auth'
 import { supabase } from '@/utils'
+import type { AuthState, SigninInput } from '@/interface'
+
 export const useAuthStore = defineStore({
   id: 'auth',
   state: (): AuthState => ({
@@ -17,58 +15,46 @@ export const useAuthStore = defineStore({
   },
   actions: {
     async login({ email, password }: SigninInput) {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        })
-        const { user, session } = data
+      const {
+        data: { user, session },
+        error
+      } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
 
-        const tokenSupa = session?.access_token
+      const tokenSupa = session?.access_token
 
-        if (error) {
-          throw new Error(error.message)
-        } else {
-          sessionStorage.setItem('token', tokenSupa!)
-          this.token = tokenSupa!
-          return user
-        }
-      } catch (error: any) {
-        throw new Error('Error desconocido al iniciar sesión', error.message)
+      if (error) {
+        throw new Error(error.message)
+      } else {
+        sessionStorage.setItem('token', tokenSupa!)
+        this.token = tokenSupa!
+        return user
       }
     },
     async logout() {
-      try {
-        const { error } = await supabase.auth.signOut()
+      const { error } = await supabase.auth.signOut()
 
-        if (error) {
-          console.error(error.message)
-        } else {
-          sessionStorage.removeItem('token')
-          this.token = null
-          router.replace('/')
-        }
-      } catch (error: any) {
-        console.error('Error desconocido al salir de la sesión', error.message)
+      if (error) {
+        throw new Error(error.message)
+      } else {
+        sessionStorage.removeItem('token')
+        this.token = null
+        router.replace('/')
       }
     },
-    async resetPassword(email: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: RESET_PASSWORD,
-        variables: {
-          resetPassword: email
-        }
+    async resetPasswordForEmail(email: string) {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${import.meta.env.BASE_URL}/update-password`
       })
-      return data
+      if (error) throw new Error(`${error.message}`)
     },
-    async resetPasswordAuth(password: string) {
-      const { data } = await apolloClient.mutate({
-        mutation: RESET_PASSWORD_AUTH,
-        variables: {
-          newPassword: password
-        }
+    async updatePassword(password: string) {
+      const { error } = await supabase.auth.updateUser({
+        password
       })
-      return data
+      if (error) throw new Error(`${error.message}`)
     }
   }
 })

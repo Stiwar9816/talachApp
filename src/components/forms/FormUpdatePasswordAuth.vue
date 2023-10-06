@@ -67,15 +67,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
+    <Alert
+      :snackbar-model="showSnackbar"
       :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
@@ -85,6 +82,8 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores'
 // Store initialization
 const authStore = useAuthStore()
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Const
 let show = ref(false)
 const dialog = ref(false)
@@ -93,9 +92,13 @@ const confPassword = ref('')
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
+}
+
 //Methods
 const close = () => {
   dialog.value = false
@@ -110,15 +113,13 @@ const save = async () => {
       const newPassword = password.value
       const confirmPassword = confPassword.value
 
-      if (newPassword !== confirmPassword) {
-        throw new Error('Las contraseñas no coinciden')
-      }
+      if (newPassword !== confirmPassword) throw new Error('Las contraseñas no coinciden')
 
-      await authStore.resetPasswordAuth(newPassword)
+      await authStore.updatePassword(newPassword)
       close()
     }
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
   }

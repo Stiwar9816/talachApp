@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
 import apolloClient from '@/plugins/apollo'
 // Gql
-import { CREATE_USER, UPDATE_USER } from '@/gql/user'
+import { UPDATE_USER } from '@/gql/user'
 // Interface
 import type { Field, UserItem, UsersFields } from '@/interface'
+// Utils
 import { supabase } from '@/utils'
 
 export const useUserStore = defineStore({
@@ -25,39 +26,28 @@ export const useUserStore = defineStore({
       const ROLES = ['Administrador', 'Talachero', 'Usuario']
       // Obtén la lista completa de usuarios registrados
       let { data: users, error } = await supabase.rpc('list_users', { role: ROLES })
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+      if (error) throw new Error(`${error.message}`)
+
       return (this.items = users as UserItem[])
     },
     async createUser(payload: UserItem, idCompany?: string | null) {
-
       const { data, error } = await supabase.auth.signUp({
         email: payload.email,
-        password: 'Je123456.',
-        phone: payload.phone,
+        password: 'Abc123.',
         options: {
           data: {
             fullName: payload.fullName,
-          },
-        },
+            phone: payload.phone,
+            email: payload.email,
+            roles: payload.roles,
+            idCompany,
+            rfc: payload.rfc,
+            isActive: payload.isActive
+          }
+        }
       })
-      if (error) console.log(error)
-      else console.log(data);
-      
-      // const { data } = await apolloClient.mutate({
-      //   mutation: CREATE_USER,
-      //   variables: {
-      //     signupInput: payload,
-      //     idCompany
-      //   }
-      // })
-      // const newUsers = data.signup.user
-
-      // const existingItem = this.items.find((item: UserItem) => item.id === newUsers.id)
-      // if (!existingItem) {
-      //   this.items.push(newUsers)
-      // }
+      if (error) throw new Error(`${error.message}`)
+      else console.log(data)
 
       return this.items
     },

@@ -47,15 +47,12 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="2000"
+    <Alert
+      :snackbar-model="showSnackbar"
       :color="color"
-      rounded="pill"
-      location="bottom right"
-    >
-      {{ message }}
-    </v-snackbar>
+      :message="message"
+      @close="handleSnackbarClose"
+    />
   </div>
 </template>
 
@@ -63,12 +60,17 @@
 import { onBeforeUnmount, reactive, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required, helpers } from '@vuelidate/validators'
-import { useAuthStore, useErrorsStore } from '@/stores'
-import router from '@/router'
+// Store
+import { useErrorsStore, useAuthStore } from '@/stores'
+// Components
+import Alert from '@/components/alerts/Alert.vue'
 // Alerts
-const snackbar = ref(false)
+const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
+const handleSnackbarClose = () => {
+  showSnackbar.value = false
+}
 
 const state = reactive({
   email: ''
@@ -87,10 +89,9 @@ const authStore = useAuthStore()
 
 const handleReset = async () => {
   try {
-    await authStore.resetPassword(state.email)
-    router.push({ name: 'home' })
+    await authStore.resetPasswordForEmail(state.email)
   } catch (error: any) {
-    snackbar.value = true
+    showSnackbar.value = true
     message.value = `¡Ha ocurrido un error: ${error.message}!`
     color.value = 'red-darken-3'
     errors.$reset()

@@ -6,17 +6,18 @@
         <v-img class="ml-n4" width="170" src="/images/logo-talachapp.webp" alt="Logo" />
       </template>
       <v-spacer />
-      <span class="pa-5 font-weight-bold"> Bienvenido {{ nameProfile }} </span>
+      <span class="pa-5 font-weight-bold"> Bienvenido {{ name }} </span>
     </v-app-bar>
   </div>
 </template>
 
 <script lang="ts" setup>
-// Store
-import { useLayoutStore } from '@/stores/layout'
 import { ref } from 'vue'
-// Initialization
+// Store
+import { useLayoutStore } from '@/stores'
+// Initialization Store
 const storeLayout = useLayoutStore()
+
 const nameProfile = ref('')
 const name = storeLayout.nameProfile.then((name) => {
   nameProfile.value = name
