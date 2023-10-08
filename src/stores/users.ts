@@ -31,23 +31,32 @@ export const useUserStore = defineStore({
       return (this.items = users as UserItem[])
     },
     async createUser(payload: UserItem, idCompany?: string | null) {
+      // console.log({ payload })
+
       const { data, error } = await supabase.auth.signUp({
         email: payload.email,
-        password: 'Abc123.',
+        password: 'Je123456.',
         options: {
           data: {
             fullName: payload.fullName,
             phone: payload.phone,
-            email: payload.email,
             roles: payload.roles,
-            idCompany,
-            rfc: payload.rfc,
-            isActive: payload.isActive
+            isActive: 'Innactivo',
+            email: payload.email,
+            idCompany
+            // rfc: payload.rfc,
           }
         }
       })
-      if (error) throw new Error(`${error.message}`)
-      else console.log(data)
+      const { data: refres, error: invalid } = await supabase.auth.refreshSession()
+      const { session, user } = refres
+      console.log(invalid);
+      console.log(session);
+      console.log(user);
+      // if (error) throw new Error(`${error.message}`)
+      // else
+      console.log(error)
+      console.log(data)
 
       return this.items
     },
