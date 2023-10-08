@@ -17,8 +17,8 @@
             @click.stop="storeLayout.rail = !storeLayout.rail"
           ></v-btn>
         </template>
-        {{ name }}
-        <v-tooltip activator="parent" location="end">{{ name }}</v-tooltip>
+        {{ nameProfile }}
+        <v-tooltip activator="parent" location="end">{{ nameProfile }}</v-tooltip>
       </v-list-item>
     </v-list>
 

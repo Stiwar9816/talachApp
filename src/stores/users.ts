@@ -1,11 +1,8 @@
 import { defineStore } from 'pinia'
-import apolloClient from '@/plugins/apollo'
-// Gql
-import { UPDATE_USER } from '@/gql/user'
 // Interface
 import type { Field, UserItem, UsersFields } from '@/interface'
 // Utils
-import { supabase } from '@/utils'
+import { randomNonce, randomPassword, supabase } from '@/utils'
 
 export const useUserStore = defineStore({
   id: 'users',
@@ -31,44 +28,32 @@ export const useUserStore = defineStore({
       return (this.items = users as UserItem[])
     },
     async createUser(payload: UserItem, idCompany?: string | null) {
-      // console.log({ payload })
+      const ROLES = ['Administrador', 'Usuario']
+      const rolesArray = payload.roles?.split(',') || []
 
-      const { data, error } = await supabase.auth.signUp({
+      payload.isActive = rolesArray.some((role) => ROLES.includes(role)) ? 'Activo' : 'Inactivo'
+
+      const { data, error } = await supabase.auth.admin.createUser({
         email: payload.email,
-        password: 'Je123456.',
-        options: {
-          data: {
-            fullName: payload.fullName,
-            phone: payload.phone,
-            roles: payload.roles,
-            isActive: 'Innactivo',
-            email: payload.email,
-            idCompany
-            // rfc: payload.rfc,
-          }
+        password: randomPassword(),
+        nonce: randomNonce(),
+        user_metadata: {
+          fullName: payload.fullName,
+          password: randomPassword(),
+          phone: payload.phone,
+          roles: payload.roles,
+          isActive: payload.isActive,
+          email: payload.email,
+          rfc: payload.rfc,
+          idCompany
         }
       })
-      const { data: refres, error: invalid } = await supabase.auth.refreshSession()
-      const { session, user } = refres
-      console.log(invalid);
-      console.log(session);
-      console.log(user);
-      // if (error) throw new Error(`${error.message}`)
-      // else
-      console.log(error)
+
+      if (error) throw new Error(`${error.message}`)
       console.log(data)
 
       return this.items
     },
-    async updateUser(id: string, payload: UserItem) {
-      const { data } = await apolloClient.mutate({
-        mutation: UPDATE_USER,
-        variables: {
-          updateUserInput: { id, ...payload }
-        }
-      })
-      this.items = this.items.map((item) => (item.id === id ? data.updateUser : item))
-      return this.items
-    }
+    async updateUser(id: string, payload: UserItem) {}
   }
 })

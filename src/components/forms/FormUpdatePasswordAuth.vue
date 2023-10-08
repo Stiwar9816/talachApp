@@ -115,7 +115,7 @@ const save = async () => {
 
       if (newPassword !== confirmPassword) throw new Error('Las contraseñas no coinciden')
 
-      await authStore.updatePassword(newPassword)
+      await authStore.updatePasswordAuth(newPassword)
       close()
     }
   } catch (error: any) {

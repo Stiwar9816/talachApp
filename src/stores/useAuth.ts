@@ -1,6 +1,6 @@
 import router from '@/router'
 import { defineStore } from 'pinia'
-import { supabase } from '@/utils'
+import { randomNonce, supabase } from '@/utils'
 import type { AuthState, SigninInput } from '@/interface'
 
 export const useAuthStore = defineStore({
@@ -52,7 +52,14 @@ export const useAuthStore = defineStore({
     },
     async updatePassword(password: string) {
       const { error } = await supabase.auth.updateUser({
-        password
+        password: password
+      })
+      if (error) throw new Error(`${error.message}`)
+    },
+    async updatePasswordAuth(password: string) {
+      const { error } = await supabase.auth.updateUser({
+        password: password,
+        nonce: randomNonce()
       })
       if (error) throw new Error(`${error.message}`)
     }

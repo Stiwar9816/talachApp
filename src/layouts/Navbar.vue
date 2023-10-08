@@ -6,7 +6,7 @@
         <v-img class="ml-n4" width="170" src="/images/logo-talachapp.webp" alt="Logo" />
       </template>
       <v-spacer />
-      <span class="pa-5 font-weight-bold"> Bienvenido {{ name }} </span>
+      <span class="pa-5 font-weight-bold"> Bienvenido {{ nameProfile }} </span>
     </v-app-bar>
   </div>
 </template>

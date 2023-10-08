@@ -93,7 +93,19 @@
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
+                          v-model="editedItem.rfc"
+                          label="RFC"
+                          :rules="requiredValue"
+                          variant="underlined"
+                          density="comfortable"
+                          type="text"
+                          clearable
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
                         <v-select
                           v-model="editedItem.roles"
                           label="Rol"
@@ -124,19 +136,7 @@
                         </v-col>
                       </template>
                       <template v-if="editedItem.id">
-                        <v-col cols="12" sm="6" md="6">
-                          <v-text-field
-                            v-model="editedItem.rfc"
-                            label="RFC"
-                            :rules="requiredValue"
-                            variant="underlined"
-                            density="comfortable"
-                            type="text"
-                            clearable
-                            required
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
+                        <v-col cols="12" sm="12" md="12">
                           <v-select
                             v-model="editedItem.isActive"
                             label="Estado"
