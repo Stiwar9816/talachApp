@@ -2,16 +2,20 @@ import moment from 'moment'
 import { defineStore } from 'pinia'
 // Interface
 import type { Field, RatingFields, RatingItem } from '@/interface'
-import { supabase, updateItems } from '@/utils'
+// Utils
+import { supabase, transformServices, updateItems } from '@/utils'
 
 export const useRatingsStore = defineStore({
   id: 'ratings',
   state: (): RatingFields => ({
     fields: [
-      { title: 'Usuario', sortable: false, key: 'userclient' },
-      { title: 'Calidad del servicio', sortable: false, key: 'quality' },
-      { title: 'Calificación usuario', key: 'rankClient' },
-      { title: 'Calificación talachero', key: 'rankTalachero' },
+      { title: 'Usuario', sortable: false, key: 'client' },
+      { title: 'Talachero', sortable: false, key: 'mechanic' },
+      { title: 'Calidad del servicio', sortable: false, key: 'description' },
+      { title: 'Calificación usuario', key: 'calificationClient' },
+      { title: 'Calificación talachero', key: 'calificationMechanic' },
+      { title: 'Reporte servicio 1', key: 'imageReport' },
+      { title: 'Reporte servicio 2', key: 'imageReport2' },
       { title: 'Fecha de calificación', sortable: false, key: 'created_at' }
     ] as Field[],
     items: [] as RatingItem[]
@@ -25,11 +29,26 @@ export const useRatingsStore = defineStore({
       const ScoreFormatted = scores.map((score: RatingItem) => {
         return {
           ...score,
-          created_at: moment(score.created_at).format('LLL')
+          created_at: moment(score.created_at).format('LLL'),
+          imageReport: score.imageReport,
+          imageReport2: score.imageReport2
         }
       })
 
-      this.items = ScoreFormatted as RatingItem[]
+      const files = scores.map((score: RatingItem) => ({
+        image: score.imageReport,
+        image2: score.imageReport2
+      }))
+
+      const dataTransform = await transformServices(files)
+      // Actualizar los objetos originales con las URLs firmadas
+      this.items = ScoreFormatted.map((score: RatingItem, index: number) => {
+        return {
+          ...score,
+          imageReport: dataTransform[index].image,
+          imageReport2: dataTransform[index].image2
+        }
+      })
       return this.items
     },
     subscribeToRatings() {

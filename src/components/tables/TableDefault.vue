@@ -42,11 +42,16 @@
         >
           <template v-slot:item="{ item }">
             <tr>
-              <td>{{ item.columns.userclient }}</td>
-              <td>{{ item.columns.company }}</td>
-              <td>{{ new Date(item.columns.created_at).toLocaleString() }}</td>
-              <td>{{ currencyFormatter('MXN', item.columns.total) }} MXN</td>
+              <td>{{ item.columns.checkOutOrder }}</td>
+              <td>{{ item.columns.mechanic }}</td>
+              <td>{{ item.columns.model }}</td>
+              <td>{{ item.columns.color }}</td>
+              <td>{{ item.columns.plate }}</td>
+              <td>{{ item.columns.from }}</td>
+              <td>{{ item.columns.to }}</td>
+              <td>{{ currencyFormatter('MXN', item.columns.price) }} MXN</td>
               <td>{{ item.columns.status }}</td>
+              <td>{{ new Date(item.columns.created_at).toLocaleString() }}</td>
             </tr>
           </template>
           <template v-slot:no-data>

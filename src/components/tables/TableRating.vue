@@ -27,11 +27,12 @@
         >
           <template v-slot:item="{ item }">
             <tr>
-              <td>{{ item.columns.userclient }}</td>
-              <td>{{ item.columns.quality }}</td>
+              <td>{{ item.columns.client }}</td>
+              <td>{{ item.columns.mechanic }}</td>
+              <td>{{ item.columns.description }}</td>
               <td>
                 <v-rating
-                  v-model="item.columns.rankClient"
+                  v-model="item.columns.calificationClient"
                   color="amber"
                   density="comfortable"
                   readonly
@@ -40,12 +41,30 @@
               </td>
               <td>
                 <v-rating
-                  v-model="item.columns.rankTalachero"
+                  v-model="item.columns.calificationMechanic"
                   color="amber"
                   density="comfortable"
                   readonly
                   half-increments
                 ></v-rating>
+              </td>
+              <td>
+                <img
+                  class="rounded-lg mt-2"
+                  :src="item.columns.imageReport"
+                  alt="image_report1"
+                  width="100"
+                  cover
+                />
+              </td>
+              <td>
+                <img
+                  class="rounded-lg mt-2"
+                  :src="item.columns.imageReport2"
+                  alt="image_report2"
+                  width="100"
+                  cover
+                />
               </td>
               <td>{{ new Date(item.columns.created_at).toLocaleString() }}</td>
             </tr>
