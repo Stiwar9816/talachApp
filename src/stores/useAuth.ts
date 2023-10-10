@@ -53,7 +53,7 @@ export const useAuthStore = defineStore({
     },
     async resetPasswordForEmail(email: string) {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${import.meta.env.BASE_URL}/update-password`
+        redirectTo: `${import.meta.env.VITE_SITE_URL}/update-password`
       })
       if (error) throw new Error(`${error.message}`)
     },

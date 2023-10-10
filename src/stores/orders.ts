@@ -10,14 +10,11 @@ export const useOrdersStore = defineStore({
   state: (): OrdersFields => ({
     fields: [
       { key: 'checkOutOrder', sortable: false, title: 'N° Orden conekta' },
-      { key: 'mechanic', sortable: false, title: 'Talachero' },
-      { key: 'model', sortable: false, title: 'Modelo' },
-      { key: 'color', sortable: false, title: 'Color' },
-      { key: 'plate', sortable: false, title: 'Placa' },
+      { key: 'client', sortable: false, title: 'Usuario' },
+      { key: 'mechanic', sortable: true, title: 'Talachero' },
       { key: 'from', sortable: false, title: 'Punto de partida' },
       { key: 'to', sortable: false, title: 'Punto de llegada' },
-      { key: 'price', sortable: false, title: 'Total' },
-      { key: 'status', sortable: false, title: 'Estado' },
+      { key: 'price', sortable: true, title: 'Total' },
       { key: 'created_at', sortable: true, title: 'Fecha de servicio' }
     ] as Field[],
     items: [] as OrdersItem[],
