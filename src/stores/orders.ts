@@ -1,18 +1,24 @@
 import { defineStore } from 'pinia'
+import moment from 'moment'
 // Interface
 import type { Field, OrdersFields, OrdersItem } from '@/interface'
-import moment from 'moment'
+// Utlis
 import { supabase, updateItems } from '@/utils'
 
 export const useOrdersStore = defineStore({
   id: 'orders',
   state: (): OrdersFields => ({
     fields: [
-      { key: 'userclient', sortable: false, title: 'Usuario' },
-      { key: 'company', sortable: false, title: 'Empresa' },
-      { key: 'created_at', sortable: true, title: 'Fecha de servicio' },
-      { key: 'total', sortable: false, title: 'Total' },
-      { key: 'status', sortable: false, title: 'Estado' }
+      { key: 'checkOutOrder', sortable: false, title: 'N° Orden conekta' },
+      { key: 'mechanic', sortable: false, title: 'Talachero' },
+      { key: 'model', sortable: false, title: 'Modelo' },
+      { key: 'color', sortable: false, title: 'Color' },
+      { key: 'plate', sortable: false, title: 'Placa' },
+      { key: 'from', sortable: false, title: 'Punto de partida' },
+      { key: 'to', sortable: false, title: 'Punto de llegada' },
+      { key: 'price', sortable: false, title: 'Total' },
+      { key: 'status', sortable: false, title: 'Estado' },
+      { key: 'created_at', sortable: true, title: 'Fecha de servicio' }
     ] as Field[],
     items: [] as OrdersItem[],
     count: 0 as number,
@@ -22,9 +28,7 @@ export const useOrdersStore = defineStore({
     async allOrders() {
       let { data: orders, error } = await supabase.rpc('list_orders')
 
-      if (error) {
-        throw new Error(`${error.message}`)
-      }
+      if (error) throw new Error(`${error.message}`)
 
       // Iterar sobre los objetos de scores y formatear la fecha
       const OrderFormatted = orders.map((order: OrdersItem) => {
@@ -44,8 +48,8 @@ export const useOrdersStore = defineStore({
       if (error) throw new Error(`${error.message}`)
 
       let count = 0
-      for (const price of data) {
-        count += price.total
+      for (const total of data) {
+        count += total.price
       }
       this.count = +count.toFixed(2)
       return this.count

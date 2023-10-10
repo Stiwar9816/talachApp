@@ -7,9 +7,11 @@ export interface Field {
 
 export interface RatingItem {
   id?: string
-  quality: string
-  rankClient: number
-  rankTalachero: number
+  description: string
+  calificationClient: number
+  calificationMechanic: number
+  imageReport:string
+  imageReport2:string
   client: string
   created_at: string
 }

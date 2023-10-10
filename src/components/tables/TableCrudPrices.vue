@@ -129,7 +129,7 @@
             class="rounded-lg mt-2"
             :src="item.columns.image"
             alt="image_product"
-            width="120"
+            width="100"
             cover
           />
         </template>
