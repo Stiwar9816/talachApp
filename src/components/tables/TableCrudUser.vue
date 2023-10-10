@@ -295,7 +295,7 @@ const close = () => {
 
 const save = async () => {
   try {
-    let { id, phone, isActive, idCompany, rfc, ...rest } = editedItem.value
+    let { id, phone, isActive, idCompany, ...rest } = editedItem.value
     // phone = +phone
     if (!id) {
       // Add new user
@@ -306,7 +306,7 @@ const save = async () => {
       close()
     } else {
       //Update user
-      await user.updateUser(id, { phone, isActive, ...rest })
+      await user.updateUser(id, { phone, isActive,idCompany, ...rest })
       showSnackbar.value = true
       message.value = `¡Usuario ${rest.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'

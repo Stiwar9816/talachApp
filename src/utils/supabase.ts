@@ -5,7 +5,7 @@ const supabaseServiceRolekey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 // Access auth admin api
 export const supabase = createClient(supabaseUrl, supabaseServiceRolekey, {
   auth: {
-    autoRefreshToken: false,
+    autoRefreshToken: true,
     persistSession: false
   }
 })

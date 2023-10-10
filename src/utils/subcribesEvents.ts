@@ -14,10 +14,10 @@ export const updateItems = (newData: any, data: any) => {
     if (idSet.has(id)) {
       // Si el registro existe, actualízalo
       Object.assign(idMap.get(id), newCompany)
-      console.log(newData);
+      // console.log(newData);
     } else {
       // Si el registro no existe, agrégalo al array
-      console.log(newCompany);
+      // console.log(newCompany);
       data.push(newCompany)
       idSet.add(id)
       idMap.set(id, newCompany)

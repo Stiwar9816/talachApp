@@ -15,7 +15,14 @@ export const useAuthStore = defineStore({
   },
   actions: {
     async login({ email, password }: SigninInput) {
-      const {
+      const  { data: users, error:invalid } = await supabase
+        .from('users')
+        .select('isActive,email')
+        .eq('email', `${email}`).single()
+
+      if(users?.isActive !== 'Activo') throw new Error('Usuario inactivo comuniquese con un administrador')
+
+        const {
         data: { user, session },
         error
       } = await supabase.auth.signInWithPassword({

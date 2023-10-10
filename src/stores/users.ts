@@ -50,10 +50,31 @@ export const useUserStore = defineStore({
       })
 
       if (error) throw new Error(`${error.message}`)
-      console.log(data)
-
-      return this.items
+      if (data) {
+        const users = await this.allUsers()
+        return (this.items = users as UserItem[])
+      }
     },
-    async updateUser(id: string, payload: UserItem) {}
+    async updateUser(id: string, payload: UserItem) {
+      let { data, error } = await supabase.rpc('update_user', {
+        data_user: payload,
+        user_id: id
+      })
+
+      if (error) throw new Error(`${error.message}`)
+      if (data) {
+        const { data: user, error } = await supabase.auth.admin.updateUserById(id, {
+          email: payload.email,
+          user_metadata: { email: payload.email }
+        })
+        if (error) throw new Error(`${error.message}`)
+        if (user) {
+          this.items = data as UserItem[]
+          return this.items
+        }
+      } else {
+        throw new Error('The process has been rejected try again later')
+      }
+    }
   }
 })

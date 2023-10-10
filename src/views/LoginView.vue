@@ -67,6 +67,7 @@
     <Alert
       :snackbar-model="showSnackbar"
       :color="color"
+      :timeout="4000"
       :message="message"
       @close="handleSnackbarClose"
     />
