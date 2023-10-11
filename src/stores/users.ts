@@ -32,14 +32,16 @@ export const useUserStore = defineStore({
       const rolesArray = payload.roles?.split(',') || []
 
       payload.isActive = rolesArray.some((role) => ROLES.includes(role)) ? 'Activo' : 'Inactivo'
+      
+      const passwordGenered = randomPassword()
 
       const { data, error } = await supabase.auth.admin.createUser({
         email: payload.email,
-        password: randomPassword(),
+        password: passwordGenered,
         nonce: randomNonce(),
         user_metadata: {
           fullName: payload.fullName,
-          password: randomPassword(),
+          password: passwordGenered,
           phone: payload.phone,
           roles: payload.roles,
           isActive: payload.isActive,
@@ -51,6 +53,7 @@ export const useUserStore = defineStore({
 
       if (error) throw new Error(`${error.message}`)
       if (data) {
+        await supabase.auth.admin.inviteUserByEmail(`${data.user.email}`)
         const users = await this.allUsers()
         return (this.items = users as UserItem[])
       }
