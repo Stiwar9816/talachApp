@@ -173,8 +173,7 @@ import type { DataTableHeader, PriceItem } from '@/interface'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
-  items: Array<PriceItem[]>,
-  showButton: Boolean
+  items: Array<PriceItem[]>
 })
 // Const
 const dialog = ref<boolean>(false)

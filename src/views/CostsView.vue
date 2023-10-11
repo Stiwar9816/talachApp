@@ -1,24 +1,15 @@
 <template>
   <div>
     <h1>Costos Fijos</h1>
-    <TableCrudPrices
-      :fields="storeCosts.fields"
-      :items="storeCosts.items"
-      page="Costos"
-      :show-button="extractRoleFromToken(token)"
-    />
+    <TableCrudPrices :fields="storeCosts.fields" :items="storeCosts.items" page="Costos" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+// Components
 import TableCrudPrices from '@/components/tables/TableCrudPrices.vue'
+// Stores
 import { useCostsStore } from '@/stores'
-import { extractRoleFromToken } from '@/utils'
+// Initialization Store
 const storeCosts = useCostsStore()
-const token = sessionStorage.getItem('token')
-
-onMounted(() => {
-  extractRoleFromToken(token)
-})
 </script>

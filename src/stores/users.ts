@@ -24,7 +24,6 @@ export const useUserStore = defineStore({
       // Obtén la lista completa de usuarios registrados
       let { data: users, error } = await supabase.rpc('list_users', { role: ROLES })
       if (error) throw new Error(`${error.message}`)
-
       return (this.items = users as UserItem[])
     },
     async createUser(payload: UserItem, idCompany?: string | null) {
@@ -32,7 +31,7 @@ export const useUserStore = defineStore({
       const rolesArray = payload.roles?.split(',') || []
 
       payload.isActive = rolesArray.some((role) => ROLES.includes(role)) ? 'Activo' : 'Inactivo'
-      
+
       const passwordGenered = randomPassword()
 
       const { data, error } = await supabase.auth.admin.createUser({

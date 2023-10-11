@@ -15,14 +15,24 @@ export const useAuthStore = defineStore({
   },
   actions: {
     async login({ email, password }: SigninInput) {
-      const  { data: users, error:invalid } = await supabase
+      const { data: users, error: invalid } = await supabase
         .from('users')
-        .select('isActive,email')
-        .eq('email', `${email}`).single()
+        .select('isActive,email,roles')
+        .eq('email', `${email}`)
+        .single()
 
-      if(users?.isActive !== 'Activo') throw new Error('Usuario inactivo comuniquese con un administrador')
+      if (invalid) throw new Error(invalid.message)
+      
+      if (!users) throw new Error('Usuario no encontrado')
 
-        const {
+      if (users?.isActive !== 'Activo')
+        throw new Error('Usuario inactivo comuniquese con un administrador')
+
+      if (!users.roles || !users.roles.includes('Administrador')) {
+        throw new Error('No tienes permisos de administrador para iniciar sesión')
+      }
+
+      const {
         data: { user, session },
         error
       } = await supabase.auth.signInWithPassword({
@@ -59,13 +69,13 @@ export const useAuthStore = defineStore({
     },
     async updatePassword(password: string) {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password
       })
       if (error) throw new Error(`${error.message}`)
     },
     async updatePasswordAuth(password: string) {
       const { error } = await supabase.auth.updateUser({
-        password: password,
+        password,
         nonce: randomNonce()
       })
       if (error) throw new Error(`${error.message}`)
