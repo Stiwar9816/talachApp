@@ -64,13 +64,15 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <Alert
-      :snackbar-model="showSnackbar"
-      :color="color"
+    <v-snackbar
+      v-model="showSnackbar"
       :timeout="4000"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -83,8 +85,7 @@ import { email, required, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 // Stores
 import { useAuthStore, useErrorsStore } from '@/stores'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
+
 // Interface
 import type { SigninInput } from '@/interface'
 // Alerts
@@ -92,9 +93,6 @@ let show1 = ref(false)
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 const initialState: SigninInput = {
   email: '',

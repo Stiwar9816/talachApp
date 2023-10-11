@@ -29,12 +29,15 @@
       </v-card-actions>
     </v-card>
 
-    <Alert
-      :snackbar-model="showSnackbar"
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="4000"
       :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -42,8 +45,6 @@
 import { onMounted, ref } from 'vue'
 import { useOrdersStore, useInventoryStore } from '@/stores'
 import { currencyFormatter } from '../../utils/currencyFormatter'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Stores Initialization
 const ordersStore = useOrdersStore()
 const invetoryStore = useInventoryStore()
@@ -51,9 +52,6 @@ const invetoryStore = useInventoryStore()
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 const initialize = async () => {
   try {

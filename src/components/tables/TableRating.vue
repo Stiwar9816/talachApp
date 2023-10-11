@@ -76,12 +76,15 @@
       </v-col>
       <!-- Data Table -->
     </v-row>
-    <Alert
-      :snackbar-model="showSnackbar"
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="4000"
       :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -93,17 +96,12 @@ import { useRatingsStore } from '@/stores'
 import type { DataTableHeader } from '@/interface'
 // Utils
 import { supabase } from '@/utils'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Const
 const search = ref<string>('')
 // Alerts
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 // Props
 const props = defineProps({

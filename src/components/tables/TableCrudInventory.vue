@@ -108,12 +108,15 @@
         </template>
       </v-data-table>
     </v-row>
-    <Alert
-      :snackbar-model="showSnackbar"
-      :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+    <v-snackbar
+    v-model="showSnackbar"
+    :timeout="4000"
+    :color="color"
+    rounded="pill"
+    location="bottom right"
+  >
+    {{ message }}
+  </v-snackbar>
   </div>
 </template>
 
@@ -125,8 +128,6 @@ import type { DataTableHeader, InventoryItem } from '@/interface'
 import { useInventoryStore } from '@/stores'
 // Utils
 import { subscribeToPrices, supabase } from '@/utils'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -152,9 +153,7 @@ const defaultItem = ref<InventoryItem>({
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
+
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
 

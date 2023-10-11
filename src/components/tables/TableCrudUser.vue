@@ -173,12 +173,15 @@
         </template>
       </v-data-table>
     </v-row>
-    <Alert
-      :snackbar-model="showSnackbar"
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="4000"
       :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -191,7 +194,6 @@ import { useCompanyStore, useUserStore } from '@/stores'
 // Utils
 import { subscribeToUsers, supabase } from '@/utils'
 // Components
-import Alert from '@/components/alerts/Alert.vue'
 import FormUpdatePasswordAuth from '@/components/forms/FormUpdatePasswordAuth.vue'
 // Props
 const props = defineProps({
@@ -228,9 +230,6 @@ const roles: string[] = ['Administrador', 'Talachero', 'Trabajador', 'Usuario']
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])
@@ -306,7 +305,7 @@ const save = async () => {
       close()
     } else {
       //Update user
-      await user.updateUser(id, { phone, isActive,idCompany, ...rest })
+      await user.updateUser(id, { phone, isActive, idCompany, ...rest })
       showSnackbar.value = true
       message.value = `¡Usuario ${rest.fullName} fue actualizado con exito!`
       color.value = 'light-blue-darken-3'

@@ -58,12 +58,15 @@
       </v-col>
       <!-- DataTable -->
     </v-row>
-    <Alert
-      :snackbar-model="showSnackbar"
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="4000"
       :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -76,8 +79,6 @@ import FileSaver from 'file-saver'
 import { currencyFormatter, supabase } from '@/utils'
 // Stores
 import { useOrdersStore } from '@/stores'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Const
 const tableRef = ref<HTMLElement | null>(null)
 const search = ref<string>('')
@@ -86,9 +87,6 @@ const perPage = ref<number>(5)
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 // Props
 const props = defineProps({

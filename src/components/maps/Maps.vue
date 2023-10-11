@@ -21,12 +21,15 @@
         </template>
       </MarkerCluster>
     </GoogleMap>
-    <Alert
-      :snackbar-model="showSnackbar"
-      :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+    <v-snackbar
+    v-model="showSnackbar"
+    :timeout="4000"
+    :color="color"
+    rounded="pill"
+    location="bottom right"
+  >
+    {{ message }}
+  </v-snackbar>
   </div>
 </template>
 
@@ -38,17 +41,12 @@ import { GoogleMap, Polygon, Marker, MarkerCluster } from 'vue3-google-map'
 import { getMarkerIcon } from '@/utils'
 // Store
 import { useMapsStore } from '@/stores'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Initialization Store
 const storeMaps = useMapsStore()
 // Alerts
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 const initialize = async () => {
   try {

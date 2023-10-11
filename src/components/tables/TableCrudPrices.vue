@@ -149,12 +149,15 @@
         </template>
       </v-data-table>
     </v-row>
-    <Alert
-      :snackbar-model="showSnackbar"
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="4000"
       :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -167,8 +170,6 @@ import { currencyFormatter, subscribeToPrices, supabase } from '@/utils'
 import { useCompanyStore, useCostsStore, useProductStore, useServiceStore } from '@/stores'
 // Interface
 import type { DataTableHeader, PriceItem } from '@/interface'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Props
 const props = defineProps({
   fields: Array as () => DeepReadonly<DataTableHeader[] | DataTableHeader[][]> | undefined,
@@ -200,9 +201,6 @@ const defaultItem = ref<PriceItem>({
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 // Validations
 const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerido'])

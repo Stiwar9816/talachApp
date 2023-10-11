@@ -64,12 +64,15 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <Alert
-      :snackbar-model="showSnackbar"
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="4000"
       :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -78,8 +81,6 @@ import { ref } from 'vue'
 import router from '@/router'
 // Store
 import { useAuthStore } from '@/stores'
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Const
 let show = ref(false)
 const password = ref('')
@@ -91,9 +92,6 @@ const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerid
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 //Methods
 const resetForm = () => {

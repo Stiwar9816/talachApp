@@ -67,12 +67,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <Alert
-      :snackbar-model="showSnackbar"
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="4000"
       :color="color"
-      :message="message"
-      @close="handleSnackbarClose"
-    />
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -82,8 +85,6 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores'
 // Store initialization
 const authStore = useAuthStore()
-// Components
-import Alert from '@/components/alerts/Alert.vue'
 // Const
 let show = ref(false)
 const dialog = ref(false)
@@ -95,9 +96,6 @@ const requiredValue = ref([(v: String) => !!v || 'El valor del campo es requerid
 const showSnackbar = ref(false)
 const color = ref('')
 const message = ref('')
-const handleSnackbarClose = () => {
-  showSnackbar.value = false
-}
 
 //Methods
 const close = () => {
