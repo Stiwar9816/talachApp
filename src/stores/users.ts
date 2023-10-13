@@ -75,7 +75,7 @@ export const useUserStore = defineStore({
           return this.items
         }
       } else {
-        throw new Error('The process has been rejected try again later')
+        throw new Error('el proceso ha sido rechazado, vuelve a intentarlo más tarde.')
       }
     }
   }

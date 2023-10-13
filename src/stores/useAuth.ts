@@ -22,7 +22,7 @@ export const useAuthStore = defineStore({
         .single()
 
       if (invalid) throw new Error(invalid.message)
-      
+
       if (!users) throw new Error('Usuario no encontrado')
 
       if (users?.isActive !== 'Activo')
@@ -65,7 +65,14 @@ export const useAuthStore = defineStore({
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${import.meta.env.VITE_SITE_URL}/update-password`
       })
-      if (error) throw new Error(`${error.message}`)
+      if (error) {
+        if (error.status === 429 && error.name === 'AuthApiError') {
+          throw new Error(
+            'por motivos de seguridad, solo puedes solicitar esto una vez cada 60 segundos.'
+          )
+        }
+        throw new Error(error.message)
+      }
     },
     async updatePassword(password: string) {
       const { error } = await supabase.auth.updateUser({
