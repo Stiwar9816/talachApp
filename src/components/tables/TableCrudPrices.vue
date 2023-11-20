@@ -80,19 +80,40 @@
                       </v-col>
                       <template v-if="route.name == 'products'">
                         <v-col cols="12">
-                          <v-select
-                            v-model="editedItem.companies"
-                            label="Centro talachero"
-                            :rules="requiredValue"
-                            :items="product.companies"
-                            item-title="name_company"
-                            item-value="id"
-                            variant="underlined"
-                            density="comfortable"
-                            type="text"
-                            clearable
-                          >
-                          </v-select>
+                          <template v-if="!editedItem.id">
+                            <v-select
+                              v-model="editedItem.companies"
+                              label="Centro talachero"
+                              :rules="requiredValue"
+                              :items="product.companies"
+                              item-title="name_company"
+                              item-value="id"
+                              variant="underlined"
+                              density="comfortable"
+                              type="text"
+                              chips
+                              closable-chips
+                              multiple
+                              clearable
+                            >
+                            </v-select>
+                          </template>
+                          <template v-if="editedItem.id">
+                            <v-select
+                              v-model="editedItem.companies"
+                              label="Centro talachero"
+                              :rules="requiredValue"
+                              :items="product.companies"
+                              item-title="name_company"
+                              item-value="id"
+                              variant="underlined"
+                              density="comfortable"
+                              type="text"
+                              hint="Este campo no se permite editar"                            
+                              readonly
+                            >
+                            </v-select>
+                          </template>
                         </v-col>
                         <v-col cols="12">
                           <v-file-input
@@ -145,7 +166,7 @@
           </v-icon>
         </template>
         <template v-slot:no-data>
-          <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
+          <p class="pa-5">No hay registros</p>
         </template>
       </v-data-table>
     </v-row>
@@ -187,13 +208,13 @@ const defaultFile: FileReader | null = null
 const editedItem = ref<PriceItem>({
   name: '',
   price: 0,
-  companies: '',
+  companies: [],
   file: defaultFile
 })
 const defaultItem = ref<PriceItem>({
   name: '',
   price: 0,
-  companies: '',
+  companies: [],
   file: defaultFile
 })
 // Alerts
@@ -320,18 +341,16 @@ const save = async () => {
       case 'products':
         type = 'Producto'
         if (!id) {
-          // Add new cost
+          // Add new product
           await product.createProduct(companies!, { price, type, ...payload }, file)
           showSnackbar.value = true
-          message.value = `¡Nuevo producto ${payload.name} agregado con exito!`
+          message.value = `¡Nuevo producto ${payload.name} fue agregado con exito!`
           color.value = 'orange-darken-2'
           close()
         } else {
-          // Update cost
-          let fileUpdate = file || ''
-          await product.updateProduct(id, { ...payload, price, type }, fileUpdate, companies!)
+          await product.updateProduct(id, { price, type, ...payload }, companies!, file)
           showSnackbar.value = true
-          message.value = `¡Producto ${payload.name}  fue actualizado con exito!`
+          message.value = `¡Producto ${payload.name} fue actualizado con exito!`
           color.value = 'light-blue-darken-3'
           close()
         }

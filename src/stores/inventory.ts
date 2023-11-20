@@ -10,9 +10,9 @@ export const useInventoryStore = defineStore({
     fields: [
       { title: 'Nombre', sortable: false, key: 'name' },
       { title: 'Stock', key: 'stock' },
-      { title: 'Descripción', key: 'description' },
-      { title: 'Creado por', sortable: false, key: 'createby' },
-      { title: 'Empresa', sortable: false, key: 'company' },
+      { title: 'Descripción', sortable: false, key: 'description' },
+      { title: 'Creado por', sortable: true, key: 'createby' },
+      { title: 'Empresa', sortable: true, key: 'company' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],
     items: [] as InventoryItem[],

@@ -12,7 +12,7 @@ export const useUserStore = defineStore({
       { title: 'RFC', sortable: false, key: 'rfc' },
       { title: 'Teléfono', sortable: false, key: 'phone' },
       { title: 'Correo electronico', sortable: false, key: 'email' },
-      { title: 'Rol', sortable: false, key: 'roles' },
+      { title: 'Rol', sortable: true, key: 'roles' },
       { title: 'Estado', key: 'isActive' },
       { title: 'Acciones', align: 'center', key: 'actions', sortable: false }
     ] as Field[],

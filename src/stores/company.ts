@@ -16,7 +16,7 @@ export const useCompanyStore = defineStore({
       { title: 'Estado', sortable: false, key: 'department' },
       { title: 'Ciudad', sortable: false, key: 'city' },
       { title: 'Codigo Postal', sortable: false, key: 'postal_code' },
-      { title: 'Administrador', sortable: false, key: 'useradmin' },
+      { title: 'Administrador', sortable: true, key: 'useradmin' },
       { title: 'Trabajadores Activos', sortable: true, key: 'userworker' },
       { title: 'Latitud', sortable: false, key: 'lat' },
       { title: 'Logintud', sortable: false, key: 'lng' },

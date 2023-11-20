@@ -52,7 +52,7 @@
             </tr>
           </template>
           <template v-slot:no-data>
-            <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
+            <p class="pa-5">No hay registros</p>
           </template>
         </v-data-table>
       </v-col>

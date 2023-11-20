@@ -8,11 +8,11 @@ export const useProductStore = defineStore({
   id: 'product',
   state: (): PricesFields => ({
     fields: [
-      { title: 'Nombre', sortable: false, key: 'name' },
+      { title: 'Nombre', sortable: true, key: 'name' },
       { title: 'Imagen', align: 'center', sortable: false, key: 'image' },
       { title: 'Precio', align: 'center', key: 'price' },
-      { title: 'Creado por', sortable: false, key: 'createby' },
-      { title: 'Centro Talachero', sortable: false, key: 'company' },
+      { title: 'Creado por', sortable: true, key: 'createby' },
+      { title: 'Centro Talachero', sortable: true, key: 'company' },
       { title: 'Acciones', align: 'center', sortable: false, key: 'actions' }
     ] as Field[],
     items: [] as PriceItem[],
@@ -40,14 +40,14 @@ export const useProductStore = defineStore({
       this.companies = company as CompanyItem[]
       return this.companies
     },
-    async createProduct(companies: string, payload: PriceItem, image: any) {      
+    async createProduct(companies: string[], payload: PriceItem, image: any) {
       const user_id = await getUser()
       // Comprobar si se proporcionó una imagen
       const file = image ? image[0].name.toLowerCase() : 'no-results.png'
       const data_price = { ...payload, user_id }
 
       let { data, error } = await supabase.rpc('insert_product', {
-        company_id: companies,
+        company_ids: companies,
         data_price,
         file
       })
@@ -60,18 +60,22 @@ export const useProductStore = defineStore({
       this.items = dataTransform as any
       return this.items
     },
-    async updateProduct(id: string, payload: PriceItem, file: any, idCompany: string) {
-      const image = file[0]?.name.toLowerCase() || null
+    async updateProduct(id: string, data_price: PriceItem, company_id: string[], file: any) {
+      let image = null
+
+      if (file && file[0]) {
+        image = file[0].name.toLowerCase()
+        await uploadImage(file[0])
+      }
 
       let { data, error } = await supabase.rpc('update_product', {
-        company_id: idCompany,
-        data_price: payload,
-        file: image,
-        price_id: id
+        price_id: id,
+        data_price,
+        company_id,
+        file: image
       })
 
       if (error) throw new Error(`${error.message}`)
-      if (file[0]) await uploadImage(file[0])
 
       const dataTransform = await transformProducts(data)
       this.items = dataTransform

@@ -89,7 +89,6 @@
             <!-- Add Modal -->
           </v-toolbar>
         </template>
-        <!-- <template v-slot:item.user="{ item }">{{ item.columns.user.fullName }} </template> -->
         <template v-slot:item.stock="{ item }">
           <v-chip :color="getColor(item.columns.stock)">
             {{ item.columns.stock }}
@@ -104,19 +103,19 @@
           </v-icon>
         </template>
         <template v-slot:no-data>
-          <p class="pa-5">No hay registros que coincidan con su busqueda!</p>
+          <p class="pa-5">No hay registros</p>
         </template>
       </v-data-table>
     </v-row>
     <v-snackbar
-    v-model="showSnackbar"
-    :timeout="4000"
-    :color="color"
-    rounded="pill"
-    location="bottom right"
-  >
-    {{ message }}
-  </v-snackbar>
+      v-model="showSnackbar"
+      :timeout="4000"
+      :color="color"
+      rounded="pill"
+      location="bottom right"
+    >
+      {{ message }}
+    </v-snackbar>
   </div>
 </template>
 

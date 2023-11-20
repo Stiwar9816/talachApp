@@ -8,7 +8,6 @@ import { extractFullNameFromSession } from '@/utils'
 export const useLayoutStore = defineStore('layout', () => {
   const imageProfile: string = 'mdi-account-circle'
   const drawer: boolean = true
-  const token = localStorage.getItem('token')
   const rail: boolean = false
   const prices: Array<Routes> = [
     {
@@ -67,7 +66,7 @@ export const useLayoutStore = defineStore('layout', () => {
     }
   ]
 
-  const nameProfile = computed(() => extractFullNameFromSession(token) || '')
+  const nameProfile = computed(() => extractFullNameFromSession() || '')
 
   return { drawer, rail, routes, prices, companies, nameProfile, imageProfile }
 })

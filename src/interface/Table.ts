@@ -10,8 +10,8 @@ export interface RatingItem {
   description: string
   calificationClient: number
   calificationMechanic: number
-  imageReport:string
-  imageReport2:string
+  imageReport: string
+  imageReport2: string
   client: string
   created_at: string
 }
@@ -47,8 +47,8 @@ export interface Count {
 export interface PriceItem extends ItemPrice {
   price: number
   stock?: number
-  companies?: string
-  file?: File | null
+  companies?: string[]
+  file?: File | any
 }
 
 export interface InventoryItem extends ItemPrice {
