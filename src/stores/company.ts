@@ -35,11 +35,11 @@ export const useCompanyStore = defineStore({
       return this.items
     },
     async createCompany(data_company: CompanyItem, data_userid: string) {
+      geofenceIsActive(data_company)
       let { data, error } = await supabase.rpc('insert_company', {
         data_company,
         data_userid
       })
-      geofenceIsActive(data_company)
       if (error) throw new Error(`${error.message}`)
       this.items = data as CompanyItem[]
       return this.items
