@@ -36,8 +36,8 @@ export const useRatingsStore = defineStore({
       })
 
       const files = scores.map((score: RatingItem) => ({
-        image: score.imageReport,
-        image2: score.imageReport2
+        image: score.imageReport || 'no-results.png',
+        image2: score.imageReport2 || 'no-results.png'
       }))
 
       const dataTransform = await transformServices(files)
