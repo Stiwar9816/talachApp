@@ -31,6 +31,7 @@ export const useInventoryStore = defineStore({
       return this.items
     },
     async updateInventory(id: string, payload: InventoryItem) {
+      payload.stock = Math.max(payload.stock, 0);
       let { data, error } = await supabase.rpc('update_inventory', {
         data_inventory: payload,
         price_id: id
